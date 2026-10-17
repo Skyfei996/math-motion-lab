@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Parallel Lines - Math Motion Lab</title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+  </head>
+  <body>
+    <main class="lesson-shell">
+      <header class="topbar">
+        <a class="brand" href="../index.html">
+          <span class="brand-mark">M</span>
+          <span>Math Motion Lab</span>
+        </a>
+        <div class="top-actions">
+          <a class="nav-link" href="../index.html" data-i18n="common.back">Back</a>
+          <button class="language-button" data-language-toggle type="button">EN</button>
+        </div>
+      </header>
+
+      <section class="lesson-titlebar">
+        <div>
+          <h1 data-i18n="lessons.parallel.title">Parallel and Intersecting Lines</h1>
+          <p data-i18n="lessons.parallel.summary">Drag the angle and spacing to see whether two lines will meet.</p>
+        </div>
+        <p data-page-hint>Choose a line relationship, then adjust the available controls.</p>
+      </section>
+
+      <section class="lab-layout">
+        <div class="stage-panel">
+          <svg class="stage-svg" viewBox="0 0 760 560" role="img" aria-label="Parallel and intersecting lines lab">
+            <rect width="760" height="560" fill="#fbfcf8" />
+            <path d="M80 280 H680" class="guide-line" />
+            <path d="M380 70 V490" class="guide-line" />
+            <path id="guide-a" class="guide-line" d="M90 205 L670 205" />
+            <path id="guide-b" class="guide-line" d="M90 355 L670 355" />
+            <path id="extension-a" class="guide-line" d="M0 205 L760 205" />
+            <path id="extension-b" class="guide-line" d="M0 355 L760 355" />
+
+            <path id="line-a" class="math-line" d="M90 205 L670 205" />
+            <path id="line-b" class="math-line alt" d="M90 355 L670 355" />
+            <circle id="meet-dot" class="meet-dot" cx="380" cy="280" r="12" />
+            <circle id="meet-ring" class="meet-ring" cx="380" cy="280" r="28" />
+
+            <text id="label-a" class="svg-label" x="130" y="190">A</text>
+            <text id="label-b" class="svg-label" x="130" y="390">B</text>
+            <text id="relation-label" class="svg-muted-label" x="380" y="526"></text>
+          </svg>
+        </div>
+
+        <aside class="side-panel">
+          <section class="control-card">
+            <p class="panel-heading" data-i18n="common.controls">Experiment controls</p>
+            <div class="field-stack">
+              <div class="field">
+                <label data-i18n="parallel.modeLabel">Line relationship</label>
+                <div class="segmented" aria-label="Line relationship" data-mode-group>
+                  <button class="segmented-button" data-mode="parallel" aria-pressed="true" type="button" data-i18n="parallel.parallelMode">
+                    Parallel
+                  </button>
+                  <button class="segmented-button" data-mode="intersect" aria-pressed="false" type="button" data-i18n="parallel.intersectMode">
+                    Intersecting
+                  </button>
+                </div>
+              </div>
+
+              <div class="field" data-angle-field>
+                <label for="angle-input" data-angle-label>Angle</label>
+                <input class="field-input" id="angle-input" type="range" min="0" max="75" step="1" value="24" />
+              </div>
+
+              <div class="field" data-distance-field>
+                <label for="distance-input" data-distance-label>Distance</label>
+                <input class="field-input" id="distance-input" type="range" min="60" max="220" step="5" value="150" />
+              </div>
+
+              <div class="field">
+                <label for="extension-input">
+                  <input id="extension-input" type="checkbox" checked />
+                  <span data-i18n="parallel.extendLabel">Show extensions</span>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <section class="observation-card">
+            <p class="panel-heading" data-i18n="common.observe">Observe</p>
+            <p class="observation-text" data-observation aria-live="polite"></p>
+            <p class="panel-heading" data-i18n="common.conclusion">Conclusion</p>
+            <p class="observation-text" data-conclusion aria-live="polite"></p>
+            <p class="panel-heading" data-i18n="common.formula">Formula</p>
+            <div class="formula-box" data-formula aria-live="polite"></div>
+          </section>
+        </aside>
+      </section>
+    </main>
+
+    <script src="../assets/lab-data.js"></script>
+    <script src="../assets/lab-models.js"></script>
+    <script src="../assets/lab-core.js"></script>
+    <script>
+      const state = { mode: "parallel", angle: 24, distance: 150, showExtensions: true };
+
+      const pageText = {
+        "zh-CN": {
+          title: "\u5e73\u884c\u7ebf\u4e0e\u76f8\u4ea4\u7ebf - Math Motion Lab",
+          hint: "\u5148\u9009\u62e9\u5e73\u884c\u6216\u76f8\u4ea4\uff0c\u518d\u8c03\u6574\u53ef\u7528\u7684\u53c2\u6570\u89c2\u5bdf\u4e24\u6761\u76f4\u7ebf\u3002",
+          stageLabel: "\u5e73\u884c\u7ebf\u4e0e\u76f8\u4ea4\u7ebf\u5b9e\u9a8c",
+          notUsed: "\u4e0d\u9002\u7528"
+        },
+        "en-US": {
+          title: "Parallel and Intersecting Lines - Math Motion Lab",
+          hint: "Choose parallel or intersecting lines, then adjust the controls that apply.",
+          stageLabel: "Parallel and intersecting lines lab",
+          notUsed: "Not used"
+        }
+      };
+
+      const lineA = document.getElementById("line-a");
+      const lineB = document.getElementById("line-b");
+      const guideA = document.getElementById("guide-a");
+      const guideB = document.getElementById("guide-b");
+      const extensionA = document.getElementById("extension-a");
+      const extensionB = document.getElementById("extension-b");
+      const meetDot = document.getElementById("meet-dot");
+      const meetRing = document.getElementById("meet-ring");
+      const labelA = document.getElementById("label-a");
+      const labelB = document.getElementById("label-b");
+      const angleInput = document.getElementById("angle-input");
+      const distanceInput = document.getElementById("distance-input");
+      const extensionInput = document.getElementById("extension-input");
+      const angleField = document.querySelector("[data-angle-field]");
+      const distanceField = document.querySelector("[data-distance-field]");
+
+      function localText(key) {
+        const language = MathLab.getLanguage();
+        return pageText[language]?.[key] || pageText["en-US"][key];
+      }
+
+      function linePath(y) {
+        return `M90 ${y} L670 ${y}`;
+      }
+
+      function extensionPath(y) {
+        return `M-20 ${y} L780 ${y}`;
+      }
+
+      function updateLabelText(relation) {
+        const angleText = MathLab.numberText(relation.angleDeg);
+        const distanceText = MathLab.numberText(relation.distance);
+        document.querySelector("[data-angle-label]").textContent =
+          relation.mode === "parallel"
+            ? `${MathLab.text("parallel.angleLabel")}: ${angleText} deg (${MathLab.text("parallel.parallelMode")})`
+            : `${MathLab.text("parallel.angleLabel")}: ${angleText} deg`;
+        document.querySelector("[data-distance-label]").textContent = relation.hasFixedDistance
+          ? `${MathLab.text("parallel.distanceLabel")}: ${distanceText}`
+          : `${MathLab.text("parallel.distanceLabel")}: ${localText("notUsed")}`;
+        document.getElementById("relation-label").textContent = relation.intersects
+          ? `${MathLab.text("parallel.angleLabel")} ${angleText} deg`
+          : `${MathLab.text("parallel.distanceLabel")} ${distanceText}`;
+      }
+
+      function updatePageLanguage() {
+        document.title = localText("title");
+        document.querySelector(".stage-svg").setAttribute("aria-label", localText("stageLabel"));
+        document.querySelector("[data-mode-group]").setAttribute("aria-label", MathLab.text("parallel.modeLabel"));
+        document.querySelector("[data-page-hint]").textContent = localText("hint");
+      }
+
+      function updateControlAvailability(relation) {
+        angleInput.disabled = relation.mode === "parallel";
+        distanceInput.disabled = !relation.hasFixedDistance;
+        angleField.style.opacity = angleInput.disabled ? "0.55" : "1";
+        distanceField.style.opacity = distanceInput.disabled ? "0.55" : "1";
+        angleInput.setAttribute("aria-disabled", String(angleInput.disabled));
+        distanceInput.setAttribute("aria-disabled", String(distanceInput.disabled));
+      }
+
+      function render() {
+        const relation = MathLabModels.geometry.lineRelationState(state.mode, state.angle, state.distance);
+        const centerX = 380;
+        const centerY = 280;
+        const offset = relation.distance / 2;
+        const angle = relation.mode === "parallel" ? 0 : relation.angleDeg;
+        const lineAY = relation.mode === "parallel" ? centerY - offset : centerY;
+        const lineBY = relation.mode === "parallel" ? centerY + offset : centerY;
+        const lineATransform = `rotate(${-angle / 2} ${centerX} ${lineAY})`;
+        const lineBTransform = `rotate(${angle / 2} ${centerX} ${lineBY})`;
+        const extensionsOpacity = state.showExtensions ? "1" : "0";
+
+        lineA.setAttribute("d", linePath(lineAY));
+        lineB.setAttribute("d", linePath(lineBY));
+        guideA.setAttribute("d", linePath(lineAY));
+        guideB.setAttribute("d", linePath(lineBY));
+        extensionA.setAttribute("d", extensionPath(lineAY));
+        extensionB.setAttribute("d", extensionPath(lineBY));
+
+        lineA.setAttribute("transform", lineATransform);
+        lineB.setAttribute("transform", lineBTransform);
+        guideA.setAttribute("transform", lineATransform);
+        guideB.setAttribute("transform", lineBTransform);
+        extensionA.setAttribute("transform", lineATransform);
+        extensionB.setAttribute("transform", lineBTransform);
+        extensionA.style.opacity = extensionsOpacity;
+        extensionB.style.opacity = extensionsOpacity;
+
+        meetDot.style.opacity = relation.intersects ? "1" : "0";
+        meetRing.style.opacity = relation.intersects ? "0.75" : "0";
+        meetDot.setAttribute("cx", centerX);
+        meetDot.setAttribute("cy", centerY);
+        meetRing.setAttribute("cx", centerX);
+        meetRing.setAttribute("cy", centerY);
+
+        labelA.setAttribute("x", 132);
+        labelA.setAttribute("y", relation.mode === "parallel" ? lineAY - 16 : centerY - 74);
+        labelB.setAttribute("x", 132);
+        labelB.setAttribute("y", relation.mode === "parallel" ? lineBY + 34 : centerY + 92);
+
+        updatePageLanguage();
+        updateControlAvailability(relation);
+        updateLabelText(relation);
+        document.querySelector("[data-observation]").textContent = MathLab.text(
+          relation.intersects ? "parallel.observationIntersect" : "parallel.observationParallel"
+        );
+        document.querySelector("[data-conclusion]").textContent = MathLab.text(
+          relation.intersects ? "parallel.conclusionIntersect" : "parallel.conclusionParallel"
+        );
+        document.querySelector("[data-formula]").textContent = relation.hasFixedDistance
+          ? `${MathLab.text("parallel.distanceLabel")} = ${MathLab.numberText(relation.distance)}`
+          : `${MathLab.text("parallel.angleLabel")} = ${MathLab.numberText(relation.angleDeg)} deg`;
+
+        document.querySelectorAll("[data-mode]").forEach((button) => {
+          button.setAttribute("aria-pressed", String(button.dataset.mode === relation.mode));
+        });
+        angleInput.value = relation.angleDeg;
+        distanceInput.value = relation.distance;
+        extensionInput.checked = state.showExtensions;
+      }
+
+      document.querySelectorAll("[data-mode]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.mode = button.dataset.mode;
+          render();
+        });
+      });
+
+      angleInput.addEventListener("input", () => {
+        state.angle = MathLabModels.clamp(Number(angleInput.value), 5, 75);
+        render();
+      });
+
+      distanceInput.addEventListener("input", () => {
+        state.distance = Number(distanceInput.value);
+        render();
+      });
+
+      extensionInput.addEventListener("change", () => {
+        state.showExtensions = extensionInput.checked;
+        render();
+      });
+
+      MathLab.applyText();
+      MathLab.bindLanguageToggle(render);
+      render();
+    </script>
+  </body>
+</html>

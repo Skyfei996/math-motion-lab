@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f3ecdc" />
+    <title>量出1100毫升的水 - Math Motion Lab</title>
+    <link rel="stylesheet" href="styles.css?v=20260715-8" />
+  </head>
+  <body class="wm-body">
+    <a class="wm-skip-link" href="#lesson-stage">跳到讲题舞台</a>
+    <main class="wm-classroom" data-water-measure-app>
+      <header class="wm-appbar">
+        <div class="wm-title-group">
+          <a class="wm-icon-button wm-back-link" href="../../index.html" data-action="back" aria-label="返回课程目录">←</a>
+          <div>
+            <p class="wm-eyebrow" data-copy="labName">小学数学互动课堂</p>
+            <h1 data-copy="title">量出1100毫升的水</h1>
+          </div>
+        </div>
+        <div class="wm-toolbar">
+          <button class="wm-toolbar-button" type="button" data-action="edit" aria-label="编辑题目">
+            <span aria-hidden="true">✎</span>
+            <span data-copy="edit">编辑题目</span>
+          </button>
+          <button class="wm-toolbar-button" type="button" data-action="fullscreen" aria-label="全屏讲解">
+            <span aria-hidden="true">⛶</span>
+            <span data-copy="fullscreen">全屏讲解</span>
+          </button>
+          <button class="wm-toolbar-button wm-language-button" type="button" data-language-toggle>EN</button>
+        </div>
+      </header>
+
+      <section class="wm-problem-strip" aria-label="当前题目">
+        <span class="wm-fact"><span data-copy="bottlesLead">两只瓶子</span></span>
+        <span class="wm-capacity is-small"><strong data-small-summary>500</strong> <span data-copy="milliliters">毫升</span></span>
+        <span class="wm-strip-plus" aria-hidden="true">＋</span>
+        <span class="wm-capacity is-large"><strong data-large-summary>800</strong> <span data-copy="milliliters">毫升</span></span>
+        <strong class="wm-target-summary"><span data-copy="targetLead">目标：</span><span data-target-summary>1100</span> <span data-copy="milliliters">毫升</span></strong>
+      </section>
+
+      <nav class="wm-progress" aria-label="讲解进度" data-progress></nav>
+
+      <section class="wm-workspace">
+        <section id="lesson-stage" class="wm-stage" data-stage aria-live="polite"></section>
+        <aside class="wm-board" data-board aria-live="polite"></aside>
+      </section>
+
+      <footer class="wm-console" aria-label="课件翻页">
+        <button class="wm-nav-button" type="button" data-action="prev">← <span data-copy="prev">上一页</span></button>
+        <span class="wm-page-count" data-page-count>第 1 页 / 共 6 页</span>
+        <button class="wm-nav-button is-primary" type="button" data-action="next"><span data-next-label>下一页</span> →</button>
+      </footer>
+
+      <dialog class="wm-settings-dialog" data-settings-dialog>
+        <form class="wm-settings-form" method="dialog" novalidate>
+          <header class="wm-dialog-head">
+            <div>
+              <p class="wm-eyebrow" data-copy="parameters">题目参数</p>
+              <h2 data-copy="settingsTitle">编辑量水问题</h2>
+              <p data-copy="settingsLead">本课讲解“两个瓶子的差量＋一满瓶”，应用后会从第1页重新讲解。</p>
+            </div>
+            <button class="wm-icon-button" type="button" data-action="close-settings" aria-label="关闭">×</button>
+          </header>
+
+          <label class="wm-field">
+            <span data-copy="bottleALabel">瓶子A容量</span>
+            <span class="wm-input-wrap"><input name="bottleA" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="500" data-setting="bottleA" /><span data-copy="milliliters">毫升</span></span>
+          </label>
+          <label class="wm-field">
+            <span data-copy="bottleBLabel">瓶子B容量</span>
+            <span class="wm-input-wrap"><input name="bottleB" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="800" data-setting="bottleB" /><span data-copy="milliliters">毫升</span></span>
+          </label>
+          <label class="wm-field">
+            <span data-copy="targetLabel">要量出的水</span>
+            <span class="wm-input-wrap"><input name="target" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="1100" data-setting="target" /><span data-copy="milliliters">毫升</span></span>
+          </label>
+
+          <section class="wm-validity-note">
+            <strong data-copy="validityTitle">有效题目需要满足</strong>
+            <ul>
+              <li data-copy="validityPositive">三个数都是大于0的整数</li>
+              <li data-copy="validityDifferent">两个瓶子的容量不同</li>
+              <li data-copy="validityPattern">目标水量＝大瓶容量＋两瓶容量之差</li>
+            </ul>
+          </section>
+
+          <p class="wm-dialog-error" data-settings-error role="alert" hidden></p>
+          <div class="wm-dialog-actions">
+            <button class="wm-dialog-button" type="button" data-action="cancel-settings" data-copy="cancel">取消</button>
+            <button class="wm-dialog-button is-primary" type="button" data-action="apply-settings" data-copy="apply">应用并重新讲解</button>
+          </div>
+        </form>
+      </dialog>
+    </main>
+
+    <script src="../../assets/lab-data.js?v=20260715-1"></script>
+    <script src="../../assets/lab-models.js?v=20260715-2"></script>
+    <script src="../../assets/lab-core.js"></script>
+    <script src="lesson.js?v=20260715-6"></script>
+  </body>
+</html>

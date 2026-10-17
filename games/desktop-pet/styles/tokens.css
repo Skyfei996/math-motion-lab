@@ -1,0 +1,21 @@
+:root {
+  color-scheme: light;
+  --ink: #34384c;
+  --muted: #687086;
+  --paper: #fff9ed;
+  --surface: #fffdf8;
+  --surface-blue: #eff7f6;
+  --line: #d8dedb;
+  --teal: #57bfc0;
+  --teal-dark: #247f82;
+  --lemon: #f4ce58;
+  --navy: #313b5a;
+  --orange: #f2a65a;
+  --green: #55b98a;
+  --blue: #6777d9;
+  --shadow: 0 18px 42px rgb(52 56 76 / 16%);
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 26px;
+  --ease-soft: cubic-bezier(0.2, 0.7, 0.2, 1);
+}

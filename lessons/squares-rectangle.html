@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Two Squares Make a Rectangle - Math Motion Lab</title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+  </head>
+  <body>
+    <main class="lesson-shell">
+      <header class="topbar">
+        <a class="brand" href="../index.html">
+          <span class="brand-mark">M</span>
+          <span>Math Motion Lab</span>
+        </a>
+        <div class="top-actions">
+          <a class="nav-link" href="../index.html" data-i18n="common.back">Back</a>
+          <button class="language-button" data-language-toggle type="button">EN</button>
+        </div>
+      </header>
+
+      <section class="lesson-titlebar">
+        <div>
+          <h1 data-i18n="lessons.squares.title">Two Squares Make a Rectangle</h1>
+          <p data-i18n="lessons.squares.summary">Drag squares together and observe why the perimeter loses two sides.</p>
+        </div>
+        <p data-page-hint>Drag the right square, or change the side length and unit.</p>
+      </section>
+
+      <section class="lab-layout">
+        <div class="stage-panel">
+          <svg class="stage-svg" viewBox="0 0 760 560" role="img" aria-label="Square perimeter teaching lab">
+            <rect width="760" height="560" fill="#fbfcf8" />
+            <path d="M96 398 H664" class="guide-line" />
+            <text class="svg-muted-label" data-before-label x="380" y="78"></text>
+
+            <g id="left-square" transform="translate(190 192)">
+              <rect id="left-fill" x="0" y="0" width="138" height="138" fill="#ffd166" />
+              <path class="shape-edge" d="M138 0 H0 V138 H138" fill="none" />
+              <line id="left-inner-edge" class="shape-edge" x1="138" y1="0" x2="138" y2="138" />
+              <text class="svg-small-label" data-square-a x="69" y="176">A</text>
+              <text class="svg-label" data-side-label x="69" y="-18"></text>
+              <text class="svg-label" data-side-label x="-34" y="75" transform="rotate(-90 -34 75)"></text>
+            </g>
+
+            <g id="right-square" transform="translate(458 192)">
+              <rect id="right-fill" x="0" y="0" width="138" height="138" fill="#fcbf49" />
+              <path class="shape-edge" d="M0 0 H138 V138 H0" fill="none" />
+              <line id="right-inner-edge" class="shape-edge" x1="0" y1="0" x2="0" y2="138" />
+              <text class="svg-small-label" data-square-b x="69" y="176">B</text>
+              <text class="svg-label" data-side-label x="69" y="-18"></text>
+              <text class="svg-label" data-side-label x="172" y="75" transform="rotate(90 172 75)"></text>
+            </g>
+
+            <line id="hidden-edge" class="hidden-edge" x1="328" y1="192" x2="328" y2="330" />
+            <path id="outer-edge" class="outer-edge" d="M190 192 H466 V330 H190 Z" fill="none" />
+
+            <text class="svg-label" data-gap-label x="393" y="370"></text>
+            <text class="svg-muted-label" data-after-label x="380" y="430"></text>
+            <text class="svg-muted-label" data-reduced-label x="380" y="466"></text>
+
+            <g class="answer-banner" id="answer-banner" transform="translate(190 106)">
+              <rect x="0" y="0" width="380" height="50" rx="8" />
+              <text data-answer-label x="190" y="33"></text>
+            </g>
+          </svg>
+        </div>
+
+        <aside class="side-panel">
+          <section class="control-card">
+            <p class="panel-heading" data-i18n="common.controls">Experiment controls</p>
+            <div class="field-stack">
+              <div class="field">
+                <label for="side-input" data-i18n="squares.sideLabel">Side length</label>
+                <input class="field-input" id="side-input" type="number" min="0.1" step="0.1" value="5" />
+              </div>
+
+              <div class="field">
+                <label for="unit-select" data-i18n="squares.unitLabel">Unit</label>
+                <select class="field-select" id="unit-select">
+                  <option value="cm">cm</option>
+                  <option value="m">m</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="gap-input" data-gap-input-label>Merge distance</label>
+                <input class="field-input" id="gap-input" type="range" min="0" max="130" step="1" value="130" />
+              </div>
+
+              <div class="field">
+                <label for="hidden-input">
+                  <input id="hidden-input" type="checkbox" checked />
+                  <span data-i18n="squares.showHiddenLabel">Show hidden sides</span>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <section class="observation-card">
+            <p class="panel-heading" data-i18n="common.observe">Observe</p>
+            <p class="observation-text" data-observation aria-live="polite"></p>
+            <p class="panel-heading" data-i18n="common.conclusion">Conclusion</p>
+            <p class="observation-text" data-conclusion aria-live="polite"></p>
+            <p class="panel-heading" data-i18n="common.formula">Formula</p>
+            <div class="formula-box" data-formula aria-live="polite"></div>
+          </section>
+        </aside>
+      </section>
+    </main>
+
+    <script src="../assets/lab-data.js"></script>
+    <script src="../assets/lab-models.js"></script>
+    <script src="../assets/lab-core.js"></script>
+    <script>
+      const state = { side: 5, unit: "cm", gap: 130, showHidden: true };
+
+      const pageText = {
+        "zh-CN": {
+          title: "\u4e24\u4e2a\u6b63\u65b9\u5f62\u5408\u6210\u957f\u65b9\u5f62 - Math Motion Lab",
+          hint: "\u62d6\u52a8\u53f3\u8fb9\u7684\u6b63\u65b9\u5f62\uff0c\u6216\u6539\u53d8\u8fb9\u957f\u548c\u5355\u4f4d\u6765\u89c2\u5bdf\u5468\u957f\u53d8\u5316\u3002",
+          stageLabel: "\u6b63\u65b9\u5f62\u5468\u957f\u5b9e\u9a8c",
+          rightSquare: "\u53f3\u8fb9\u6b63\u65b9\u5f62",
+          squareA: "\u6b63\u65b9\u5f62 A",
+          squareB: "\u6b63\u65b9\u5f62 B",
+          gap: "\u95f4\u8ddd",
+          joined: "\u5df2\u8d34\u5408",
+          before: "\u5408\u5e76\u524d\u603b\u5468\u957f",
+          after: "\u5408\u5e76\u540e\u957f\u65b9\u5f62\u5468\u957f",
+          reduced: "\u51cf\u5c11",
+          answer: "\u5468\u957f\u51cf\u5c11",
+          separatedObservation: "\u4e24\u4e2a\u6b63\u65b9\u5f62\u8fd8\u6ca1\u6709\u8d34\u5408\uff0c\u6bcf\u4e2a\u90fd\u6709 4 \u6761\u5916\u8fb9\u3002",
+          separatedConclusion: "\u5408\u5e76\u524d\u7684\u603b\u5468\u957f\u662f {before} {unit}\u3002\u7ee7\u7eed\u62d6\u52a8\u53f3\u8fb9\u6b63\u65b9\u5f62\uff0c\u770b\u54ea\u4e9b\u8fb9\u4f1a\u53d8\u6210\u5185\u90e8\u8fb9\u3002",
+          separatedFormulaNote: "\u5408\u5e76\u524d\u5468\u957f",
+          joinedFormulaNote: "\u5408\u5e76\u540e\u5468\u957f\u53d8\u5316"
+        },
+        "en-US": {
+          title: "Two Squares Make a Rectangle - Math Motion Lab",
+          hint: "Drag the right square, or change the side length and unit to watch the perimeter change.",
+          stageLabel: "Square perimeter teaching lab",
+          rightSquare: "Right square",
+          squareA: "Square A",
+          squareB: "Square B",
+          gap: "Gap",
+          joined: "Joined",
+          before: "Perimeter before joining",
+          after: "Rectangle perimeter after joining",
+          reduced: "Reduced",
+          answer: "Perimeter reduced by",
+          separatedObservation: "The two squares are still separated, so each square has 4 outside sides.",
+          separatedConclusion: "Before joining, the total perimeter is {before} {unit}. Keep dragging the right square to see which sides become internal.",
+          separatedFormulaNote: "Perimeter before joining",
+          joinedFormulaNote: "Perimeter change after joining"
+        }
+      };
+
+      const sideInput = document.getElementById("side-input");
+      const unitSelect = document.getElementById("unit-select");
+      const gapInput = document.getElementById("gap-input");
+      const hiddenInput = document.getElementById("hidden-input");
+      const svg = document.querySelector(".stage-svg");
+      const rightSquare = document.getElementById("right-square");
+      const leftFill = document.getElementById("left-fill");
+      const rightFill = document.getElementById("right-fill");
+      const leftInnerEdge = document.getElementById("left-inner-edge");
+      const rightInnerEdge = document.getElementById("right-inner-edge");
+      let dragOffsetX = 0;
+
+      function localText(key, values = {}) {
+        const language = MathLab.getLanguage();
+        const template = pageText[language]?.[key] || pageText["en-US"][key];
+        return template.replace(/\{(\w+)\}/g, (_, valueKey) => values[valueKey] ?? `{${valueKey}}`);
+      }
+
+      function renderPageLanguage() {
+        document.title = localText("title");
+        svg.setAttribute("aria-label", localText("stageLabel"));
+        document.querySelector("[data-page-hint]").textContent = localText("hint");
+        document.querySelector("[data-square-a]").textContent = localText("squareA");
+        document.querySelector("[data-square-b]").textContent = localText("squareB");
+      }
+
+      function normalizeSideInput() {
+        const numericSide = Number(sideInput.value);
+        state.side = Number.isFinite(numericSide) && numericSide > 0 ? numericSide : 5;
+        sideInput.value = MathLab.numberText(state.side);
+        render();
+      }
+
+      function render() {
+        if (state.gap <= 4) {
+          state.gap = 0;
+          gapInput.value = state.gap;
+        }
+        const values = MathLabModels.geometry.squarePerimeterState(state.side);
+        const unitText = MathLab.text(`units.${state.unit}`);
+        const joined = state.gap <= 4;
+        const rightX = joined ? 328 : 328 + state.gap;
+
+        renderPageLanguage();
+        MathLab.fillSelectUnits(unitSelect);
+        rightSquare.setAttribute("transform", `translate(${rightX} 192)`);
+        document.querySelectorAll("[data-side-label]").forEach((node) => {
+          node.textContent = `${MathLab.numberText(values.side)} ${unitText}`;
+        });
+        document.getElementById("hidden-edge").style.opacity = state.showHidden && joined ? "1" : "0";
+        leftInnerEdge.style.opacity = joined ? "0" : "1";
+        rightInnerEdge.style.opacity = joined ? "0" : "1";
+        leftFill.setAttribute("fill", "#ffd166");
+        rightFill.setAttribute("fill", joined && !state.showHidden ? "#ffd166" : "#fcbf49");
+        document.getElementById("outer-edge").style.opacity = joined ? "1" : "0";
+        document.getElementById("answer-banner").style.opacity = joined ? "1" : "0";
+
+        document.querySelector("[data-gap-input-label]").textContent =
+          `${MathLab.text("squares.gapLabel")}: ${joined ? localText("joined") : MathLab.numberText(state.gap)}`;
+        document.querySelector("[data-gap-label]").textContent =
+          joined ? localText("joined") : `${localText("gap")}: ${MathLab.numberText(state.gap)}`;
+        document.querySelector("[data-before-label]").textContent =
+          `${localText("before")}: ${MathLab.numberText(values.before)} ${unitText}`;
+        document.querySelector("[data-after-label]").textContent = joined
+          ? `${localText("after")}: ${MathLab.numberText(values.after)} ${unitText}`
+          : "";
+        document.querySelector("[data-reduced-label]").textContent = joined
+          ? `${localText("reduced")}: ${MathLab.numberText(values.reduced)} ${unitText}`
+          : "";
+        document.querySelector("[data-answer-label]").textContent =
+          `${localText("answer")} ${MathLab.numberText(values.reduced)} ${unitText}`;
+
+        document.querySelector("[data-observation]").textContent = joined
+          ? MathLab.text("squares.observation")
+          : localText("separatedObservation");
+        document.querySelector("[data-conclusion]").textContent = joined
+          ? MathLab.text("squares.conclusion", {
+              reduced: MathLab.numberText(values.reduced),
+              unit: unitText
+            })
+          : localText("separatedConclusion", {
+              before: MathLab.numberText(values.before),
+              unit: unitText
+            });
+        document.querySelector("[data-formula]").textContent = joined
+          ? `${localText("joinedFormulaNote")}\n` +
+            `4 x ${MathLab.numberText(values.side)} + 4 x ${MathLab.numberText(values.side)} = ${MathLab.numberText(values.before)} ${unitText}\n` +
+            `2 x (${MathLab.numberText(values.length)} + ${MathLab.numberText(values.width)}) = ${MathLab.numberText(values.after)} ${unitText}\n` +
+            `${MathLab.numberText(values.before)} - ${MathLab.numberText(values.after)} = ${MathLab.numberText(values.reduced)} ${unitText}`
+          : `${localText("separatedFormulaNote")}\n` +
+            `4 x ${MathLab.numberText(values.side)} + 4 x ${MathLab.numberText(values.side)} = ${MathLab.numberText(values.before)} ${unitText}`;
+      }
+
+      sideInput.addEventListener("input", (event) => {
+        const numericSide = Number(event.target.value);
+        state.side = Number.isFinite(numericSide) ? numericSide : 5;
+        render();
+      });
+      sideInput.addEventListener("change", normalizeSideInput);
+      sideInput.addEventListener("blur", normalizeSideInput);
+
+      unitSelect.addEventListener("change", (event) => {
+        state.unit = event.target.value;
+        render();
+      });
+
+      gapInput.addEventListener("input", (event) => {
+        state.gap = Number(event.target.value);
+        render();
+      });
+
+      hiddenInput.addEventListener("change", (event) => {
+        state.showHidden = event.target.checked;
+        render();
+      });
+
+      MathLab.makeSvgDraggable(svg, rightSquare, {
+        onStart(point) {
+          dragOffsetX = point ? point.x - (328 + state.gap) : 0;
+        },
+        onMove(point) {
+          if (!point) return;
+          state.gap = MathLabModels.clamp(point.x - dragOffsetX - 328, 0, 130);
+          gapInput.value = state.gap;
+          render();
+        }
+      });
+
+      MathLab.applyText();
+      MathLab.bindLanguageToggle(render);
+      render();
+    </script>
+  </body>
+</html>

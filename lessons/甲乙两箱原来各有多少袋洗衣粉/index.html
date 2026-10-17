@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>甲乙两箱原来各有多少袋洗衣粉 - Math Motion Lab</title>
+    <link rel="stylesheet" href="styles.css?v=20260727-2" />
+  </head>
+  <body>
+    <a class="box-skip-link" href="#lesson-stage">跳到讲题舞台</a>
+
+    <main class="box-app" data-box-app>
+      <header class="box-header">
+        <div class="box-brand">
+          <a class="box-icon-button" href="../../index.html" data-action="back" aria-label="返回课程目录">←</a>
+          <div>
+            <p data-copy="labName">Math Motion Lab · 教师点击课件</p>
+            <h1 data-copy="title">甲乙两箱原来各有多少袋洗衣粉</h1>
+          </div>
+        </div>
+
+        <div class="box-tools">
+          <span class="box-chapter" data-chapter>读题</span>
+          <button class="box-tool-button" type="button" data-action="edit" data-copy="edit">编辑题目</button>
+          <button class="box-tool-button" type="button" data-language-toggle>EN</button>
+          <button class="box-tool-button" type="button" data-action="fullscreen" data-copy="fullscreen">全屏</button>
+        </div>
+      </header>
+
+      <section class="box-question-bar" aria-live="polite">
+        <span class="box-question-index" data-question-index>当前提问 1</span>
+        <strong data-step-title>先读懂完整题目</strong>
+        <span class="box-question-copy" data-question>题目告诉了我们什么？最后要找什么？</span>
+      </section>
+
+      <section
+        id="lesson-stage"
+        class="box-stage"
+        role="button"
+        tabindex="0"
+        data-stage
+        aria-describedby="stage-instruction"
+      >
+        <svg class="box-canvas" viewBox="0 0 1120 600" role="img" aria-describedby="box-svg-desc">
+          <desc id="box-svg-desc" data-stage-description>甲乙两箱共有90袋洗衣粉，移动4袋后甲箱仍多6袋。</desc>
+          <defs>
+            <filter id="box-paper-shadow" x="-10%" y="-10%" width="120%" height="130%">
+              <feDropShadow dx="0" dy="8" stdDeviation="7" flood-color="#73562c" flood-opacity=".14" />
+            </filter>
+            <pattern id="box-paper-grain" width="72" height="72" patternUnits="userSpaceOnUse">
+              <path
+                d="M3 18c14-4 25 4 39-1M26 52c12-5 26 3 41-2M-8 36c10-3 18 2 28-1"
+                fill="none"
+                stroke="#765c34"
+                stroke-opacity=".055"
+                stroke-width="1.1"
+              />
+              <circle cx="58" cy="22" r="1" fill="#765c34" fill-opacity=".06" />
+            </pattern>
+            <pattern id="box-unknown-pattern" width="28" height="28" patternUnits="userSpaceOnUse">
+              <rect width="28" height="28" fill="#efe2bd" />
+              <path d="M-7 28 28-7M7 35 35 7" stroke="#9d835a" stroke-width="3" stroke-opacity=".26" />
+            </pattern>
+            <marker id="box-arrow-right" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+              <path d="M0 0 12 6 0 12Z" class="box-arrow-head" />
+            </marker>
+            <marker id="box-arrow-left" markerWidth="12" markerHeight="12" refX="2" refY="6" orient="auto">
+              <path d="M12 0 0 6l12 6Z" class="box-arrow-head" />
+            </marker>
+            <clipPath id="box-first-track-clip">
+              <rect x="210" y="250" width="720" height="68" rx="3" />
+            </clipPath>
+            <clipPath id="box-second-track-clip">
+              <rect x="210" y="385" width="720" height="68" rx="3" />
+            </clipPath>
+          </defs>
+
+          <rect class="box-paper" x="6" y="6" width="1108" height="588" rx="18" filter="url(#box-paper-shadow)" />
+          <rect class="box-grain" x="6" y="6" width="1108" height="588" rx="18" fill="url(#box-paper-grain)" />
+
+          <g class="box-problem-copy is-visible" data-part="problem-copy">
+            <text class="box-problem-line" x="64" y="58" data-problem-line="one"></text>
+            <text class="box-problem-line" x="64" y="101" data-problem-line="two"></text>
+            <text class="box-problem-line" x="64" y="144" data-problem-line="three"></text>
+            <text class="box-problem-task" x="64" y="190" data-problem-line="task"></text>
+            <text class="box-problem-prompt" x="64" y="221" data-problem-line="prompt"></text>
+          </g>
+
+          <g class="box-scene-copy" data-part="scene-copy">
+            <text class="box-scene-heading" x="560" y="60" text-anchor="middle" data-scene-heading></text>
+            <text class="box-scene-note" x="560" y="95" text-anchor="middle" data-scene-note></text>
+          </g>
+
+          <g class="box-total-evidence" data-part="total-evidence">
+            <rect class="box-total-badge" x="420" y="116" width="280" height="46" rx="4" />
+            <text class="box-total-label" x="560" y="147" text-anchor="middle" data-total-label>共90袋</text>
+          </g>
+
+          <path class="box-left-guide" d="M192 234V469M192 250h18M192 385h18" />
+
+          <g class="box-case is-first">
+            <text class="box-case-name" x="105" y="293" text-anchor="middle" data-first-name>甲箱</text>
+            <rect class="box-track-background" x="210" y="250" width="720" height="68" rx="3" />
+            <rect class="box-quantity-segment is-base" data-a-base x="210" y="250" height="68" clip-path="url(#box-first-track-clip)" />
+            <g class="box-excess-segment" data-a-excess-group>
+              <rect class="box-quantity-segment is-excess" data-a-excess x="210" y="250" height="68" />
+              <text class="box-segment-label" data-a-excess-label y="291" text-anchor="middle"></text>
+            </g>
+            <rect class="box-quantity-segment is-transfer" data-a-transfer x="210" y="250" height="68" clip-path="url(#box-first-track-clip)" />
+            <rect class="box-unknown-cover" data-a-unknown x="210" y="250" height="68" clip-path="url(#box-first-track-clip)" />
+            <rect class="box-track-outline" x="210" y="250" width="720" height="68" rx="3" />
+            <text class="box-count-label" x="1005" y="293" text-anchor="middle" data-first-count>？袋</text>
+          </g>
+
+          <g class="box-case is-second">
+            <text class="box-case-name" x="105" y="428" text-anchor="middle" data-second-name>乙箱</text>
+            <rect class="box-track-background" x="210" y="385" width="720" height="68" rx="3" />
+            <rect class="box-quantity-segment is-base" data-b-original x="210" y="385" height="68" clip-path="url(#box-second-track-clip)" />
+            <rect class="box-quantity-segment is-transfer" data-b-transfer x="210" y="385" height="68" clip-path="url(#box-second-track-clip)" />
+            <rect class="box-unknown-cover" data-b-unknown x="210" y="385" height="68" clip-path="url(#box-second-track-clip)" />
+            <rect class="box-track-outline" x="210" y="385" width="720" height="68" rx="3" />
+            <text class="box-count-label" x="1005" y="428" text-anchor="middle" data-second-count>？袋</text>
+          </g>
+
+          <g class="box-transfer-rail" data-part="transfer-rail">
+            <path class="box-transfer-path is-forward" data-transfer-path="forward" marker-end="url(#box-arrow-right)" />
+            <path class="box-transfer-path is-backward" data-transfer-path="backward" marker-end="url(#box-arrow-left)" />
+            <g class="box-transfer-bundle" data-transfer-bundle>
+              <rect data-transfer-bundle-rect x="0" y="0" height="68" rx="3" />
+              <text data-transfer-label text-anchor="middle">4</text>
+            </g>
+            <text class="box-transfer-caption" x="485" y="359" text-anchor="middle" data-transfer-caption></text>
+          </g>
+
+          <g class="box-difference-evidence" data-part="difference-evidence">
+            <path class="box-difference-brace" data-difference-brace-path />
+            <text class="box-difference-label" data-difference-label text-anchor="middle"></text>
+          </g>
+
+          <g class="box-equal-evidence" data-part="equal-evidence">
+            <path class="box-equal-line" data-equal-line />
+            <path class="box-equal-tick" data-equal-ticks />
+            <text class="box-equal-label" x="560" y="482" text-anchor="middle" data-equal-label></text>
+          </g>
+
+          <g class="box-verification" data-part="verification">
+            <path class="box-ghost-arrow" data-ghost-path marker-end="url(#box-arrow-right)" />
+            <text class="box-ghost-label" x="500" y="359" text-anchor="middle" data-ghost-label></text>
+            <path class="box-after-mark" data-after-first-mark />
+            <path class="box-after-mark" data-after-second-mark />
+          </g>
+
+          <g class="box-formula-board" data-part="formula-board">
+            <text class="box-formula-line" x="560" y="523" text-anchor="middle" data-formula-line="one"></text>
+            <text class="box-formula-line is-secondary" x="560" y="560" text-anchor="middle" data-formula-line="two"></text>
+          </g>
+
+          <g class="box-answer" data-part="answer">
+            <path class="box-answer-line" d="M270 515Q560 496 850 515" />
+            <text class="box-answer-checks" x="560" y="536" text-anchor="middle" data-answer-checks></text>
+            <text class="box-answer-text" x="560" y="573" text-anchor="middle" data-answer></text>
+          </g>
+        </svg>
+
+        <span id="stage-instruction" class="box-click-hint" data-copy="clickHint">点击舞台空白处继续</span>
+      </section>
+
+      <footer class="box-footer">
+        <button class="box-nav-button" type="button" data-action="prev">
+          <span aria-hidden="true">←</span>
+          <span data-copy="prev">上一步</span>
+        </button>
+        <div class="box-step-status" aria-live="polite">
+          <div class="box-progress-track" data-progress-track></div>
+          <div>
+            <strong data-step-count>1 / 13</strong>
+            <span data-copy="paceHint">每次点击只推进一个动作</span>
+          </div>
+        </div>
+        <button class="box-nav-button is-primary" type="button" data-action="next">
+          <span data-next-label>下一步</span>
+          <span aria-hidden="true">→</span>
+        </button>
+      </footer>
+
+      <p class="box-live-copy" data-live-copy aria-live="polite"></p>
+
+      <dialog class="box-settings-dialog" data-settings-dialog>
+        <form class="box-settings-form" method="dialog" novalidate>
+          <div class="box-dialog-heading">
+            <div>
+              <p class="box-dialog-kicker" data-copy="parameters">题目参数</p>
+              <h2 data-copy="settingsTitle">编辑两箱移袋问题</h2>
+              <p data-copy="settingsLead">应用后会检查能否得到正整数袋答案，并从第1步重新讲解。</p>
+            </div>
+            <button class="box-icon-button" type="button" data-action="close-settings" aria-label="关闭">×</button>
+          </div>
+
+          <div class="box-field-grid">
+            <label>
+              <span data-copy="totalLabel">两箱共有</span>
+              <span class="box-input-wrap">
+                <input type="number" min="3" step="1" inputmode="numeric" data-setting="totalBags" />
+                <span data-copy="bagsUnit">袋</span>
+              </span>
+            </label>
+            <label>
+              <span data-copy="movedLabel">从甲箱移到乙箱</span>
+              <span class="box-input-wrap">
+                <input type="number" min="1" step="1" inputmode="numeric" data-setting="movedToSecond" />
+                <span data-copy="bagsUnit">袋</span>
+              </span>
+            </label>
+            <label>
+              <span data-copy="differenceLabel">移动后甲箱仍多</span>
+              <span class="box-input-wrap">
+                <input type="number" min="1" step="1" inputmode="numeric" data-setting="firstStillMore" />
+                <span data-copy="bagsUnit">袋</span>
+              </span>
+            </label>
+          </div>
+
+          <div class="box-validity-note">
+            <strong data-copy="validityTitle">有效题目需要满足</strong>
+            <ul>
+              <li data-copy="validityPositive">三个数都是正整数，且相差袋数小于总袋数</li>
+              <li data-copy="validityWhole">总袋数减去相差袋数后，可以平均分成两份</li>
+              <li data-copy="validityTransfer">乙箱原来的袋数必须大于0</li>
+            </ul>
+          </div>
+
+          <p class="box-dialog-error" data-settings-error role="alert" hidden></p>
+          <div class="box-dialog-actions">
+            <button class="box-dialog-button" type="button" data-action="cancel-settings" data-copy="cancel">取消</button>
+            <button class="box-dialog-button is-primary" type="button" data-action="apply-settings" data-copy="apply">
+              应用并重新讲解
+            </button>
+          </div>
+        </form>
+      </dialog>
+    </main>
+
+    <script src="../../assets/lab-data.js?v=20260727-1"></script>
+    <script src="../../assets/lab-models.js?v=20260727-1"></script>
+    <script src="../../assets/lab-core.js"></script>
+    <script src="lesson.js?v=20260727-2"></script>
+  </body>
+</html>

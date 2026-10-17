@@ -1,0 +1,20 @@
+{
+  "name": "desktop-pet-learning-companion",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev:web": "vite",
+    "build:web": "vite build",
+    "tauri": "tauri",
+    "test": "node tests/share-model.test.mjs && node tests/pet-state.test.mjs && node tests/task-pool.test.mjs && node tests/reminder-model.test.mjs && node tests/state-storage.test.mjs && node tests/window-placement.test.mjs"
+  },
+  "devDependencies": {
+    "@rollup/rollup-win32-x64-msvc": "^4.62.2",
+    "@tauri-apps/cli": "^2.11.4",
+    "vite": "^7.3.6"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.11.1",
+    "@tauri-apps/plugin-store": "^2.4.4"
+  }
+}

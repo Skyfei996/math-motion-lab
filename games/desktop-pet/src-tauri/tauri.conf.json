@@ -1,0 +1,61 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "格格桌面学习伙伴",
+  "version": "0.1.0",
+  "identifier": "com.skylab.desktop-pet-learning",
+  "build": {
+    "beforeDevCommand": "npm run dev:web",
+    "devUrl": "http://127.0.0.1:4173",
+    "beforeBuildCommand": "npm run build:web",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "pet",
+        "title": "格格",
+        "url": "pet.html",
+        "width": 112,
+        "height": 128,
+        "minWidth": 112,
+        "minHeight": 128,
+        "maxWidth": 112,
+        "maxHeight": 128,
+        "resizable": false,
+        "maximizable": false,
+        "minimizable": false,
+        "decorations": false,
+        "transparent": true,
+        "shadow": false,
+        "alwaysOnTop": true,
+        "skipTaskbar": true,
+        "focus": false
+      },
+      {
+        "label": "task",
+        "title": "格格的分果子任务",
+        "url": "index.html?surface=task",
+        "width": 560,
+        "height": 420,
+        "minWidth": 560,
+        "minHeight": 420,
+        "resizable": false,
+        "maximizable": false,
+        "minimizable": true,
+        "decorations": true,
+        "center": true,
+        "visible": false
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src ipc: http://ipc.localhost",
+      "devCsp": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src ipc: http://ipc.localhost ws://127.0.0.1:4173"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "icon": ["icons/icon.ico"],
+    "createUpdaterArtifacts": false
+  }
+}

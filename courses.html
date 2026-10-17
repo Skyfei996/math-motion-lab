@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f6f7f3" />
+    <title>课程管理 · Math Motion Lab</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="assets/styles.css?v=20261017-4" />
+    <link rel="stylesheet" href="assets/course-manager.css?v=20261017-1" />
+  </head>
+  <body>
+    <main class="manager-shell">
+      <header class="topbar manager-topbar">
+        <a class="brand" href="index.html" aria-label="Math Motion Lab">
+          <span class="brand-mark">M</span>
+          <span>Math Motion Lab</span>
+        </a>
+        <div class="top-actions">
+          <a class="nav-link" href="index.html" data-ui="back">返回课程目录</a>
+          <button class="language-button" data-language-toggle type="button">EN</button>
+        </div>
+      </header>
+
+      <section class="manager-heading" aria-labelledby="manager-title">
+        <div>
+          <p class="eyebrow" data-ui="eyebrow">课程工作台</p>
+          <h1 id="manager-title" data-ui="title">管理课程</h1>
+          <p class="manager-description" data-ui="description">调整课程在目录中的顺序，控制哪些课程对学生显示。</p>
+        </div>
+        <div class="manager-stats" aria-live="polite">
+          <div class="stat-card"><span data-ui="visibleLabel">显示中</span><strong data-visible-count>0</strong></div>
+          <div class="stat-card muted"><span data-ui="hiddenLabel">已隐藏</span><strong data-hidden-count>0</strong></div>
+        </div>
+      </section>
+
+      <section class="manager-panel" aria-label="课程列表">
+        <div class="manager-toolbar">
+          <div class="manager-filters" role="group" aria-label="课程筛选">
+            <button class="filter-button is-active" type="button" data-filter="all" aria-pressed="true" data-ui="all">全部</button>
+            <button class="filter-button" type="button" data-filter="visible" aria-pressed="false" data-ui="visibleFilter">显示中</button>
+            <button class="filter-button" type="button" data-filter="hidden" aria-pressed="false" data-ui="hiddenFilter">已隐藏</button>
+          </div>
+          <label class="search-box">
+            <span class="search-icon" aria-hidden="true">⌕</span>
+            <input type="search" data-search placeholder="搜索课程" data-ui-placeholder="search" />
+          </label>
+        </div>
+        <div class="manager-list" data-course-list></div>
+        <div class="manager-empty" data-empty hidden></div>
+        <footer class="manager-footer">
+          <span data-save-status aria-live="polite">更改会自动保存到此浏览器</span>
+          <button class="text-button" type="button" data-reset data-ui="reset">恢复默认排序和显示状态</button>
+        </footer>
+      </section>
+      <p class="manager-hint" data-ui="hint">拖动左侧把手排序，也可以使用上移、下移按钮。隐藏的课程仍会保留在管理列表中。</p>
+    </main>
+    <script src="assets/lab-data.js?v=20261017-1"></script>
+    <script src="assets/catalog-preferences.js?v=20261017-1"></script>
+    <script src="assets/lab-models.js?v=20260727-1"></script>
+    <script src="assets/lab-core.js"></script>
+    <script src="assets/course-manager.js?v=20261017-1"></script>
+  </body>
+</html>

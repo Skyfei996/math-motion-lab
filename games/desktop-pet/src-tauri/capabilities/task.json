@@ -1,0 +1,15 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "task-window",
+  "description": "Only the capabilities required by the learning task window.",
+  "windows": ["task"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-hide",
+    "store:allow-load",
+    "store:allow-get",
+    "store:allow-set",
+    "store:allow-delete",
+    "store:allow-save"
+  ]
+}

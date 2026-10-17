@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=112, initial-scale=1">
+  <meta name="description" content="格格桌面宠物独立窗口">
+  <title>格格</title>
+  <link rel="stylesheet" href="./styles/tokens.css">
+  <link rel="stylesheet" href="./styles/app.css">
+  <link rel="stylesheet" href="./styles/pet-window.css">
+</head>
+<body class="pet-window">
+  <main id="pet-window-root" class="pet-window-root">
+    <button
+      id="pet-window-button"
+      class="pet-window-button"
+      type="button"
+      aria-label="摸摸格格，打开互动卡"
+    >
+      <span class="pet-window-shadow" aria-hidden="true"></span>
+      <span id="pet-window-gege-host" class="pet-window-gege-host" aria-hidden="true"></span>
+    </button>
+    <aside id="pet-reminder-bubble" class="pet-reminder-bubble" hidden>
+      <span aria-hidden="true">⏰</span>
+      <strong id="pet-reminder-title"></strong>
+    </aside>
+    <span id="pet-window-status" class="sr-only" aria-live="polite"></span>
+  </main>
+  <script type="module" src="./src/pet-window.js"></script>
+</body>
+</html>

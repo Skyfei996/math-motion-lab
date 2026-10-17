@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4eedf" />
+    <title>钢笔搬家倍数问题 - Math Motion Lab</title>
+    <link rel="stylesheet" href="styles.css?v=20260715-2" />
+  </head>
+  <body class="pt-body">
+    <a class="pt-skip-link" href="#lesson-stage">跳到讲题舞台</a>
+    <main class="pt-classroom" data-pen-transfer-app>
+      <header class="pt-appbar">
+        <div class="pt-title-group">
+          <a class="pt-icon-button pt-back-link" href="../../index.html" data-action="back" aria-label="返回课程目录">←</a>
+          <div>
+            <p class="pt-eyebrow" data-copy="labName">小学数学互动课堂</p>
+            <h1 data-copy="title">钢笔搬家倍数问题</h1>
+          </div>
+        </div>
+        <div class="pt-toolbar">
+          <button class="pt-toolbar-button" type="button" data-action="edit">
+            <span aria-hidden="true">✎</span>
+            <span data-copy="edit">编辑题目</span>
+          </button>
+          <button class="pt-toolbar-button" type="button" data-action="fullscreen">
+            <span aria-hidden="true">⛶</span>
+            <span data-copy="fullscreen">全屏讲解</span>
+          </button>
+          <button class="pt-toolbar-button pt-language-button" type="button" data-language-toggle>EN</button>
+        </div>
+      </header>
+
+      <section class="pt-problem-strip" aria-label="当前题目">
+        <span class="pt-fact is-ning"><span data-copy="ningName">小宁</span> <strong data-ning-summary>30</strong> <span data-copy="pensUnit">支</span></span>
+        <span class="pt-transfer-chip">← <span data-copy="transferDirection">小青给小宁</span></span>
+        <span class="pt-fact is-qing"><span data-copy="qingName">小青</span> <strong data-qing-summary>15</strong> <span data-copy="pensUnit">支</span></span>
+        <strong class="pt-problem-question"><span data-copy="targetLead">目标：</span><span data-target-summary>8</span><span data-copy="timesUnit">倍</span></strong>
+      </section>
+
+      <nav class="pt-progress" aria-label="讲解进度" data-progress></nav>
+
+      <section class="pt-workspace">
+        <section id="lesson-stage" class="pt-stage" data-stage aria-live="polite"></section>
+        <aside class="pt-board" data-board aria-live="polite"></aside>
+      </section>
+
+      <footer class="pt-console">
+        <button class="pt-nav-button" type="button" data-action="prev">← <span data-copy="prev">上一页</span></button>
+        <span class="pt-page-count" data-page-count>第 1 页 / 共 6 页</span>
+        <button class="pt-nav-button is-primary" type="button" data-action="next"><span data-next-label>下一页</span> →</button>
+      </footer>
+
+      <dialog class="pt-settings-dialog" data-settings-dialog>
+        <form class="pt-settings-form" method="dialog" novalidate>
+          <header class="pt-dialog-head">
+            <div>
+              <p class="pt-eyebrow" data-copy="parameters">题目参数</p>
+              <h2 data-copy="settingsTitle">编辑钢笔搬家问题</h2>
+              <p data-copy="settingsLead">应用后会检查题目是否有符合方向的整支答案，并从第1页重新讲解。</p>
+            </div>
+            <button class="pt-icon-button" type="button" data-action="close-settings" aria-label="关闭">×</button>
+          </header>
+
+          <label class="pt-field">
+            <span data-copy="ningLabel">小宁原有钢笔</span>
+            <span class="pt-input-wrap"><input name="ningPens" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="30" data-setting="ningPens" /><span data-copy="pensUnit">支</span></span>
+          </label>
+          <label class="pt-field">
+            <span data-copy="qingLabel">小青原有钢笔</span>
+            <span class="pt-input-wrap"><input name="qingPens" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="15" data-setting="qingPens" /><span data-copy="pensUnit">支</span></span>
+          </label>
+          <label class="pt-field">
+            <span data-copy="multipleLabel">目标倍数</span>
+            <span class="pt-input-wrap"><input name="multiple" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="8" data-setting="multiple" /><span data-copy="timesUnit">倍</span></span>
+          </label>
+
+          <section class="pt-validity-note">
+            <strong data-copy="validityTitle">有效题目需要满足</strong>
+            <ul>
+              <li data-copy="validityPositive">三项都是正整数，目标倍数不小于2</li>
+              <li data-copy="validityWhole">总数能平均分成“目标倍数＋1”份</li>
+              <li data-copy="validityDirection">小青确实需要给出钢笔，而不是接收钢笔</li>
+            </ul>
+          </section>
+
+          <p class="pt-dialog-error" data-settings-error role="alert" hidden></p>
+          <div class="pt-dialog-actions">
+            <button class="pt-dialog-button" type="button" data-action="cancel-settings" data-copy="cancel">取消</button>
+            <button class="pt-dialog-button is-primary" type="button" data-action="apply-settings" data-copy="apply">应用并重新讲解</button>
+          </div>
+        </form>
+      </dialog>
+    </main>
+
+    <script src="../../assets/lab-data.js?v=20260714-3"></script>
+    <script src="../../assets/lab-models.js?v=20260714-3"></script>
+    <script src="../../assets/lab-core.js"></script>
+    <script src="lesson.js?v=20260714-1"></script>
+  </body>
+</html>

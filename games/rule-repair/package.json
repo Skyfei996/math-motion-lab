@@ -1,0 +1,8 @@
+{
+  "name": "rule-repair-game",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node tests/farm-model.test.mjs && node tests/game-state.test.mjs"
+  }
+}

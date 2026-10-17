@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#efe2bd" />
+    <title>鸡兔同笼·逐步讲解 - Math Motion Lab</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="rebuild.css?v=20260727-1" />
+  </head>
+  <body class="scene-body">
+    <a class="scene-skip-link" href="#lesson-stage">跳到讲题舞台</a>
+
+    <main class="scene-classroom" data-scene-app>
+      <header class="scene-appbar">
+        <div class="scene-title-group">
+          <a class="scene-icon-button" href="../../index.html" aria-label="返回课程目录">←</a>
+          <div>
+            <p class="scene-eyebrow" data-copy="labName">Math Motion Lab · 场景讲解</p>
+            <h1 data-copy="title">鸡兔同笼</h1>
+          </div>
+        </div>
+
+        <div class="scene-toolbar">
+          <span class="scene-chapter" data-chapter>认识题目</span>
+          <button class="scene-tool-button" type="button" data-action="fullscreen">
+            <span aria-hidden="true">⛶</span>
+            <span data-copy="fullscreen">全屏</span>
+          </button>
+          <button class="scene-tool-button scene-language-button" type="button" data-action="language">EN</button>
+        </div>
+      </header>
+
+      <section
+        id="lesson-stage"
+        class="scene-stage"
+        data-stage
+        role="button"
+        tabindex="0"
+        aria-describedby="stage-instruction"
+      >
+        <svg class="scene-canvas" viewBox="0 0 1120 620" role="img" aria-labelledby="scene-svg-title scene-svg-desc">
+          <title id="scene-svg-title">鸡兔同笼动态讲解舞台</title>
+          <desc id="scene-svg-desc" data-stage-description>笼子里共有10只动物、26条腿，要找鸡和兔各有多少只。</desc>
+
+          <defs>
+            <filter id="paper-shadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#6f532d" flood-opacity="0.15" />
+            </filter>
+            <filter id="soft-shadow" x="-30%" y="-30%" width="160%" height="160%">
+              <feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#5c4427" flood-opacity="0.16" />
+            </filter>
+            <pattern id="paper-fibers" width="48" height="48" patternUnits="userSpaceOnUse">
+              <path d="M4 10c8-3 14 3 24-1M21 37c9-4 15 2 23-2M-4 25c8-2 14 2 20-1" fill="none" stroke="#8d7046" stroke-opacity="0.08" stroke-width="1.1" />
+              <circle cx="38" cy="17" r="1.1" fill="#7b6039" fill-opacity="0.08" />
+              <circle cx="12" cy="43" r="0.9" fill="#fff9e5" fill-opacity="0.5" />
+            </pattern>
+
+            <g id="chicken-character">
+              <path d="M21 18c3-10 14-13 20-3 8-4 16 4 12 12 7 4 7 16-2 20 1 10-11 15-18 8-8 7-20 2-18-9-9-5-6-18 3-20-1-3 0-6 3-8Z" fill="#f3b84c" stroke="#352a22" stroke-width="4" stroke-linejoin="round" />
+              <path d="M29 10c1-7 8-10 11-3 5-5 12 1 8 7" fill="#d65b4b" stroke="#352a22" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" />
+              <circle cx="29" cy="31" r="3.2" fill="#352a22" />
+              <circle cx="43" cy="31" r="3.2" fill="#352a22" />
+              <path d="m36 35 8 5-8 5-8-5Z" fill="#e56a45" stroke="#352a22" stroke-width="2.4" stroke-linejoin="round" />
+              <path d="M23 51c4 4 8 5 13 5s10-1 14-5" fill="none" stroke="#fff1ce" stroke-width="4" stroke-linecap="round" />
+            </g>
+
+            <g id="rabbit-character">
+              <path d="M20 23C14 5 21-6 30 14M47 23C53 5 47-6 38 14" fill="#f8f4e8" stroke="#352a22" stroke-width="4" stroke-linecap="round" />
+              <path d="M17 25c3-13 15-18 24-12 13 0 22 11 20 24-1 16-11 25-26 25S11 51 12 38c0-5 2-10 5-13Z" fill="#fffaf0" stroke="#352a22" stroke-width="4" stroke-linejoin="round" />
+              <circle cx="28" cy="34" r="3.1" fill="#352a22" />
+              <circle cx="46" cy="34" r="3.1" fill="#352a22" />
+              <path d="m37 39 5 4-5 4-5-4Z" fill="#e58a8a" stroke="#352a22" stroke-width="2" />
+              <path d="M37 47v5m0 0c-4 0-7-2-8-5m8 5c4 0 7-2 8-5" fill="none" stroke="#352a22" stroke-width="2.4" stroke-linecap="round" />
+            </g>
+          </defs>
+
+          <rect class="scene-paper" x="8" y="8" width="1104" height="604" rx="22" filter="url(#paper-shadow)" />
+          <rect class="scene-fibers" x="8" y="8" width="1104" height="604" rx="22" fill="url(#paper-fibers)" />
+
+          <g class="scene-question-group">
+            <text class="scene-question" x="50" y="58" data-svg-copy="question">笼子里有10只动物、26条腿，鸡和兔各有多少只？</text>
+            <path class="scene-question-mark" d="M50 76H640" />
+          </g>
+
+          <g class="scene-context" data-part="context">
+            <g class="scene-character is-chicken" transform="translate(62 150) scale(1.2)">
+              <use href="#chicken-character" />
+            </g>
+            <g class="scene-character is-rabbit" transform="translate(145 148) scale(1.2)">
+              <use href="#rabbit-character" />
+            </g>
+            <path class="scene-brace scene-context-brace" d="M55 242c0 14 12 14 20 14h38c10 0 15 7 18 16 3-9 8-16 18-16h42c8 0 20 0 20-14" />
+            <text class="scene-given" x="88" y="302" data-given-heads>10只</text>
+            <text class="scene-given" x="82" y="346" data-given-legs>26条腿</text>
+            <g class="scene-task" data-part="task">
+              <text class="scene-task-label" x="54" y="412" data-svg-copy="knownLabel">已知</text>
+              <text class="scene-task-text" x="54" y="450" data-svg-copy="knownText">总数和腿数</text>
+              <text class="scene-task-label" x="54" y="500" data-svg-copy="findLabel">要找</text>
+              <text class="scene-task-text" x="54" y="538" data-svg-copy="findText">鸡和兔各有几只</text>
+            </g>
+          </g>
+
+          <g class="scene-row" data-part="row">
+            <path class="scene-brace scene-row-brace" d="M325 148c0-14 12-14 22-14h252c12 0 18-8 22-18 4 10 10 18 22 18h329c10 0 22 0 22 14" />
+            <text class="scene-row-total" x="654" y="112" text-anchor="middle" data-row-total>10</text>
+            <g data-token-row></g>
+          </g>
+
+          <g class="scene-specimens" data-part="specimens">
+            <g class="scene-specimen" transform="translate(365 334)">
+              <circle class="scene-token-head" cx="0" cy="0" r="40" />
+              <path class="scene-leg is-base" d="M-14 36-22 95M14 36 22 95" />
+              <text class="scene-specimen-name" x="0" y="134" text-anchor="middle" data-svg-copy="chickenName">鸡：2条腿</text>
+            </g>
+            <path class="scene-specimen-arrow" d="M510 384h84m-18-18 18 18-18 18" />
+            <g class="scene-specimen" transform="translate(740 334)">
+              <circle class="scene-token-head" cx="0" cy="0" r="40" />
+              <path class="scene-leg is-base" d="M-19 36-29 95M19 36 29 95" />
+              <path class="scene-leg is-extra" d="M-7 38-10 98M7 38 10 98" />
+              <text class="scene-specimen-name" x="0" y="134" text-anchor="middle" data-svg-copy="rabbitName">兔：4条腿</text>
+            </g>
+          </g>
+
+          <g class="scene-evidence" data-part="evidence">
+            <g class="scene-formula-line" data-formula="baseline">
+              <text x="420" y="360" data-baseline-formula>10 × 2 = 20条</text>
+            </g>
+            <g class="scene-formula-line" data-formula="difference">
+              <text x="420" y="412" data-difference-formula>26 − 20 = 6条</text>
+            </g>
+          </g>
+
+          <g class="scene-extra-workbench" data-part="extra-workbench">
+            <text class="scene-workbench-title" x="430" y="468" data-svg-copy="extraLegsLabel">多出来的6条腿</text>
+            <g data-extra-leg-bits></g>
+            <g data-pair-capsules></g>
+          </g>
+
+          <g class="scene-transform-demo" data-part="transform-demo">
+            <g transform="translate(470 388)">
+              <circle class="scene-token-head" cx="0" cy="0" r="34" />
+              <path class="scene-leg is-base" d="M-13 31-20 82M13 31 20 82" />
+            </g>
+            <path class="scene-transform-arrow" d="M540 430h112m-24-22 24 22-24 22" />
+            <text class="scene-plus-two" x="594" y="398" text-anchor="middle">+2</text>
+            <g transform="translate(725 388)">
+              <circle class="scene-token-head" cx="0" cy="0" r="34" />
+              <path class="scene-leg is-base" d="M-18 31-27 82M18 31 27 82" />
+              <path class="scene-leg is-extra" d="M-7 33-10 85M7 33 10 85" />
+            </g>
+            <text class="scene-transform-caption" x="598" y="510" text-anchor="middle" data-svg-copy="transformCaption">每变成1只兔，只需要再补2条腿</text>
+          </g>
+
+          <g class="scene-group-braces" data-part="group-braces">
+            <path class="scene-under-brace is-rabbit" d="M316 292c0 12 12 12 20 12h54c10 0 15 7 18 15 3-8 8-15 18-15h54c8 0 20 0 20-12" />
+            <text class="scene-group-label is-rabbit" x="408" y="348" text-anchor="middle" data-rabbit-label>3只兔</text>
+            <path class="scene-under-brace is-chicken" d="M516 292c0 12 12 12 20 12h185c10 0 15 7 18 15 3-8 8-15 18-15h185c8 0 20 0 20-12" />
+            <text class="scene-group-label is-chicken" x="739" y="348" text-anchor="middle" data-chicken-label>7只鸡</text>
+          </g>
+
+          <g class="scene-calculation" data-part="calculation">
+            <text class="scene-calculation-line" x="392" y="415" data-calc-rabbits>6 ÷ 2 = 3只兔</text>
+            <text class="scene-calculation-line" x="392" y="464" data-calc-chickens>10 − 3 = 7只鸡</text>
+          </g>
+
+          <g class="scene-checks" data-part="checks">
+            <g class="scene-check" data-check="heads" transform="translate(0 -12)">
+              <circle cx="394" cy="514" r="20" />
+              <path d="m384 514 7 7 14-17" />
+              <text x="428" y="523" data-head-check>3 + 7 = 10只</text>
+            </g>
+            <g class="scene-check" data-check="legs" transform="translate(-281 30)">
+              <circle cx="675" cy="514" r="20" />
+              <path d="m665 514 7 7 14-17" />
+              <text x="709" y="523" data-leg-check>3 × 4 + 7 × 2 = 26条</text>
+            </g>
+          </g>
+
+          <g class="scene-answer" data-part="answer">
+            <path class="scene-answer-swash" d="M356 571c124-12 352-12 570 0" />
+            <text class="scene-answer-text" x="640" y="590" text-anchor="middle" data-answer>答：鸡有7只，兔有3只。</text>
+          </g>
+        </svg>
+
+        <span id="stage-instruction" class="scene-click-hint" data-copy="clickHint">点击舞台空白处继续</span>
+      </section>
+
+      <footer class="scene-console">
+        <button class="scene-nav-button" type="button" data-action="prev">
+          <span aria-hidden="true">←</span>
+          <span data-copy="prev">上一步</span>
+        </button>
+
+        <div class="scene-progress-wrap" aria-live="polite">
+          <div class="scene-progress-track" data-progress-track></div>
+          <div class="scene-step-copy">
+            <strong data-step-title>认识题目</strong>
+            <span data-step-count>1 / 13</span>
+          </div>
+        </div>
+
+        <button class="scene-nav-button is-primary" type="button" data-action="next">
+          <span data-next-label>下一步</span>
+          <span aria-hidden="true">→</span>
+        </button>
+      </footer>
+
+      <p class="scene-live-copy" data-live-copy aria-live="polite"></p>
+    </main>
+
+    <script src="lesson-content.js?v=20260726-1"></script>
+    <script src="lesson-rebuild.js?v=20260727-1"></script>
+  </body>
+</html>

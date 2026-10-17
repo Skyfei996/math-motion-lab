@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#14233b" />
+    <title>规则失灵了！· 夜影农场</title>
+    <link rel="stylesheet" href="styles/tokens.css" />
+    <link rel="stylesheet" href="styles/game.css" />
+  </head>
+  <body>
+    <svg class="svg-defs" aria-hidden="true" width="0" height="0">
+      <defs>
+        <filter id="paper-shadow" x="-25%" y="-25%" width="150%" height="160%">
+          <feDropShadow dx="0" dy="3" stdDeviation="2.4" flood-color="#08111e" flood-opacity="0.28" />
+        </filter>
+        <filter id="soft-glow" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur stdDeviation="7" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+    </svg>
+
+    <div class="game-shell" data-game>
+      <header class="game-header">
+        <div class="case-mark" aria-label="规则修理局，案件一">
+          <span class="case-mark__seal" aria-hidden="true">
+            <svg viewBox="0 0 48 48" role="img">
+              <path d="M10 13h28v22H10z" />
+              <path d="M16 8v8m16-8v8M16 35v5m16-5v5" />
+              <circle cx="19" cy="24" r="3" />
+              <circle cx="29" cy="24" r="3" />
+              <path d="M20 30c2 2 6 2 8 0" />
+            </svg>
+          </span>
+          <span>
+            <small>规则修理局 · 案件 01</small>
+            <strong>夜影农场</strong>
+          </span>
+        </div>
+
+        <div class="case-progress" aria-label="案件进度">
+          <span data-progress-label>抵达农场</span>
+          <div class="case-progress__track" aria-hidden="true">
+            <i data-progress-fill></i>
+          </div>
+        </div>
+
+        <button class="paper-button paper-button--quiet" type="button" data-action="restart">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 12a8 8 0 1 0 2.3-5.7L4 8.5M4 4v4.5h4.5" />
+          </svg>
+          重新调查
+        </button>
+      </header>
+
+      <main class="game-main">
+        <section class="farm-stage" data-stage aria-label="夜影农场游戏舞台">
+          <div class="stage-scenery" aria-hidden="true">
+            <div class="night-paper"></div>
+            <div class="moon-paper"><span></span></div>
+            <div class="cloud-paper cloud-paper--one"></div>
+            <div class="cloud-paper cloud-paper--two"></div>
+            <div class="hill-paper hill-paper--back"></div>
+            <div class="hill-paper hill-paper--front"></div>
+            <div class="barn-paper">
+              <div class="barn-paper__roof"></div>
+              <div class="barn-paper__face">
+                <div class="barn-paper__loft"></div>
+                <div class="barn-paper__door"><i></i><i></i></div>
+                <div class="barn-paper__window"></div>
+              </div>
+            </div>
+            <div class="silo-paper"><span></span></div>
+            <div class="fence-paper fence-paper--back"></div>
+            <div class="ground-paper"></div>
+            <div class="grass-paper grass-paper--left"></div>
+            <div class="grass-paper grass-paper--right"></div>
+            <div class="stage-vignette"></div>
+          </div>
+
+          <aside class="farm-sensor" data-sensor aria-label="农场检测记录">
+            <div class="farm-sensor__pin" aria-hidden="true"></div>
+            <span class="farm-sensor__eyebrow">登记装置</span>
+            <div class="farm-sensor__readings">
+              <div>
+                <svg viewBox="0 0 32 32" aria-hidden="true">
+                  <circle cx="16" cy="11" r="6" />
+                  <path d="M6 28c1-7 5-10 10-10s9 3 10 10" />
+                </svg>
+                <span>脑袋</span>
+                <strong data-head-count>8</strong>
+              </div>
+              <div>
+                <svg viewBox="0 0 32 32" aria-hidden="true">
+                  <path d="M10 4v13l-4 7c-1 2 0 4 2 4h4l4-9V4M22 4v13l4 7c1 2 0 4-2 4h-4l-4-9" />
+                </svg>
+                <span>腿</span>
+                <strong data-leg-count>22</strong>
+              </div>
+            </div>
+            <div class="farm-sensor__status" data-sensor-status>记录互相对不上</div>
+          </aside>
+
+          <div class="companion" data-companion>
+            <div class="companion__bubble" data-dialogue>
+              <span class="companion__name">小错</span>
+              <p>登记装置卡住了。八个脑袋，为什么会有二十二条腿？</p>
+            </div>
+            <svg class="companion__robot" viewBox="0 0 180 230" role="img" aria-label="机器人小错">
+              <g class="robot-shadow"><ellipse cx="90" cy="218" rx="55" ry="9" /></g>
+              <g class="robot-antenna">
+                <path d="M91 43V24" />
+                <circle cx="91" cy="19" r="7" />
+              </g>
+              <g class="robot-arm robot-arm--left">
+                <path d="M45 119 20 143l12 13 26-21" />
+                <circle cx="24" cy="151" r="9" />
+              </g>
+              <g class="robot-arm robot-arm--right">
+                <path d="m135 119 25 24-12 13-26-21" />
+                <circle cx="156" cy="151" r="9" />
+              </g>
+              <path class="robot-body" d="M55 107h70l13 79c2 13-8 25-22 25H64c-14 0-24-12-22-25z" />
+              <path class="robot-body-fold" d="M49 176h82" />
+              <rect class="robot-head" x="35" y="45" width="110" height="85" rx="25" />
+              <rect class="robot-face" x="48" y="60" width="84" height="54" rx="18" />
+              <circle class="robot-eye robot-eye--left" cx="74" cy="85" r="9" />
+              <circle class="robot-eye robot-eye--right" cx="106" cy="85" r="9" />
+              <path class="robot-mouth" d="M74 104c9 4 23 4 32 0" />
+              <circle class="robot-rivet" cx="50" cy="119" r="5" />
+              <circle class="robot-rivet" cx="130" cy="119" r="5" />
+              <path class="robot-leg" d="M66 207v16m48-16v16" />
+            </svg>
+          </div>
+
+          <div class="scene-content" data-scene aria-live="polite"></div>
+
+          <div class="stage-footer">
+            <div class="stage-prompt">
+              <span class="stage-prompt__kicker" data-prompt-kicker>现场异常</span>
+              <p data-prompt>点亮调查灯，看看围栏后藏着什么。</p>
+            </div>
+            <div class="stage-actions" data-actions></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>
+

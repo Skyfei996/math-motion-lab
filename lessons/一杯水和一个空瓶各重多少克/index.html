@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f3ecdc" />
+    <title>一杯水和一个空瓶各重多少克 - Math Motion Lab</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="styles.css?v=20260728-2" />
+  </head>
+  <body class="cw-body">
+    <a class="cw-skip-link" href="#lesson-stage">跳到讲题舞台</a>
+
+    <main class="cw-classroom" data-cup-weight-app>
+      <header class="cw-appbar">
+        <div class="cw-title-group">
+          <a class="cw-icon-button" href="../../index.html" data-action="back" aria-label="返回课程目录">←</a>
+          <div>
+            <p class="cw-eyebrow" data-copy="labName">Math Motion Lab · 称重实验</p>
+            <h1 data-copy="title">一杯水和一个空瓶各重多少克</h1>
+          </div>
+        </div>
+
+        <div class="cw-toolbar">
+          <span class="cw-chapter" data-chapter>认识题目</span>
+          <button class="cw-tool-button" type="button" data-action="edit">
+            <span aria-hidden="true">✎</span>
+            <span data-copy="edit">修改题目</span>
+          </button>
+          <button class="cw-tool-button" type="button" data-action="fullscreen">
+            <span aria-hidden="true">⛶</span>
+            <span data-copy="fullscreen">全屏</span>
+          </button>
+          <button class="cw-tool-button cw-language-button" type="button" data-action="language">EN</button>
+        </div>
+      </header>
+
+      <section class="cw-problem-strip" aria-label="当前题目条件" data-aria-copy="conditionAria">
+        <span class="cw-strip-label" data-copy="condition">称重记录</span>
+        <strong><span data-first-cups-summary>3</span><span data-copy="cupsOfWater">杯水</span></strong>
+        <span aria-hidden="true">＋</span>
+        <span data-copy="sameBottle">同一个空瓶</span>
+        <span aria-hidden="true">＝</span>
+        <strong><span data-first-total-summary>440</span><span data-copy="grams">克</span></strong>
+        <span class="cw-strip-divider" aria-hidden="true"></span>
+        <strong><span data-second-cups-summary>5</span><span data-copy="cupsOfWater">杯水</span></strong>
+        <span aria-hidden="true">＋</span>
+        <span data-copy="sameBottle">同一个空瓶</span>
+        <span aria-hidden="true">＝</span>
+        <strong><span data-second-total-summary>600</span><span data-copy="grams">克</span></strong>
+      </section>
+
+      <section
+        id="lesson-stage"
+        class="cw-stage is-step-intro"
+        data-stage
+        role="button"
+        tabindex="0"
+        aria-describedby="stage-instruction"
+      >
+        <header class="cw-stage-head">
+          <div>
+            <p class="cw-step-kicker" data-step-kicker>第1步 · 认识题目</p>
+            <h2 data-step-title>读清两次称重</h2>
+          </div>
+          <p class="cw-current-question" data-current-question>题目告诉了我们什么？要找什么？</p>
+          <span class="cw-step-count" data-step-count>1 / 8</span>
+        </header>
+
+        <div class="cw-canvas-wrap">
+          <svg class="cw-canvas" viewBox="0 0 1120 430" role="img" aria-labelledby="cw-svg-title cw-svg-desc">
+            <title id="cw-svg-title" data-svg-title>杯水与空瓶称重比较舞台</title>
+            <desc id="cw-svg-desc" data-stage-description>同一个空瓶中倒入3杯水时共重440克，倒入5杯水时共重600克。</desc>
+
+            <defs>
+              <filter id="cw-paper-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                <feDropShadow dx="0" dy="7" stdDeviation="7" flood-color="#6c5435" flood-opacity=".14" />
+              </filter>
+              <filter id="cw-object-shadow" x="-30%" y="-30%" width="160%" height="160%">
+                <feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#2b3b48" flood-opacity=".17" />
+              </filter>
+              <clipPath id="cw-left-bottle-clip">
+                <path d="M-28 78V53h56v25c29 14 43 38 43 70v179c0 20-11 31-31 31h-80c-20 0-31-11-31-31V148c0-32 14-56 43-70Z" />
+              </clipPath>
+              <clipPath id="cw-right-bottle-clip">
+                <path d="M-28 78V53h56v25c29 14 43 38 43 70v179c0 20-11 31-31 31h-80c-20 0-31-11-31-31V148c0-32 14-56 43-70Z" />
+              </clipPath>
+            </defs>
+
+            <rect class="cw-paper" x="8" y="8" width="1104" height="414" rx="22" filter="url(#cw-paper-shadow)" />
+            <path class="cw-counter-line" d="M44 380H1076" />
+
+            <g class="cw-weighing is-fewer" data-weighing="fewer" transform="translate(280 12)">
+              <text class="cw-record-label" x="0" y="35" text-anchor="middle" data-fewer-record-label>倒得少的一次</text>
+              <g class="cw-cup-legend" transform="translate(-142 55)">
+                <path d="M0 17h45v41c0 10-7 17-17 17H17C7 75 0 68 0 58Z" />
+                <path d="M45 28h12c13 0 13 25 0 25H45" />
+                <path d="M8 11h29" />
+                <text x="23" y="101" text-anchor="middle" data-fewer-cups-label>3杯水</text>
+              </g>
+
+              <g class="cw-bottle" data-bottle="fewer" filter="url(#cw-object-shadow)">
+                <g class="cw-water-units" data-fewer-water-units clip-path="url(#cw-left-bottle-clip)"></g>
+                <path class="cw-bottle-glass" d="M-28 78V53h56v25c29 14 43 38 43 70v179c0 20-11 31-31 31h-80c-20 0-31-11-31-31V148c0-32 14-56 43-70Z" />
+                <path class="cw-bottle-highlight" d="M-42 122c-12 14-15 31-15 54v126" />
+                <path class="cw-bottle-neck" d="M-31 52h62M-31 41h62" />
+              </g>
+
+              <g class="cw-scale">
+                <path class="cw-scale-platform" d="M-118 371H118L104 390h-208Z" />
+                <rect class="cw-scale-body" x="-96" y="389" width="192" height="34" rx="8" />
+                <rect class="cw-scale-screen" x="-58" y="394" width="116" height="24" rx="5" />
+                <text class="cw-scale-number" x="0" y="412" text-anchor="middle" data-fewer-total-label>440克</text>
+              </g>
+            </g>
+
+            <g class="cw-weighing is-more" data-weighing="more" transform="translate(840 12)">
+              <text class="cw-record-label" x="0" y="35" text-anchor="middle" data-more-record-label>倒得多的一次</text>
+              <g class="cw-cup-legend" transform="translate(-142 55)">
+                <path d="M0 17h45v41c0 10-7 17-17 17H17C7 75 0 68 0 58Z" />
+                <path d="M45 28h12c13 0 13 25 0 25H45" />
+                <path d="M8 11h29" />
+                <text x="23" y="101" text-anchor="middle" data-more-cups-label>5杯水</text>
+              </g>
+
+              <g class="cw-bottle" data-bottle="more" filter="url(#cw-object-shadow)">
+                <g class="cw-water-units" data-more-water-units clip-path="url(#cw-right-bottle-clip)"></g>
+                <path class="cw-bottle-glass" d="M-28 78V53h56v25c29 14 43 38 43 70v179c0 20-11 31-31 31h-80c-20 0-31-11-31-31V148c0-32 14-56 43-70Z" />
+                <path class="cw-bottle-highlight" d="M-42 122c-12 14-15 31-15 54v126" />
+                <path class="cw-bottle-neck" d="M-31 52h62M-31 41h62" />
+              </g>
+
+              <g class="cw-scale">
+                <path class="cw-scale-platform" d="M-118 371H118L104 390h-208Z" />
+                <rect class="cw-scale-body" x="-96" y="389" width="192" height="34" rx="8" />
+                <rect class="cw-scale-screen" x="-58" y="394" width="116" height="24" rx="5" />
+                <text class="cw-scale-number" x="0" y="412" text-anchor="middle" data-more-total-label>600克</text>
+              </g>
+            </g>
+
+            <g class="cw-match-guides" data-part="match-guides">
+              <rect x="442" y="178" width="236" height="48" rx="12" />
+              <text x="560" y="208" text-anchor="middle" data-match-label></text>
+            </g>
+
+            <g class="cw-difference-workbench" data-part="difference-workbench">
+              <path class="cw-workbench-arrow" d="M705 205C655 190 627 192 608 218" />
+              <rect class="cw-workbench-paper" x="474" y="204" width="172" height="126" rx="14" />
+              <text class="cw-workbench-title" x="560" y="231" text-anchor="middle" data-extra-title></text>
+              <g data-difference-units></g>
+              <text class="cw-workbench-equality" x="560" y="314" text-anchor="middle" data-difference-match></text>
+            </g>
+
+            <g class="cw-bottle-result" data-part="bottle-result">
+              <path d="M200 172c-45 28-54 82-25 122" />
+              <path d="m162 281 15 16 18-13" />
+              <text x="96" y="153" data-bottle-result-label></text>
+            </g>
+          </svg>
+
+          <section class="cw-intro-card" data-intro-card aria-live="polite">
+            <p data-full-problem>
+              用同一个杯子往一个空瓶里倒水。倒3杯水，连瓶共重440克；倒5杯水，连瓶共重600克。一杯水和一个空瓶各重多少克？
+            </p>
+            <strong data-opening-prompt>先说一说：题目告诉了我们什么？要找什么？</strong>
+          </section>
+
+          <section class="cw-board" data-board aria-live="polite">
+            <span class="cw-board-label" data-copy="blackboard">称重板书</span>
+            <div class="cw-board-content" data-board-content></div>
+          </section>
+        </div>
+
+        <span id="stage-instruction" class="cw-click-hint" data-copy="clickHint">点击舞台空白处继续</span>
+      </section>
+
+      <footer class="cw-console" aria-label="课件翻页" data-aria-copy="navigationAria">
+        <button class="cw-nav-button" type="button" data-action="prev">
+          <span aria-hidden="true">←</span>
+          <span data-copy="prev">上一步</span>
+        </button>
+        <div class="cw-progress-wrap" aria-live="polite">
+          <div class="cw-progress-track" data-progress-track></div>
+          <span data-progress-copy>第 1 步 / 共 8 步</span>
+        </div>
+        <button class="cw-nav-button is-primary" type="button" data-action="next">
+          <span data-next-label>下一步</span>
+          <span aria-hidden="true">→</span>
+        </button>
+      </footer>
+
+      <p class="cw-live-copy" data-live-copy aria-live="polite"></p>
+
+      <dialog class="cw-settings-dialog" data-settings-dialog>
+        <form class="cw-settings-form" method="dialog" novalidate>
+          <header class="cw-dialog-head">
+            <div>
+              <p class="cw-eyebrow" data-copy="parameters">题目参数</p>
+              <h2 data-copy="settingsTitle">修改两次称重</h2>
+              <p data-copy="settingsLead">应用后会重新计算，并从第1步开始讲解。</p>
+            </div>
+            <button class="cw-icon-button" type="button" data-action="close-settings" aria-label="关闭">×</button>
+          </header>
+
+          <div class="cw-field-grid">
+            <fieldset class="cw-weighing-fields">
+              <legend data-copy="firstWeighing">第一次称重</legend>
+              <label class="cw-field">
+                <span data-copy="cupCount">倒入杯数</span>
+                <span class="cw-input-wrap">
+                  <input name="firstCups" type="text" inputmode="numeric" autocomplete="off" value="3" />
+                  <span data-copy="cups">杯</span>
+                </span>
+              </label>
+              <label class="cw-field">
+                <span data-copy="totalWeight">连瓶总重</span>
+                <span class="cw-input-wrap">
+                  <input name="firstTotal" type="text" inputmode="numeric" autocomplete="off" value="440" />
+                  <span data-copy="grams">克</span>
+                </span>
+              </label>
+            </fieldset>
+
+            <fieldset class="cw-weighing-fields">
+              <legend data-copy="secondWeighing">第二次称重</legend>
+              <label class="cw-field">
+                <span data-copy="cupCount">倒入杯数</span>
+                <span class="cw-input-wrap">
+                  <input name="secondCups" type="text" inputmode="numeric" autocomplete="off" value="5" />
+                  <span data-copy="cups">杯</span>
+                </span>
+              </label>
+              <label class="cw-field">
+                <span data-copy="totalWeight">连瓶总重</span>
+                <span class="cw-input-wrap">
+                  <input name="secondTotal" type="text" inputmode="numeric" autocomplete="off" value="600" />
+                  <span data-copy="grams">克</span>
+                </span>
+              </label>
+            </fieldset>
+          </div>
+
+          <section class="cw-validity-note">
+            <strong data-copy="validityTitle">有效题目需要满足</strong>
+            <ul>
+              <li data-copy="validityPositive">杯数和总重量都是大于0的整数</li>
+              <li data-copy="validityDifferent">两次倒入的杯数不同，杯数更多时总重量也更大</li>
+              <li data-copy="validityWhole">一杯水和空瓶的重量都是大于0的整数克</li>
+            </ul>
+          </section>
+
+          <p class="cw-dialog-error" data-settings-error role="alert" hidden></p>
+          <div class="cw-dialog-actions">
+            <button class="cw-dialog-button" type="button" data-action="cancel-settings" data-copy="cancel">取消</button>
+            <button class="cw-dialog-button is-primary" type="button" data-action="apply-settings" data-copy="apply">应用并重新讲解</button>
+          </div>
+        </form>
+      </dialog>
+    </main>
+
+    <script src="../../assets/lab-models.js?v=20260728-1"></script>
+    <script src="lesson.js?v=20260728-2"></script>
+  </body>
+</html>

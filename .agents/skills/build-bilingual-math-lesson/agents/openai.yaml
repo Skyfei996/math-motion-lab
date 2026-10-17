@@ -1,0 +1,4 @@
+interface:
+  display_name: "双语数学课程构建"
+  short_description: "建立场景化视觉系统，构建双语数学课件并同步中英文演讲稿"
+  default_prompt: "Use $build-bilingual-math-lesson to select visual references, define a Visual Build Sheet, design or update the lesson webpage, and keep both printable speaker scripts synchronized."

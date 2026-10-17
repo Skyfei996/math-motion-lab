@@ -1,0 +1,117 @@
+html,
+body.pet-window {
+  width: 112px;
+  min-width: 112px;
+  height: 128px;
+  min-height: 128px;
+  overflow: hidden;
+  background: transparent;
+}
+
+body.pet-window {
+  margin: 0;
+  user-select: none;
+}
+
+.pet-window-root,
+.pet-window-button {
+  width: 112px;
+  height: 128px;
+}
+
+.pet-window-root {
+  position: relative;
+  overflow: hidden;
+}
+
+.pet-window-button {
+  position: relative;
+  display: grid;
+  padding: 0;
+  place-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 18px;
+  touch-action: none;
+  cursor: grab;
+}
+
+.pet-window-button:active,
+.pet-window-button[data-dragging="true"] {
+  cursor: grabbing;
+}
+
+.pet-window-button:focus-visible {
+  outline: 3px solid var(--blue);
+  outline-offset: -4px;
+}
+
+.pet-window-gege-host {
+  --pet-size: 96px;
+  position: relative;
+  z-index: 2;
+  display: grid;
+  width: 96px;
+  height: 104px;
+  margin-top: 8px;
+  place-items: center;
+}
+
+.pet-window-shadow {
+  position: absolute;
+  z-index: 1;
+  bottom: 4px;
+  left: 50%;
+  width: 72px;
+  height: 12px;
+  background: rgb(52 56 76 / 20%);
+  border-radius: 50%;
+  filter: blur(3px);
+  transform: translateX(-50%);
+}
+
+.pet-window-button[data-dragging="true"] .gege {
+  transform: rotate(3deg) scaleY(1.03);
+}
+
+.pet-window-button[data-dragging="true"] .pet-window-shadow {
+  opacity: 0.54;
+  transform: translateX(-50%) scale(0.78);
+}
+
+.pet-reminder-bubble {
+  position: absolute;
+  z-index: 5;
+  top: 2px;
+  left: 2px;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  max-width: 108px;
+  min-height: 24px;
+  padding: 3px 6px;
+  color: var(--navy);
+  font-size: 10px;
+  background: #fff9df;
+  border: 1px solid #dcae55;
+  border-radius: 9px;
+  box-shadow: 0 4px 10px rgb(52 56 76 / 15%);
+  pointer-events: none;
+}
+
+.pet-reminder-bubble strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pet-window-button[data-has-reminder="true"] .pet-window-gege-host {
+  margin-top: 18px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pet-window * {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+  }
+}

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>奇数阶幻方的阶梯法 - Math Motion Lab</title>
+    <link rel="stylesheet" href="../../assets/styles.css" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="ms-body">
+    <main class="ms-classroom" data-app>
+      <header class="ms-appbar">
+        <a class="ms-back" href="../../index.html" data-copy="back">返回目录</a>
+        <div class="ms-title-group"><p data-copy="eyebrow">数与规律</p><h1 data-copy="title">奇数阶幻方的阶梯法</h1></div>
+        <div class="ms-tools">
+          <button class="ms-tool" type="button" data-action="edit" data-copy="settings">选择阶数</button>
+          <button class="ms-tool" type="button" data-language-toggle>EN</button>
+        </div>
+      </header>
+
+      <section class="ms-question" aria-live="polite">
+        <p class="ms-kicker" data-copy="currentQuestion">本页问题</p>
+        <h2 data-question></h2>
+        <p data-lead></p>
+      </section>
+
+      <div class="ms-progress" aria-label="课程进度" data-progress></div>
+      <section class="ms-stage" data-stage aria-live="polite"></section>
+
+      <nav class="ms-nav" aria-label="课程导航">
+        <button type="button" class="ms-nav-button" data-action="prev" data-copy="previous">上一步</button>
+        <span class="ms-page-count" data-page-count></span>
+        <button type="button" class="ms-nav-button is-primary" data-action="next"><span data-next-label>下一步</span><span aria-hidden="true">→</span></button>
+      </nav>
+    </main>
+
+    <dialog class="ms-dialog" data-settings-dialog>
+      <form method="dialog" class="ms-dialog-form">
+        <div class="ms-dialog-heading"><div><p data-copy="settings">选择阶数</p><h2 data-copy="settingsTitle">换一个奇数阶方格</h2></div><button type="button" class="ms-close" data-action="close-settings" aria-label="关闭">×</button></div>
+        <label><span data-copy="orderLabel">方格边长</span><select data-setting="order"><option value="3">3 × 3</option><option value="5">5 × 5</option><option value="7">7 × 7</option><option value="9">9 × 9</option><option value="11">11 × 11</option><option value="13">13 × 13</option><option value="15">15 × 15</option><option value="17">17 × 17</option></select></label>
+        <p class="ms-dialog-note" data-copy="settingsNote">更换后会回到读题页，所有数字和验证会重新生成。</p>
+        <div class="ms-dialog-actions"><button type="button" class="ms-tool" data-action="cancel-settings" data-copy="cancel">取消</button><button type="button" class="ms-nav-button is-primary" data-action="apply-settings" data-copy="apply">应用</button></div>
+      </form>
+    </dialog>
+
+    <script src="../../assets/lab-data.js"></script>
+    <script src="../../assets/lab-models.js"></script>
+    <script src="../../assets/lab-core.js"></script>
+    <script src="lesson.js"></script>
+  </body>
+</html>

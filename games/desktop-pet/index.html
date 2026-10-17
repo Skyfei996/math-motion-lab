@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="学习型桌面电子宠物格格的可点击纵向切片">
+  <title>格格桌面学习伙伴</title>
+  <link rel="stylesheet" href="./styles/tokens.css">
+  <link rel="stylesheet" href="./styles/app.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <div>
+          <strong>格格桌面学习伙伴</strong>
+          <span>纵向切片 · 分果子</span>
+        </div>
+      </div>
+
+      <div class="topbar-controls">
+        <label class="size-control">
+          <span>桌宠尺寸</span>
+          <select id="pet-size-select" aria-label="桌宠尺寸">
+            <option value="64">64 px</option>
+            <option value="96" selected>96 px</option>
+            <option value="128">128 px</option>
+          </select>
+        </label>
+        <button id="toggle-size-test" class="secondary-button" type="button" aria-expanded="true">
+          尺寸检查
+        </button>
+        <label class="motion-toggle">
+          <input id="reduce-motion-toggle" type="checkbox">
+          <span>减少动态</span>
+        </label>
+        <button id="reset-prototype" class="secondary-button" type="button">
+          重置原型
+        </button>
+      </div>
+    </header>
+
+    <main id="desktop" class="desktop" aria-label="模拟电脑桌面">
+      <div class="desktop-glow" aria-hidden="true"></div>
+
+      <section class="mock-window mock-window--notes" aria-hidden="true">
+        <div class="mock-window-bar"><span></span><span></span><span></span></div>
+        <div class="mock-note-line"></div>
+        <div class="mock-note-line mock-note-line--short"></div>
+        <div class="mock-note-grid">
+          <i></i><i></i><i></i>
+        </div>
+      </section>
+
+      <section id="size-inspector" class="size-inspector" aria-label="格格三种尺寸检查">
+        <div class="inspector-heading">
+          <div>
+            <strong>小尺寸可读性</strong>
+            <span>轮廓、眼睛、天线和磁吸脚</span>
+          </div>
+          <span class="status-pill">视觉检查</span>
+        </div>
+        <div id="size-preview-list" class="size-preview-list"></div>
+      </section>
+
+      <button id="desktop-pet" class="desktop-pet" type="button" aria-label="摸摸格格，打开互动卡">
+        <span class="pet-shadow" aria-hidden="true"></span>
+        <span id="desktop-gege-host" class="gege-host" aria-hidden="true"></span>
+      </button>
+
+      <section id="companion-window" class="companion-window" data-view="closed" aria-live="polite">
+        <div id="quick-view" class="quick-view" hidden>
+          <div class="quick-pet-slot" id="quick-gege-host" aria-hidden="true"></div>
+          <div class="quick-copy">
+            <span class="eyebrow" id="quick-eyebrow">格格带来一个问题</span>
+            <h1 id="quick-title">12颗果子，怎么分给3位朋友？</h1>
+            <p id="quick-description">它想先试试自己的办法。</p>
+          </div>
+          <div class="quick-actions">
+            <button id="start-share-task" class="primary-button" type="button">一起看看</button>
+            <button id="open-random-task" class="tool-button" type="button">
+              <span aria-hidden="true">🎲</span>
+              抽一个任务
+            </button>
+            <button id="open-reminders" class="tool-button" type="button">
+              <span aria-hidden="true">⏰</span>
+              添加提醒
+            </button>
+            <button id="open-task-pool" class="tool-button" type="button">
+              <span aria-hidden="true">🧰</span>
+              管理任务池
+            </button>
+            <button id="close-quick" class="secondary-button quick-close-button" type="button">
+              稍后再玩
+            </button>
+          </div>
+        </div>
+
+        <div id="utility-view" class="utility-view" hidden>
+          <header class="utility-header">
+            <button id="utility-back" class="secondary-button compact-button" type="button">
+              返回
+            </button>
+            <div>
+              <span id="utility-eyebrow" class="eyebrow">格格的小工具</span>
+              <h1 id="utility-title">现在做什么</h1>
+            </div>
+            <button id="close-utility" class="icon-button" type="button" aria-label="关闭小工具">×</button>
+          </header>
+
+          <section id="random-task-panel" class="utility-panel" hidden>
+            <div class="random-toolbar">
+              <label>
+                当前条件
+                <select id="random-context" aria-label="随机任务条件">
+                  <option>任意</option>
+                  <option>室内</option>
+                  <option>户外</option>
+                  <option>需要家人</option>
+                  <option>需要联网</option>
+                </select>
+              </label>
+              <button id="draw-another-task" class="secondary-button" type="button">换一个</button>
+            </div>
+            <article id="random-task-card" class="random-task-card" aria-live="polite">
+              <span id="random-task-category" class="status-pill">等待抽取</span>
+              <h2 id="random-task-title">格格正在翻任务卡……</h2>
+              <p id="random-task-meta">选择现在适合的条件。</p>
+            </article>
+            <div class="utility-actions">
+              <button id="complete-random-task" class="primary-button" type="button">我完成了</button>
+              <button id="manage-random-pool" class="secondary-button" type="button">管理任务池</button>
+            </div>
+          </section>
+
+          <section id="reminder-panel" class="utility-panel" hidden>
+            <form id="reminder-form" class="reminder-form">
+              <label for="reminder-natural-input">告诉格格要提醒什么</label>
+              <div class="inline-form">
+                <input
+                  id="reminder-natural-input"
+                  type="text"
+                  maxlength="120"
+                  placeholder="例如：明天上午10点有会议"
+                  autocomplete="off"
+                >
+                <button class="primary-button" type="submit">识别时间</button>
+              </div>
+              <p id="reminder-form-help" class="form-help">
+                支持“明天上午10点有会议”和“20分钟后提醒我喝水”。
+              </p>
+            </form>
+            <article id="reminder-confirmation" class="reminder-confirmation" hidden>
+              <span class="eyebrow">请确认</span>
+              <strong id="reminder-confirm-title"></strong>
+              <time id="reminder-confirm-time"></time>
+              <div class="utility-actions">
+                <button id="save-reminder" class="primary-button" type="button">让格格记住</button>
+                <button id="cancel-reminder-confirm" class="secondary-button" type="button">重新输入</button>
+              </div>
+            </article>
+            <div class="schedule-heading">
+              <strong>我的日程</strong>
+              <span id="reminder-count">0项</span>
+            </div>
+            <div id="reminder-list" class="reminder-list"></div>
+          </section>
+
+          <section id="task-pool-panel" class="utility-panel" hidden>
+            <form id="task-pool-form" class="task-pool-form">
+              <input id="task-title-input" type="text" maxlength="40" placeholder="新增一个小任务" required>
+              <select id="task-category-input" aria-label="任务分类">
+                <option>学习</option>
+                <option>运动</option>
+                <option>创造</option>
+                <option>家庭</option>
+                <option>生活</option>
+                <option>观察</option>
+                <option>安静</option>
+                <option>善意</option>
+              </select>
+              <input id="task-duration-input" type="number" min="1" max="60" value="5" aria-label="任务分钟数">
+              <select id="task-context-input" aria-label="任务条件">
+                <option>任意</option>
+                <option>室内</option>
+                <option>户外</option>
+                <option>需要家人</option>
+                <option>需要联网</option>
+              </select>
+              <button class="primary-button" type="submit">添加</button>
+            </form>
+            <p class="form-help">任务会保存在本机。修改文字、时长或条件后，点“保存”。</p>
+            <div id="task-pool-list" class="task-pool-list"></div>
+          </section>
+        </div>
+
+        <div id="task-view" class="task-view" hidden>
+          <header class="task-header">
+            <div>
+              <span class="eyebrow" id="task-step-label">观察问题</span>
+              <h1 id="task-title">给3位朋友分果子</h1>
+            </div>
+            <button id="close-task" class="icon-button" type="button" aria-label="保存并关闭任务">×</button>
+          </header>
+
+          <div class="task-body">
+            <aside class="task-pet-column">
+              <div id="task-gege-host" class="task-gege-host" aria-hidden="true"></div>
+              <p id="task-dialogue" class="speech-bubble">我先来试试看。</p>
+            </aside>
+
+            <section class="share-workspace" aria-label="分果子操作区">
+              <div id="share-stage" class="share-stage"></div>
+              <button
+                id="picnic-platter"
+                class="picnic-platter"
+                type="button"
+                aria-label="把野餐果盘递给格格"
+                hidden
+              >
+                <span class="platter-fruits" aria-hidden="true"></span>
+                <span class="platter-method">4 · 4 · 4</span>
+              </button>
+              <div id="formula-board" class="formula-board" hidden>
+                <span>4 + 4 + 4 = 12</span>
+                <strong>12 ÷ 3 = 4</strong>
+              </div>
+              <div id="memory-card" class="memory-card" hidden>
+                <span class="memory-icon" aria-hidden="true">4 · 4 · 4</span>
+                <div class="memory-copy">
+                  <span class="memory-kicker">成长日记 · 第1篇</span>
+                  <strong>野餐方法卡</strong>
+                  <p>今天，小老师教会我：平均分，就是每份一样多。</p>
+                  <span class="reward-unlock">
+                    <i class="mini-picnic-hat" aria-hidden="true"></i>
+                    已解锁：野餐帽
+                  </span>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <footer class="task-footer">
+            <p id="task-hint">先看看格格会怎么分。</p>
+            <button id="task-action" class="primary-button" type="button">看看格格怎么分</button>
+          </footer>
+        </div>
+      </section>
+
+      <div class="desktop-taskbar" aria-hidden="true">
+        <span class="start-dot"></span>
+        <span></span><span></span><span></span>
+        <time>16:20</time>
+      </div>
+
+      <div id="live-region" class="sr-only" aria-live="polite"></div>
+    </main>
+  </div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>

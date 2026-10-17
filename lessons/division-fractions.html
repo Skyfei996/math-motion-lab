@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Equal Sharing and Fractions - Math Motion Lab</title>
+    <link rel="stylesheet" href="../assets/styles.css" />
+  </head>
+  <body>
+    <main class="lesson-shell">
+      <header class="topbar">
+        <a class="brand" href="../index.html">
+          <span class="brand-mark">M</span>
+          <span>Math Motion Lab</span>
+        </a>
+        <div class="top-actions">
+          <a class="nav-link" href="../index.html" data-i18n="common.back">Back</a>
+          <button class="language-button" data-language-toggle type="button">EN</button>
+        </div>
+      </header>
+
+      <section class="lesson-titlebar">
+        <div>
+          <h1 data-i18n="lessons.divisionFractions.title">Equal Sharing and Fractions</h1>
+          <p data-i18n="lessons.divisionFractions.summary">
+            Split a whole into equal parts and see how division and fractions come from the same idea.
+          </p>
+        </div>
+        <p data-page-hint>Change the groups and parts to compare equal sharing with fractional parts.</p>
+      </section>
+
+      <section class="lab-layout">
+        <div class="stage-panel">
+          <svg class="stage-svg" viewBox="0 0 760 560" role="img" aria-label="Equal sharing and fractions lab">
+            <title data-stage-title>Equal sharing and fractions lab</title>
+            <desc data-stage-desc>12 items split into 3 groups and a fraction bar showing 1/4.</desc>
+            <rect width="760" height="560" fill="#fbfcf8" />
+            <path d="M70 282 H690" class="guide-line" />
+
+            <text class="svg-label" data-sharing-label x="380" y="62">Equal sharing</text>
+            <text class="svg-muted-label" data-sharing-note x="380" y="92"></text>
+            <g id="group-layer"></g>
+            <g id="remainder-layer"></g>
+
+            <text class="svg-label" data-fraction-label x="380" y="320">Fraction bar</text>
+            <text class="svg-muted-label" data-fraction-note x="380" y="350"></text>
+            <g id="fraction-layer"></g>
+          </svg>
+        </div>
+
+        <aside class="side-panel">
+          <section class="control-card">
+            <p class="panel-heading" data-i18n="common.controls">Experiment controls</p>
+            <div class="field-stack">
+              <div class="field">
+                <label for="total-input" data-i18n="divisionFractions.totalLabel">Total</label>
+                <input class="field-input" id="total-input" type="number" min="1" step="1" value="12" />
+              </div>
+
+              <div class="field">
+                <label for="groups-input" data-i18n="divisionFractions.groupsLabel">Number of groups</label>
+                <input class="field-input" id="groups-input" type="number" min="1" step="1" value="3" />
+              </div>
+
+              <div class="field">
+                <label for="parts-input" data-i18n="divisionFractions.fractionPartsLabel">Parts in the whole</label>
+                <input class="field-input" id="parts-input" type="number" min="1" max="12" step="1" value="4" />
+              </div>
+
+              <div class="field">
+                <label for="selected-input" data-i18n="divisionFractions.selectedPartsLabel">Parts selected</label>
+                <input class="field-input" id="selected-input" type="number" min="0" max="4" step="1" value="1" />
+              </div>
+            </div>
+          </section>
+
+          <section class="observation-card">
+            <p class="panel-heading" data-division-heading>Division</p>
+            <p class="observation-text" data-division-observation aria-live="polite"></p>
+            <p class="panel-heading" data-fraction-heading>Fraction</p>
+            <p class="observation-text" data-fraction-observation aria-live="polite"></p>
+            <p class="panel-heading" data-i18n="common.formula">Formula</p>
+            <div class="formula-box" data-formula aria-live="polite"></div>
+          </section>
+        </aside>
+      </section>
+    </main>
+
+    <script src="../assets/lab-data.js"></script>
+    <script src="../assets/lab-models.js"></script>
+    <script src="../assets/lab-core.js"></script>
+    <script>
+      const state = { total: 12, groups: 3, numerator: 1, denominator: 4 };
+      const maxFractionParts = 12;
+
+      const pageText = {
+        "zh-CN": {
+          title: "\u5e73\u5747\u5206\u4e0e\u5206\u6570 - Math Motion Lab",
+          hint: "\u6539\u53d8\u5206\u7ec4\u6570\u548c\u5206\u6570\u4efd\u6570\uff0c\u6bd4\u8f83\u5e73\u5747\u5206\u4e0e\u6574\u4f53\u7684\u51e0\u5206\u4e4b\u51e0\u3002",
+          stageLabel: "\u5e73\u5747\u5206\u4e0e\u5206\u6570\u5b9e\u9a8c",
+          sharing: "\u5e73\u5747\u5206",
+          fraction: "\u5206\u6570\u6761",
+          divisionHeading: "\u9664\u6cd5\u89c2\u5bdf",
+          fractionHeading: "\u5206\u6570\u89c2\u5bdf",
+          group: "\u7ec4",
+          leftover: "\u5269\u4f59",
+          noLeftover: "\u6ca1\u6709\u5269\u4f59",
+          moreGroups: "\u8fd8\u6709 {count} \u7ec4",
+          moreDots: "+{count} \u4e2a",
+          sharingNote: "\u6bcf\u7ec4\u5148\u5206\u5230\u540c\u6837\u591a\u7684\u70b9",
+          fractionNote: "\u9ec4\u8272\u8868\u793a\u88ab\u53d6\u51fa\u7684\u4efd\u6570",
+          divisionObservationRemainder:
+            "{total} \u4e2a\u7269\u54c1\u5e73\u5747\u5206\u6210 {groups} \u7ec4\uff0c\u6bcf\u7ec4 {each} \u4e2a\uff0c\u8fd8\u5269 {remainder} \u4e2a\u3002",
+          divisionFormulaRemainder: "{total} \u00f7 {groups} = {each} \u4f59 {remainder}\n{total} = {groups} \u00d7 {each} + {remainder}",
+          stageSummary:
+            "\u5e73\u5747\u5206\uff1a{total} \u4e2a\u5206\u6210 {groups} \u7ec4\uff0c\u6bcf\u7ec4 {each} \u4e2a\uff0c\u4f59 {remainder} \u4e2a\uff1b\u5206\u6570\uff1a{numerator}/{denominator}\u3002"
+        },
+        "en-US": {
+          title: "Equal Sharing and Fractions - Math Motion Lab",
+          hint: "Change the groups and fraction parts to compare equal sharing with parts of one whole.",
+          stageLabel: "Equal sharing and fractions lab",
+          sharing: "Equal sharing",
+          fraction: "Fraction bar",
+          divisionHeading: "Division observation",
+          fractionHeading: "Fraction observation",
+          group: "Group",
+          leftover: "Left over",
+          noLeftover: "No remainder",
+          moreGroups: "{count} more groups",
+          moreDots: "+{count} dots",
+          sharingNote: "Each group receives the same number of dots first",
+          fractionNote: "Gold shows the parts that are selected",
+          divisionObservationRemainder:
+            "{total} items split equally into {groups} groups gives {each} items in each group, with {remainder} left over.",
+          divisionFormulaRemainder: "{total} \u00f7 {groups} = {each} R {remainder}\n{total} = {groups} \u00d7 {each} + {remainder}",
+          stageSummary:
+            "Equal sharing: {total} items into {groups} groups, {each} each, remainder {remainder}; fraction: {numerator}/{denominator}."
+        }
+      };
+
+      const totalInput = document.getElementById("total-input");
+      const groupsInput = document.getElementById("groups-input");
+      const partsInput = document.getElementById("parts-input");
+      const selectedInput = document.getElementById("selected-input");
+      const svg = document.querySelector(".stage-svg");
+      const svgNamespace = "http://www.w3.org/2000/svg";
+
+      function localText(key, values = {}) {
+        const language = MathLab.getLanguage();
+        const template = pageText[language]?.[key] || pageText["en-US"][key];
+        return template.replace(/\{(\w+)\}/g, (_, valueKey) => values[valueKey] ?? `{${valueKey}}`);
+      }
+
+      function svgElement(tagName, attributes = {}) {
+        const element = document.createElementNS(svgNamespace, tagName);
+        Object.entries(attributes).forEach(([key, value]) => {
+          element.setAttribute(key, value);
+        });
+        return element;
+      }
+
+      function renderPageLanguage(division, fraction) {
+        const stageSummary =
+          division && fraction
+            ? localText("stageSummary", {
+                total: division.total,
+                groups: division.groups,
+                each: division.each,
+                remainder: division.remainder,
+                numerator: fraction.numerator,
+                denominator: fraction.denominator
+              })
+            : localText("stageLabel");
+        document.title = localText("title");
+        svg.setAttribute("aria-label", stageSummary);
+        document.querySelector("[data-stage-title]").textContent = localText("stageLabel");
+        document.querySelector("[data-stage-desc]").textContent = stageSummary;
+        document.querySelector("[data-page-hint]").textContent = localText("hint");
+        document.querySelector("[data-sharing-label]").textContent = localText("sharing");
+        document.querySelector("[data-fraction-label]").textContent = localText("fraction");
+        document.querySelector("[data-sharing-note]").textContent = localText("sharingNote");
+        document.querySelector("[data-fraction-note]").textContent = localText("fractionNote");
+        document.querySelector("[data-division-heading]").textContent = localText("divisionHeading");
+        document.querySelector("[data-fraction-heading]").textContent = localText("fractionHeading");
+      }
+
+      function renderDots(division) {
+        const groupLayer = document.getElementById("group-layer");
+        const remainderLayer = document.getElementById("remainder-layer");
+        const visibleGroups = Math.min(division.groups, 10);
+        const hiddenGroups = division.groups - visibleGroups;
+        const columns = Math.min(visibleGroups, 5);
+        const rows = Math.ceil(visibleGroups / columns);
+        const groupWidth = 620 / columns;
+        const groupHeight = rows > 1 ? 78 : 104;
+        const maxDotsPerGroup = rows > 1 ? 8 : 16;
+        const dotGap = 22;
+        const dotRadius = 8;
+
+        groupLayer.innerHTML = "";
+        remainderLayer.innerHTML = "";
+
+        for (let group = 0; group < visibleGroups; group += 1) {
+          const column = group % columns;
+          const row = Math.floor(group / columns);
+          const baseX = 80 + column * groupWidth;
+          const baseY = 130 + row * groupHeight;
+          const dotsPerRow = Math.max(1, Math.min(4, Math.floor((groupWidth - 20) / dotGap)));
+          const dotsToShow = Math.min(division.each, maxDotsPerGroup);
+
+          const label = svgElement("text", {
+            class: "svg-muted-label",
+            x: baseX + groupWidth / 2,
+            y: baseY - 12
+          });
+          label.textContent = `${localText("group")} ${group + 1}`;
+          groupLayer.appendChild(label);
+
+          for (let index = 0; index < dotsToShow; index += 1) {
+            const circle = svgElement("circle", {
+              cx: baseX + 16 + (index % dotsPerRow) * dotGap,
+              cy: baseY + Math.floor(index / dotsPerRow) * dotGap,
+              r: dotRadius,
+              fill: "#0f9f8f"
+            });
+            groupLayer.appendChild(circle);
+          }
+
+          if (division.each > dotsToShow) {
+            const moreDots = svgElement("text", {
+              class: "svg-muted-label",
+              x: baseX + groupWidth / 2,
+              y: baseY + Math.ceil(dotsToShow / dotsPerRow) * dotGap + 16
+            });
+            moreDots.textContent = localText("moreDots", { count: division.each - dotsToShow });
+            groupLayer.appendChild(moreDots);
+          }
+        }
+
+        if (hiddenGroups > 0) {
+          const moreGroups = svgElement("text", {
+            class: "svg-muted-label",
+            x: 250,
+            y: 264
+          });
+          moreGroups.textContent = localText("moreGroups", { count: hiddenGroups });
+          remainderLayer.appendChild(moreGroups);
+        }
+
+        const remainderText = svgElement("text", {
+          class: "svg-muted-label",
+          x: hiddenGroups > 0 ? 510 : 380,
+          y: 264
+        });
+        remainderText.textContent = division.remainder
+          ? `${localText("leftover")}: ${MathLab.numberText(division.remainder)}`
+          : localText("noLeftover");
+        remainderLayer.appendChild(remainderText);
+
+        for (let index = 0; index < Math.min(division.remainder, 8); index += 1) {
+          const circle = svgElement("circle", {
+            cx: 336 + index * 20,
+            cy: 238,
+            r: 8,
+            fill: "#e25563"
+          });
+          remainderLayer.appendChild(circle);
+        }
+      }
+
+      function renderFractionBar(fraction) {
+        const layer = document.getElementById("fraction-layer");
+        const x = 90;
+        const y = 382;
+        const width = 580;
+        const height = 62;
+        const selectedWidth = width * (fraction.numerator / fraction.denominator);
+        const partWidth = width / fraction.denominator;
+
+        layer.innerHTML = "";
+
+        layer.appendChild(
+          svgElement("rect", {
+            x,
+            y,
+            width,
+            height,
+            fill: "#fff8e7"
+          })
+        );
+
+        layer.appendChild(
+          svgElement("rect", {
+            x,
+            y,
+            width: selectedWidth,
+            height,
+            fill: "#f2b84b"
+          })
+        );
+
+        for (let index = 0; index < fraction.denominator; index += 1) {
+          const rect = svgElement("rect", {
+            x: x + index * partWidth,
+            y,
+            width: partWidth,
+            height,
+            fill: "transparent",
+            stroke: "#172033",
+            "stroke-width": "3"
+          });
+          layer.appendChild(rect);
+        }
+
+        const label = svgElement("text", {
+          class: "svg-label",
+          x: x + width / 2,
+          y: y + 104
+        });
+        label.textContent = `${MathLab.numberText(fraction.numerator)}/${MathLab.numberText(fraction.denominator)}`;
+        layer.appendChild(label);
+      }
+
+      function syncInputs(division, fraction) {
+        state.total = division.total;
+        state.groups = division.groups;
+        state.numerator = fraction.numerator;
+        state.denominator = fraction.denominator;
+        totalInput.value = division.total;
+        groupsInput.value = division.groups;
+        partsInput.max = maxFractionParts;
+        partsInput.value = fraction.denominator;
+        selectedInput.max = fraction.denominator;
+        selectedInput.value = fraction.numerator;
+      }
+
+      function render() {
+        const numericDenominator = Number(state.denominator);
+        state.denominator = MathLabModels.clamp(
+          Math.round(Number.isFinite(numericDenominator) ? numericDenominator : 4),
+          1,
+          maxFractionParts
+        );
+        const division = MathLabModels.quantity.equalSharingState(state.total, state.groups);
+        const fraction = MathLabModels.quantity.fractionState(state.numerator, state.denominator);
+
+        syncInputs(division, fraction);
+        renderPageLanguage(division, fraction);
+        renderDots(division);
+        renderFractionBar(fraction);
+
+        document.querySelector("[data-division-observation]").textContent = division.dividesEvenly
+          ? MathLab.text("divisionFractions.observationDivision", division)
+          : localText("divisionObservationRemainder", division);
+        document.querySelector("[data-fraction-observation]").textContent = MathLab.text(
+          "divisionFractions.observationFraction",
+          fraction
+        );
+        document.querySelector("[data-formula]").textContent =
+          `${division.dividesEvenly ? MathLab.text("divisionFractions.conclusionDivision", division) : localText("divisionFormulaRemainder", division)}\n` +
+          `${MathLab.text("divisionFractions.conclusionFraction", fraction)}`;
+      }
+
+      [
+        ["total-input", "total"],
+        ["groups-input", "groups"],
+        ["parts-input", "denominator"],
+        ["selected-input", "numerator"]
+      ].forEach(([id, key]) => {
+        document.getElementById(id).addEventListener("input", (event) => {
+          state[key] = Number(event.target.value);
+          render();
+        });
+      });
+
+      MathLab.applyText();
+      MathLab.bindLanguageToggle(render);
+      render();
+    </script>
+  </body>
+</html>

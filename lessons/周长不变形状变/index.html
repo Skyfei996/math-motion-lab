@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f6f7f3" />
+  <title>几何画布</title>
+  <link rel="stylesheet" href="styles.css?v=20261017-2" />
+</head>
+<body>
+  <a class="skip-link" href="#canvas">跳到画布</a>
+  <main class="lab">
+    <section class="tool-strip" aria-label="画布工具">
+      <label class="length-field" for="length-input"><span id="length-label">线段长度</span><span class="input-wrap"><input id="length-input" type="number" min="0" step="any" value="4" /><span>cm</span></span></label>
+      <button type="button" class="button primary" id="add-button">＋ 添加线段</button>
+      <button type="button" class="button" id="change-button" disabled>修改长度</button>
+      <button type="button" class="button primary" id="shape-button">＋ 添加图形</button>
+      <span class="tool-divider" aria-hidden="true"></span>
+      <button type="button" class="button mode active" id="single-mode" aria-pressed="true">移动线段</button>
+      <button type="button" class="button mode" id="group-mode" aria-pressed="false">移动图形</button>
+      <button type="button" class="button mode" id="connect-mode" aria-pressed="false">连线</button>
+      <button type="button" class="button mode" id="split-mode" aria-pressed="false">点击拆分</button>
+      <span class="tool-divider" aria-hidden="true"></span>
+      <button type="button" class="button" id="undo-button" disabled>撤回</button>
+      <button type="button" class="button" id="delete-button" disabled>删除选中</button>
+      <button type="button" class="button" id="save-shape-button" disabled>保存图形</button>
+      <div class="menu-wrap">
+        <button type="button" class="button" id="library-button" aria-expanded="false" aria-controls="library-panel">素材库 ▾</button>
+        <div id="library-panel" class="drop-panel library-panel" hidden>
+          <div id="library-list" class="library-list"></div>
+        </div>
+      </div>
+      <div class="menu-wrap">
+        <button type="button" class="button" id="style-button" aria-expanded="false" aria-controls="style-panel">样式 ▾</button>
+        <div id="style-panel" class="drop-panel" hidden>
+          <label class="panel-row" for="color-input"><span id="color-label">颜色</span><input id="color-input" type="color" value="#087f75" /></label>
+          <div id="color-palette" class="color-palette" role="group" aria-label="常用颜色"></div>
+          <div class="fill-controls">
+            <label class="panel-row" for="fill-input"><span id="fill-label">填充颜色</span><input id="fill-input" type="color" value="#f2c94c" /></label>
+            <div id="fill-palette" class="color-palette" role="group" aria-label="常用填充颜色"></div>
+            <button type="button" class="button" id="clear-fill" disabled>清除填充</button>
+            <span id="fill-hint" class="fill-hint">先选中封闭区域</span>
+          </div>
+          <label class="panel-row" for="width-input"><span id="width-label">线宽</span><span class="panel-input"><input id="width-input" type="number" min="0" step="any" value="5" /><span>px</span></span></label>
+          <label class="panel-row" for="handle-size-input"><span id="handle-size-label">圆点大小</span><span class="panel-input"><input id="handle-size-input" type="number" min="0" step="any" value="3" /><span>px</span></span></label>
+          <label class="panel-row" for="dash-input"><span id="dash-label">线型</span><select id="dash-input"><option value="solid">实线</option><option value="dashed">虚线</option></select></label>
+          <button type="button" class="button" id="labels-button" aria-pressed="true">隐藏长度</button>
+        </div>
+      </div>
+      <div class="menu-wrap">
+        <button type="button" class="button" id="more-button" aria-expanded="false" aria-controls="more-menu">更多 ▾</button>
+        <div id="more-menu" class="drop-panel menu-list" hidden>
+          <button type="button" class="button" id="copy-button" disabled>复制</button>
+          <button type="button" class="button" id="paste-button" disabled>粘贴</button>
+          <button type="button" class="button" id="split-button" disabled>按长度拆分…</button>
+          <button type="button" class="button" id="merge-button" disabled>合并线段</button>
+          <button type="button" class="button" id="save-canvas" disabled>保存整张画布</button>
+          <button type="button" class="button" id="clear-button" disabled>清空画布</button>
+          <a class="button" id="back-link" href="../../index.html">返回目录</a>
+          <button type="button" class="button" id="language-button" aria-label="切换语言">EN</button>
+        </div>
+      </div>
+      <button type="button" class="button" id="shortcuts-button" aria-keyshortcuts="?" aria-haspopup="dialog">快捷键 ?</button>
+    </section>
+    <section class="workspace" aria-label="自由拼线段画布">
+      <div class="canvas-area">
+        <svg id="canvas" viewBox="0 0 1000 520" role="img" tabindex="0" aria-label="可拖动线段的自由画布"><g id="shape-layer"></g><rect id="selection-box" class="selection-box" hidden /></svg>
+        <div class="empty-state" id="empty-state"><div class="empty-mark" aria-hidden="true"><i></i><i></i><i></i></div><strong id="empty-title">从一条线段开始</strong><p id="empty-copy">输入长度并添加，或放入一个示例图形，再亲手拖动。</p></div>
+        <div class="count-chip" id="segment-count">0 条线段 · 0 个曲线图形</div>
+        <div class="zoom-bar" role="group" aria-label="画布缩放">
+          <button type="button" id="zoom-out" aria-label="缩小">−</button>
+          <button type="button" id="zoom-reset">100%</button>
+          <button type="button" id="zoom-in" aria-label="放大">＋</button>
+          <button type="button" id="zoom-fit">适应</button>
+        </div>
+      </div>
+      <div class="canvas-status" id="canvas-status" role="status" aria-live="polite" hidden>
+        <strong id="shape-name"></strong>
+        <strong id="perimeter-value"></strong>
+        <span id="formula"></span>
+        <span id="hint"></span>
+      </div>
+    </section>
+  </main>
+  <dialog id="shape-dialog" class="shape-dialog" aria-labelledby="dialog-title">
+    <form id="shape-form" novalidate>
+      <h2 id="dialog-title">添加图形</h2>
+      <label class="dialog-field"><span id="shape-type-label">图形</span><select id="shape-type"></select></label>
+      <label class="dialog-field"><span id="quantity-label">创建数量</span><input id="quantity-input" type="number" min="1" step="1" value="1" required /></label>
+      <div id="shape-fields" class="shape-fields"></div>
+      <p id="shape-error" class="dialog-error" role="alert"></p>
+      <div class="dialog-actions"><button type="button" class="button" id="cancel-shape">取消</button><button type="submit" class="button primary" id="create-shape">添加到画布</button></div>
+    </form>
+  </dialog>
+  <dialog id="shortcuts-dialog" class="shape-dialog shortcuts-dialog" aria-labelledby="shortcuts-title">
+    <div class="shortcuts-header"><h2 id="shortcuts-title">快捷键</h2><button type="button" class="button" id="close-shortcuts">关闭</button></div>
+    <div id="shortcut-list" class="shortcut-list"></div>
+  </dialog>
+  <dialog id="name-dialog" class="shape-dialog" aria-labelledby="name-dialog-title">
+    <form id="name-form" novalidate>
+      <h2 id="name-dialog-title">保存整张画布</h2>
+      <label class="dialog-field" for="name-input"><span id="name-label">名称</span><input id="name-input" type="text" autocomplete="off" required /></label>
+      <p id="name-error" class="dialog-error" role="alert"></p>
+      <div class="dialog-actions"><button type="button" class="button" id="cancel-name">取消</button><button type="submit" class="button primary" id="confirm-name">保存</button></div>
+    </form>
+  </dialog>
+  <dialog id="split-dialog" class="shape-dialog" aria-labelledby="split-dialog-title">
+    <form id="split-form" novalidate>
+      <h2 id="split-dialog-title">拆分线段</h2>
+      <p id="split-source" class="split-source"></p>
+      <label class="dialog-field" for="split-kind"><span id="split-kind-label">拆分方式</span><select id="split-kind"><option value="equal">平均拆分</option><option value="custom">指定每段长度</option></select></label>
+      <label class="dialog-field" id="split-count-field" for="split-count"><span id="split-count-label">份数</span><input id="split-count" type="number" min="2" step="1" value="2" /></label>
+      <label class="dialog-field" id="split-lengths-field" for="split-lengths" hidden><span id="split-lengths-label">每段长度（用逗号分隔）</span><input id="split-lengths" type="text" inputmode="decimal" autocomplete="off" /></label>
+      <p id="split-error" class="dialog-error" role="alert"></p>
+      <div class="dialog-actions"><button type="button" class="button" id="cancel-split">取消</button><button type="submit" class="button primary" id="confirm-split">拆分</button></div>
+    </form>
+  </dialog>
+  <script src="../../assets/lab-models.js?v=20261017-1"></script>
+  <script src="lesson.js?v=20261017-2"></script>
+</body>
+</html>

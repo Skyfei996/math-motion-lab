@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4eedf" />
+    <title>数字换卡破案 - Math Motion Lab</title>
+    <link rel="stylesheet" href="styles.css?v=20260716-1" />
+  </head>
+  <body class="nc-body">
+    <a class="nc-skip-link" href="#lesson-stage" data-copy="skipStage">跳到讲题舞台</a>
+    <main class="nc-classroom" data-number-card-app>
+      <header class="nc-appbar">
+        <div class="nc-title-group">
+          <a class="nc-icon-button nc-back-link" href="../../index.html" data-action="back" aria-label="返回课程目录">←</a>
+          <div>
+            <p class="nc-eyebrow" data-copy="labName">小学数学互动课堂</p>
+            <h1 data-copy="title">数字换卡破案</h1>
+          </div>
+        </div>
+        <div class="nc-toolbar">
+          <button class="nc-toolbar-button" type="button" data-action="edit">
+            <span aria-hidden="true">✎</span>
+            <span data-copy="edit">编辑题目</span>
+          </button>
+          <button class="nc-toolbar-button" type="button" data-action="fullscreen">
+            <span aria-hidden="true">⛶</span>
+            <span data-copy="fullscreen">全屏讲解</span>
+          </button>
+          <button class="nc-toolbar-button nc-language-button" type="button" data-language-toggle>EN</button>
+        </div>
+      </header>
+
+      <section class="nc-problem-strip" aria-label="当前题目">
+        <span class="nc-fact is-quotient"><span data-copy="quotient">商</span> <strong data-quotient-summary>17</strong></span>
+        <span class="nc-fact is-remainder"><span data-copy="remainder">余数</span> <strong data-remainder-summary>6</strong></span>
+        <span class="nc-fact is-total"><span data-copy="fourNumberSum">四数和</span> <strong data-total-summary>479</strong></span>
+        <strong class="nc-problem-question" data-copy="problemQuestion">求被除数和除数</strong>
+      </section>
+
+      <nav class="nc-progress" aria-label="讲解进度" data-progress></nav>
+
+      <section class="nc-workspace">
+        <section id="lesson-stage" class="nc-stage" data-stage aria-live="polite"></section>
+        <aside class="nc-board" data-board aria-live="polite"></aside>
+      </section>
+
+      <footer class="nc-console">
+        <button class="nc-nav-button" type="button" data-action="prev">← <span data-copy="prev">上一页</span></button>
+        <span class="nc-page-count" data-page-count>第 1 页 / 共 9 页</span>
+        <button class="nc-nav-button is-primary" type="button" data-action="next"><span data-next-label>下一页</span> →</button>
+      </footer>
+
+      <dialog class="nc-settings-dialog" data-settings-dialog>
+        <form class="nc-settings-form" method="dialog" novalidate>
+          <header class="nc-dialog-head">
+            <div>
+              <p class="nc-eyebrow" data-copy="parameters">题目参数</p>
+              <h2 data-copy="settingsTitle">编辑数字换卡题</h2>
+              <p data-copy="settingsLead">应用后会检查是否能得到符合余数规则的整数答案，并从第1页重新讲解。</p>
+            </div>
+            <button class="nc-icon-button" type="button" data-action="close-settings" aria-label="关闭">×</button>
+          </header>
+
+          <label class="nc-field">
+            <span data-copy="quotientLabel">商</span>
+            <input name="quotient" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="17" data-setting="quotient" />
+          </label>
+          <label class="nc-field">
+            <span data-copy="remainderLabel">余数</span>
+            <input name="remainder" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="6" data-setting="remainder" />
+          </label>
+          <label class="nc-field">
+            <span data-copy="totalLabel">被除数、除数、商和余数的和</span>
+            <input name="totalSum" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="479" data-setting="totalSum" />
+          </label>
+
+          <section class="nc-validity-note">
+            <strong data-copy="validityTitle">有效题目需要满足</strong>
+            <ul>
+              <li data-copy="validityWhole">商和总和是正整数，余数是0或正整数</li>
+              <li data-copy="validityDivisor">换卡后能平均分成整数个相同的除数</li>
+              <li data-copy="validityRemainder">余数必须小于算出的除数</li>
+            </ul>
+          </section>
+
+          <p class="nc-dialog-error" data-settings-error role="alert" hidden></p>
+          <div class="nc-dialog-actions">
+            <button class="nc-dialog-button" type="button" data-action="cancel-settings" data-copy="cancel">取消</button>
+            <button class="nc-dialog-button is-primary" type="button" data-action="apply-settings" data-copy="apply">应用并重新讲解</button>
+          </div>
+        </form>
+      </dialog>
+    </main>
+
+    <script src="../../assets/lab-data.js?v=20260716-1"></script>
+    <script src="../../assets/lab-models.js?v=20260716-1"></script>
+    <script src="../../assets/lab-core.js"></script>
+    <script src="lesson.js?v=20260716-3"></script>
+  </body>
+</html>

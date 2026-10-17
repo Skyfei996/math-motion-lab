@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#efe2bd" />
+    <title>两个书架原来各有多少本书 - Math Motion Lab</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="styles.css?v=20260726-2" />
+  </head>
+  <body class="shelf-body">
+    <a class="shelf-skip-link" href="#lesson-stage">跳到讲题舞台</a>
+
+    <main class="shelf-classroom" data-shelf-app>
+      <header class="shelf-appbar">
+        <div class="shelf-title-group">
+          <a class="shelf-icon-button" href="../../index.html" data-action="back" aria-label="返回课程目录">←</a>
+          <div>
+            <p class="shelf-eyebrow" data-copy="labName">Math Motion Lab · 场景讲解</p>
+            <h1 data-copy="title">两个书架原来各有多少本书</h1>
+          </div>
+        </div>
+
+        <div class="shelf-toolbar">
+          <span class="shelf-chapter" data-chapter>读题</span>
+          <button class="shelf-tool-button" type="button" data-action="edit">
+            <span aria-hidden="true">✎</span>
+            <span data-copy="edit">编辑题目</span>
+          </button>
+          <button class="shelf-tool-button" type="button" data-action="fullscreen">
+            <span aria-hidden="true">⛶</span>
+            <span data-copy="fullscreen">全屏</span>
+          </button>
+          <button class="shelf-tool-button shelf-language-button" type="button" data-language-toggle>EN</button>
+        </div>
+      </header>
+
+      <section
+        id="lesson-stage"
+        class="shelf-stage"
+        data-stage
+        role="button"
+        tabindex="0"
+        aria-describedby="stage-instruction"
+      >
+        <svg class="shelf-canvas" viewBox="0 0 1120 620" role="img" aria-labelledby="shelf-svg-title shelf-svg-desc">
+          <title id="shelf-svg-title">两个书架倍数问题动态讲解舞台</title>
+          <desc id="shelf-svg-desc" data-stage-description>两个书架原来的本数相等，经过取书和放书后形成倍数关系。</desc>
+
+          <defs>
+            <linearGradient id="shelf-wood" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#c99a62" />
+              <stop offset="0.45" stop-color="#9c6b3d" />
+              <stop offset="1" stop-color="#70451f" />
+            </linearGradient>
+            <linearGradient id="shelf-wood-light" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#e1bb82" />
+              <stop offset="1" stop-color="#aa7442" />
+            </linearGradient>
+            <filter id="shelf-paper-shadow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#6f532d" flood-opacity="0.15" />
+            </filter>
+            <filter id="shelf-object-shadow" x="-20%" y="-20%" width="140%" height="150%">
+              <feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#5b3b1f" flood-opacity="0.2" />
+            </filter>
+            <pattern id="shelf-paper-fibers" width="48" height="48" patternUnits="userSpaceOnUse">
+              <path d="M4 10c8-3 14 3 24-1M21 37c9-4 15 2 23-2M-4 25c8-2 14 2 20-1" fill="none" stroke="#8d7046" stroke-opacity="0.08" stroke-width="1.1" />
+              <circle cx="38" cy="17" r="1.1" fill="#7b6039" fill-opacity="0.08" />
+              <circle cx="12" cy="43" r="0.9" fill="#fff9e5" fill-opacity="0.5" />
+            </pattern>
+            <pattern id="shelf-books-removed" width="32" height="32" patternUnits="userSpaceOnUse" patternTransform="rotate(135)">
+              <rect width="32" height="32" fill="#fff1f3" />
+              <rect width="10" height="32" fill="#ed9bae" fill-opacity="0.68" />
+            </pattern>
+          </defs>
+
+          <rect class="shelf-paper" x="8" y="8" width="1104" height="604" rx="22" filter="url(#shelf-paper-shadow)" />
+          <rect class="shelf-fibers" x="8" y="8" width="1104" height="604" rx="22" fill="url(#shelf-paper-fibers)" />
+
+          <g class="shelf-question-group is-visible">
+            <text class="shelf-question" x="50" y="58" data-question>题目告诉了我们什么？最后要找什么？</text>
+            <path class="shelf-question-mark" d="M50 76H710" />
+          </g>
+
+          <g class="shelf-problem-copy" data-part="problem-copy">
+            <text class="shelf-problem-line" x="560" y="105" text-anchor="middle" data-problem-line="one"></text>
+            <text class="shelf-problem-line" x="560" y="135" text-anchor="middle" data-problem-line="two"></text>
+          </g>
+
+          <g class="shelf-bookcase" data-bookcase="first" transform="translate(110 180)" filter="url(#shelf-object-shadow)">
+            <text class="shelf-case-name" x="170" y="-22" text-anchor="middle" data-first-name>第一个书架</text>
+            <text class="shelf-case-count" x="170" y="20" text-anchor="middle" data-first-count>？本</text>
+            <rect class="shelf-case-back" x="12" y="12" width="316" height="164" rx="5" />
+            <g data-first-rows></g>
+            <rect class="shelf-case-side" x="0" y="0" width="18" height="188" rx="5" />
+            <rect class="shelf-case-side" x="322" y="0" width="18" height="188" rx="5" />
+            <rect class="shelf-case-beam is-top" x="0" y="0" width="340" height="18" rx="5" />
+            <rect class="shelf-case-beam is-bottom" x="0" y="170" width="340" height="20" rx="4" />
+            <path class="shelf-case-foot" d="M14 188h34v12H8Zm278 0h34l6 12h-40Z" />
+          </g>
+
+          <g class="shelf-bookcase" data-bookcase="second" transform="translate(670 180)" filter="url(#shelf-object-shadow)">
+            <text class="shelf-case-name" x="170" y="-22" text-anchor="middle" data-second-name>第二个书架</text>
+            <text class="shelf-case-count" x="170" y="20" text-anchor="middle" data-second-count>？本</text>
+            <rect class="shelf-case-back" x="12" y="12" width="316" height="164" rx="5" />
+            <g data-second-rows></g>
+            <rect class="shelf-case-side" x="0" y="0" width="18" height="188" rx="5" />
+            <rect class="shelf-case-side" x="322" y="0" width="18" height="188" rx="5" />
+            <rect class="shelf-case-beam is-top" x="0" y="0" width="340" height="18" rx="5" />
+            <rect class="shelf-case-beam is-bottom" x="0" y="170" width="340" height="20" rx="4" />
+            <path class="shelf-case-foot" d="M14 188h34v12H8Zm278 0h34l6 12h-40Z" />
+          </g>
+
+          <g class="shelf-middle-evidence" data-part="middle-evidence">
+            <text class="shelf-equality-symbol" x="560" y="270" text-anchor="middle" data-equality-symbol>=</text>
+            <text class="shelf-equality-label" x="560" y="302" text-anchor="middle" data-equality-label>原来一样多</text>
+          </g>
+
+          <g class="shelf-action-label is-remove" data-part="remove-label">
+            <path d="M454 208c36 0 54 12 73 34" />
+            <text x="493" y="196" text-anchor="middle" data-remove-label>取出200本</text>
+          </g>
+          <g class="shelf-action-label is-add" data-part="add-label">
+            <path d="M666 208c-36 0-54 12-73 34" />
+            <text x="627" y="196" text-anchor="middle" data-add-label>放入40本</text>
+          </g>
+
+          <g class="shelf-difference-brace" data-part="difference-brace">
+            <path data-difference-brace-path></path>
+            <text x="1036" y="272" data-difference-brace-label>相差240本</text>
+          </g>
+
+          <g class="shelf-equation" data-part="equation">
+            <path class="shelf-equation-swash" d="M320 458c142-10 326-10 482 0" />
+            <text x="560" y="466" text-anchor="middle" data-equation></text>
+          </g>
+
+          <g class="shelf-checks" data-part="checks">
+            <g class="shelf-check" data-check="first" transform="translate(210 520)">
+              <circle cx="0" cy="0" r="18" />
+              <path d="m-8 0 6 6 12-15" />
+              <text x="29" y="8" data-first-check></text>
+            </g>
+            <g class="shelf-check" data-check="second" transform="translate(480 520)">
+              <circle cx="0" cy="0" r="18" />
+              <path d="m-8 0 6 6 12-15" />
+              <text x="29" y="8" data-second-check></text>
+            </g>
+            <g class="shelf-check" data-check="multiple" transform="translate(780 520)">
+              <circle cx="0" cy="0" r="18" />
+              <path d="m-8 0 6 6 12-15" />
+              <text x="29" y="8" data-multiple-check></text>
+            </g>
+          </g>
+
+          <g class="shelf-answer" data-part="answer">
+            <path class="shelf-answer-swash" d="M286 570c174-13 402-13 555 0" />
+            <text class="shelf-answer-text" x="560" y="590" text-anchor="middle" data-answer></text>
+          </g>
+        </svg>
+
+        <span id="stage-instruction" class="shelf-click-hint" data-copy="clickHint">点击舞台空白处继续</span>
+      </section>
+
+      <footer class="shelf-console">
+        <button class="shelf-nav-button" type="button" data-action="prev">
+          <span aria-hidden="true">←</span>
+          <span data-copy="prev">上一步</span>
+        </button>
+
+        <div class="shelf-progress-wrap" aria-live="polite">
+          <div class="shelf-progress-track" data-progress-track></div>
+          <div class="shelf-step-copy">
+            <strong data-step-title>读题</strong>
+            <span data-step-count>1 / 15</span>
+          </div>
+        </div>
+
+        <button class="shelf-nav-button is-primary" type="button" data-action="next">
+          <span data-next-label>下一步</span>
+          <span aria-hidden="true">→</span>
+        </button>
+      </footer>
+
+      <p class="shelf-live-copy" data-live-copy aria-live="polite"></p>
+
+      <dialog class="shelf-settings-dialog" data-settings-dialog>
+        <form class="shelf-settings-form" method="dialog" novalidate>
+          <header class="shelf-dialog-head">
+            <div>
+              <p class="shelf-eyebrow" data-copy="parameters">题目参数</p>
+              <h2 data-copy="settingsTitle">编辑书架倍数问题</h2>
+              <p data-copy="settingsLead">应用后会检查是否得到整数本答案，并从第1步重新讲解。</p>
+            </div>
+            <button class="shelf-icon-button" type="button" data-action="close-settings" aria-label="关闭">×</button>
+          </header>
+
+          <label class="shelf-field">
+            <span data-copy="removedLabel">第一个书架取出</span>
+            <span class="shelf-input-wrap">
+              <input name="removedFromFirst" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="200" data-setting="removedFromFirst" />
+              <span data-copy="booksUnit">本</span>
+            </span>
+          </label>
+          <label class="shelf-field">
+            <span data-copy="addedLabel">第二个书架放入</span>
+            <span class="shelf-input-wrap">
+              <input name="addedToSecond" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="40" data-setting="addedToSecond" />
+              <span data-copy="booksUnit">本</span>
+            </span>
+          </label>
+          <label class="shelf-field">
+            <span data-copy="multipleLabel">变化后的倍数</span>
+            <span class="shelf-input-wrap">
+              <input name="multiple" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="3" data-setting="multiple" />
+              <span data-copy="timesUnit">倍</span>
+            </span>
+          </label>
+
+          <section class="shelf-validity-note">
+            <strong data-copy="validityTitle">有效题目需要满足</strong>
+            <ul>
+              <li data-copy="validityPositive">取出、放入都是正整数，倍数不小于2</li>
+              <li data-copy="validityWhole">变化后的相差本数能平均分成“倍数减1”份</li>
+            </ul>
+          </section>
+
+          <p class="shelf-dialog-error" data-settings-error role="alert" hidden></p>
+          <div class="shelf-dialog-actions">
+            <button class="shelf-dialog-button" type="button" data-action="cancel-settings" data-copy="cancel">取消</button>
+            <button class="shelf-dialog-button is-primary" type="button" data-action="apply-settings" data-copy="apply">应用并重新讲解</button>
+          </div>
+        </form>
+      </dialog>
+    </main>
+
+    <script src="../../assets/lab-data.js?v=20260726-2"></script>
+    <script src="../../assets/lab-models.js?v=20260722-1"></script>
+    <script src="../../assets/lab-core.js"></script>
+    <script src="lesson.js?v=20260726-2"></script>
+  </body>
+</html>

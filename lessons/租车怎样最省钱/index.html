@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>租车怎样最省钱 - Math Motion Lab</title>
+    <link rel="stylesheet" href="../../assets/styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=20260711-3" />
+  </head>
+  <body class="rental-classroom-body">
+    <main class="rental-classroom" data-rental-app>
+      <header class="rental-appbar">
+        <div class="rental-title-group">
+          <a class="rental-back-link" href="../../index.html" data-action="back" aria-label="返回课程目录">←</a>
+          <div class="rental-heading">
+            <p data-copy="labName">小学数学互动课堂</p>
+            <h1 data-copy="title">租车怎样最省钱</h1>
+          </div>
+        </div>
+        <div class="rental-toolbar">
+          <button class="rental-toolbar-button" type="button" data-action="edit">
+            <span aria-hidden="true">✎</span>
+            <span data-copy="edit">编辑题目</span>
+          </button>
+          <button class="rental-toolbar-button" type="button" data-action="fullscreen">
+            <span aria-hidden="true">⛶</span>
+            <span data-copy="fullscreen">全屏讲解</span>
+          </button>
+          <button class="rental-toolbar-button" type="button" data-language-toggle>EN</button>
+        </div>
+      </header>
+
+      <section class="rental-problem-strip" data-problem-strip aria-label="当前题目"></section>
+
+      <nav class="rental-journey" data-journey aria-label="讲解步骤"></nav>
+
+      <div data-stage aria-live="polite"></div>
+
+      <footer class="rental-teacher-console">
+        <div class="rental-hint-area">
+          <button class="rental-console-button" type="button" data-action="hint" aria-expanded="false">
+            <span data-copy="hint">老师提示</span>
+          </button>
+          <div class="rental-teacher-hint" data-teacher-hint hidden></div>
+        </div>
+
+        <div class="rental-control-group" aria-label="讲解控制">
+          <button class="rental-console-button" type="button" data-action="prev">上一步</button>
+          <button class="rental-console-button is-primary" type="button" data-action="reveal">开始统计</button>
+          <button class="rental-console-button" type="button" data-action="next">下一步</button>
+        </div>
+
+        <span class="rental-progress-text" data-progress-text>第 1 站 / 共 8 站</span>
+      </footer>
+
+      <dialog class="rental-settings-dialog" data-settings-dialog>
+        <div class="rental-dialog-form">
+          <header class="rental-dialog-head">
+            <div>
+              <h2 data-copy="settingsTitle">编辑题目</h2>
+              <p data-copy="settingsLead">修改后会从第一步重新讲解。</p>
+            </div>
+            <button class="rental-icon-button" type="button" data-action="close-settings" aria-label="关闭">×</button>
+          </header>
+
+          <fieldset class="rental-fieldset">
+            <legend data-copy="peopleGroup">出行人数</legend>
+            <label class="rental-field">
+              <span data-copy="teachers">老师人数</span>
+              <input type="number" min="0" max="800" step="1" data-setting="teachers" value="15" />
+            </label>
+            <label class="rental-field">
+              <span data-copy="students">学生人数</span>
+              <input type="number" min="0" max="800" step="1" data-setting="students" value="355" />
+            </label>
+          </fieldset>
+
+          <fieldset class="rental-fieldset">
+            <legend data-copy="vehicleGroup">车辆信息</legend>
+            <label class="rental-field">
+              <span data-copy="bigCapacity">大车座位</span>
+              <input type="number" min="1" max="100" step="1" data-setting="bigCapacity" value="40" />
+            </label>
+            <label class="rental-field">
+              <span data-copy="bigPrice">大车租金</span>
+              <input type="number" min="1" max="9999" step="1" data-setting="bigPrice" value="720" />
+            </label>
+            <label class="rental-field">
+              <span data-copy="smallCapacity">小车座位</span>
+              <input type="number" min="1" max="100" step="1" data-setting="smallCapacity" value="25" />
+            </label>
+            <label class="rental-field">
+              <span data-copy="smallPrice">小车租金</span>
+              <input type="number" min="1" max="9999" step="1" data-setting="smallPrice" value="500" />
+            </label>
+          </fieldset>
+
+          <p class="rental-dialog-error" data-settings-error hidden></p>
+
+          <div class="rental-dialog-actions">
+            <button class="rental-dialog-button" type="button" data-action="cancel-settings" data-copy="cancel">取消</button>
+            <button class="rental-dialog-button is-primary" type="button" data-action="apply-settings" data-copy="apply">应用并重新讲解</button>
+          </div>
+        </div>
+      </dialog>
+    </main>
+
+    <script src="../../assets/lab-data.js"></script>
+    <script src="../../assets/lab-models.js?v=20260711-3"></script>
+    <script src="../../assets/lab-core.js"></script>
+    <script src="./lesson.js?v=20260711-3"></script>
+  </body>
+</html>

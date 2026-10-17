@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f6f1e7" />
+    <title>买5送1买笔记本 - Math Motion Lab</title>
+    <link rel="stylesheet" href="./styles.css?v=20260717-3" />
+  </head>
+  <body class="np-body">
+    <a class="np-skip-link" href="#lesson-stage">跳到讲题舞台</a>
+    <main class="np-classroom" data-notebook-promotion-app>
+      <header class="np-appbar">
+        <div class="np-title-group">
+          <a class="np-icon-button np-back-link" href="../../index.html" data-action="back" aria-label="返回课程目录">←</a>
+          <div>
+            <p class="np-eyebrow" data-copy="labName">小学数学互动课堂</p>
+            <h1 data-copy="title">买5送1买笔记本</h1>
+          </div>
+        </div>
+        <div class="np-toolbar">
+          <button class="np-toolbar-button" type="button" data-action="edit">
+            <span aria-hidden="true">✎</span>
+            <span data-copy="edit">编辑题目</span>
+          </button>
+          <button class="np-toolbar-button" type="button" data-action="fullscreen">
+            <span aria-hidden="true">⛶</span>
+            <span data-copy="fullscreen">全屏讲解</span>
+          </button>
+          <button class="np-toolbar-button np-language-button" type="button" data-language-toggle>EN</button>
+        </div>
+      </header>
+
+      <section class="np-problem-strip" aria-label="当前题目">
+        <span class="np-fact is-order"><span data-copy="classmates">同学</span> <strong data-student-summary>34</strong> <span data-copy="peopleUnit">名</span></span>
+        <span class="np-fact is-price"><strong data-price-summary>6</strong> <span data-copy="yuanPerBook">元/本</span></span>
+        <span class="np-promo-chip"><span data-copy="buyLead">买</span><strong data-buy-summary>5</strong><span data-copy="getOne">送1</span></span>
+        <strong class="np-problem-question" data-copy="summaryTask">求：最少付费本数和总价</strong>
+      </section>
+
+      <nav class="np-progress" aria-label="讲解进度" data-progress></nav>
+
+      <section class="np-workspace">
+        <section id="lesson-stage" class="np-stage" data-stage aria-live="polite"></section>
+        <aside class="np-board" data-board aria-live="polite"></aside>
+      </section>
+
+      <footer class="np-console">
+        <button class="np-nav-button" type="button" data-action="prev">← <span data-copy="prev">上一页</span></button>
+        <span class="np-page-count" data-page-count>第 1 页 / 共 7 页</span>
+        <button class="np-nav-button is-primary" type="button" data-action="next"><span data-next-label>下一页</span> →</button>
+      </footer>
+
+      <dialog class="np-settings-dialog" data-settings-dialog>
+        <form class="np-settings-form" method="dialog" novalidate>
+          <header class="np-dialog-head">
+            <div>
+              <p class="np-eyebrow" data-copy="parameters">题目参数</p>
+              <h2 data-copy="settingsTitle">编辑买赠问题</h2>
+              <p data-copy="settingsLead">应用后会重新计算，并从第1页重新讲解。</p>
+            </div>
+            <button class="np-icon-button" type="button" data-action="close-settings" aria-label="关闭">×</button>
+          </header>
+
+          <label class="np-field">
+            <span data-copy="studentLabel">需要笔记本的同学</span>
+            <span class="np-input-wrap"><input name="studentCount" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="34" data-setting="studentCount" /><span data-copy="peopleUnit">名</span></span>
+          </label>
+          <label class="np-field">
+            <span data-copy="priceLabel">每本价格</span>
+            <span class="np-input-wrap"><input name="unitPrice" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="6" data-setting="unitPrice" /><span data-copy="yuanUnit">元</span></span>
+          </label>
+          <label class="np-field">
+            <span data-copy="buyCountLabel">买满多少本送1本</span>
+            <span class="np-input-wrap"><input name="buyCount" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="5" data-setting="buyCount" /><span data-copy="booksUnit">本</span></span>
+          </label>
+
+          <section class="np-validity-note">
+            <strong data-copy="validityTitle">有效题目需要满足</strong>
+            <ul>
+              <li data-copy="validityWhole">同学人数、价格和买满本数都是正整数</li>
+              <li data-copy="validityBuy">买满本数至少是2本，每组固定赠送1本</li>
+              <li data-copy="validityRange">同学人数不超过300，便于课堂清楚展示</li>
+            </ul>
+          </section>
+
+          <p class="np-dialog-error" data-settings-error role="alert" hidden></p>
+          <div class="np-dialog-actions">
+            <button class="np-dialog-button" type="button" data-action="cancel-settings" data-copy="cancel">取消</button>
+            <button class="np-dialog-button is-primary" type="button" data-action="apply-settings" data-copy="apply">应用并重新讲解</button>
+          </div>
+        </form>
+      </dialog>
+    </main>
+
+    <script src="../../assets/lab-data.js?v=20260717-1"></script>
+    <script src="../../assets/lab-models.js?v=20260717-1"></script>
+    <script src="../../assets/lab-core.js"></script>
+    <script src="./lesson.js?v=20260717-1"></script>
+  </body>
+</html>

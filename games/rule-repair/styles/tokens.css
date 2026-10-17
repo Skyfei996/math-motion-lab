@@ -1,0 +1,71 @@
+:root {
+  color-scheme: dark;
+  --night-950: #08111e;
+  --night-900: #0d192a;
+  --night-800: #14233b;
+  --night-700: #203755;
+  --barn-700: #7f302f;
+  --barn-600: #9c3d38;
+  --barn-500: #b54c43;
+  --moss-800: #2c473c;
+  --moss-700: #3e5d4d;
+  --moss-600: #4f715f;
+  --moss-500: #6f8f70;
+  --straw-500: #e3bd67;
+  --straw-400: #f0d68d;
+  --paper-100: #fff9eb;
+  --paper-200: #f5edda;
+  --paper-300: #e9dcc0;
+  --paper-500: #cdbd9b;
+  --ink: #14233b;
+  --mint: #56c69b;
+  --mint-dark: #267c61;
+  --coral: #ef735f;
+  --coral-dark: #a64239;
+  --chicken: #f4d89a;
+  --rabbit: #a9b7c7;
+  --focus: #ffe39b;
+  --paper-shadow: 0 8px 0 rgb(7 15 26 / 18%), 0 16px 34px rgb(7 15 26 / 24%);
+  --paper-shadow-small: 0 4px 0 rgb(7 15 26 / 18%), 0 8px 18px rgb(7 15 26 / 18%);
+  --font-display: "Microsoft YaHei UI", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+  --font-body: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+  --ease-paper: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+  background: var(--night-950);
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  color: var(--paper-100);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  color: inherit;
+}
+
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 4px;
+}
+
+[hidden] {
+  display: none !important;
+}
+

@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4f0e7" />
+    <title>火车过桥 - Math Motion Lab</title>
+    <link rel="stylesheet" href="styles.css?v=20260715-5" />
+  </head>
+  <body>
+    <a class="skip-link" href="#lesson-stage">跳到讲题舞台</a>
+
+    <main class="classroom" data-app>
+      <header class="appbar">
+        <div class="title-group">
+          <a class="icon-button back-link" href="../../index.html" data-action="back" aria-label="返回课程目录">←</a>
+          <div>
+            <p class="eyebrow" data-copy="eyebrow">小学数学互动课堂</p>
+            <h1 data-copy="title">火车过桥：为什么要多走一个车身长？</h1>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <button class="tool-button" type="button" data-action="edit">
+            <span aria-hidden="true">✎</span>
+            <span data-copy="edit">修改题目</span>
+          </button>
+          <button class="tool-button" type="button" data-action="fullscreen">
+            <span aria-hidden="true">⛶</span>
+            <span data-copy="fullscreen">全屏讲解</span>
+          </button>
+          <button class="tool-button language-button" type="button" data-language-toggle>EN</button>
+        </div>
+      </header>
+
+      <section class="problem-strip" data-problem-strip aria-label="当前题目"></section>
+      <nav class="progress" data-progress aria-label="讲解进度"></nav>
+
+      <section class="workspace">
+        <figure id="lesson-stage" class="stage" data-stage aria-live="polite">
+          <figcaption class="stage-head">
+            <span class="step-tag" data-stage-tag></span>
+            <h2 data-stage-title></h2>
+          </figcaption>
+          <div class="diagram-wrap" data-diagram-wrap></div>
+        </figure>
+
+        <aside class="lesson-panel" data-panel aria-live="polite">
+          <section class="question-block">
+            <p class="panel-label" data-copy="questionLabel">本页问题</p>
+            <h2 data-question></h2>
+            <p class="explanation" data-explanation></p>
+          </section>
+
+          <section class="blackboard" aria-label="本页板书">
+            <p class="board-label" data-copy="boardLabel">本页板书</p>
+            <div class="formula-list" data-formula-list></div>
+          </section>
+
+          <p class="teacher-cue" data-teacher-cue></p>
+        </aside>
+      </section>
+
+      <footer class="console">
+        <button class="nav-button" type="button" data-action="prev">
+          <span aria-hidden="true">←</span>
+          <span data-copy="prev">上一页</span>
+        </button>
+        <span class="page-count" data-page-count></span>
+        <button class="nav-button is-primary" type="button" data-action="next">
+          <span data-next-label>下一页</span>
+          <span aria-hidden="true">→</span>
+        </button>
+      </footer>
+
+      <dialog class="settings-dialog" data-settings-dialog>
+        <form class="settings-form" method="dialog" novalidate>
+          <header class="dialog-head">
+            <div>
+              <p class="eyebrow" data-copy="parameters">题目参数</p>
+              <h2 data-copy="settingsTitle">换一组数重新演示</h2>
+              <p data-copy="settingsLead">应用后会回到第1页，并重新生成每一步的路程和时间。</p>
+            </div>
+            <button class="icon-button" type="button" data-action="close-settings" aria-label="关闭">×</button>
+          </header>
+
+          <label class="field">
+            <span data-copy="trainLengthLabel">火车长度</span>
+            <div class="input-with-unit">
+              <input name="trainLength" type="text" inputmode="numeric" autocomplete="off" value="800" data-setting="train-length" />
+              <span data-copy="metres">米</span>
+            </div>
+          </label>
+
+          <label class="field">
+            <span data-copy="bridgeLengthLabel">大桥长度</span>
+            <div class="input-with-unit">
+              <input name="bridgeLength" type="text" inputmode="numeric" autocomplete="off" value="1600" data-setting="bridge-length" />
+              <span data-copy="metres">米</span>
+            </div>
+          </label>
+
+          <label class="field">
+            <span data-copy="speedLabel">每秒行驶</span>
+            <div class="input-with-unit">
+              <input name="speed" type="text" inputmode="numeric" autocomplete="off" value="40" data-setting="speed" />
+              <span data-copy="metresPerSecond">米/秒</span>
+            </div>
+          </label>
+
+          <section class="method-note">
+            <strong data-copy="methodTitle">课堂演示提示</strong>
+            <p data-copy="methodCopy">优先选择能整除的数，动态计数会按整秒显示，学生更容易看清时间和路程的对应关系；不能整除时页面会显示最多两位小数。</p>
+          </section>
+
+          <p class="dialog-error" data-settings-error role="alert" hidden></p>
+          <div class="dialog-actions">
+            <button class="dialog-button" type="button" data-action="cancel-settings" data-copy="cancel">取消</button>
+            <button class="dialog-button is-primary" type="button" data-action="apply-settings" data-copy="apply">应用并重新讲解</button>
+          </div>
+        </form>
+      </dialog>
+    </main>
+
+    <script src="../../assets/lab-data.js?v=20260715-2"></script>
+    <script src="../../assets/lab-models.js?v=20260715-2"></script>
+    <script src="../../assets/lab-core.js"></script>
+    <script src="lesson.js?v=20260715-4"></script>
+  </body>
+</html>

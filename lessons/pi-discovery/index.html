@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f1f4f2">
+  <title>一只车轮的数学旅行 · 圆周率</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css?v=20260908-2">
+</head>
+<body>
+  <a class="skip" href="#next">跳到下一步</a>
+  <main class="exhibit">
+    <header class="masthead">
+      <a class="wordmark" href="../../index.html">数学的探索之旅<span>DISCOVERING MATHEMATICS</span></a>
+      <span class="bookline">吴军《给孩子的数学课》 · 第一课共读</span>
+      <button id="sources-button" class="quiet">阅读说明 ↗</button>
+      <button id="fullscreen" class="quiet icon-button" aria-label="全屏体验">⛶</button>
+    </header>
+    <section class="experience" id="experience" aria-label="一只车轮的数学旅行">
+      <div class="scene-heading"><p class="eyebrow"><span id="chapter-number"></span><span id="chapter-label"></span></p><h1 id="headline"></h1><span id="beat"></span></div>
+      <div class="stage">
+        <svg id="canvas" viewBox="0 0 1120 460" role="group" aria-labelledby="figure-title figure-description">
+          <title id="figure-title">一只车轮的数学旅行</title><desc id="figure-description"></desc>
+          <defs>
+            <pattern id="paper-dots" width="24" height="24" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r=".7" fill="#bdcac3"/></pattern>
+            <clipPath id="zoom-clip"><circle cx="851" cy="191" r="104"/></clipPath>
+          </defs>
+          <g id="life-art"></g><g id="measure-art" hidden></g><g id="geometry-art" hidden></g><g id="methods-art" hidden></g><g id="return-art" hidden></g>
+        </svg>
+        <span id="scene-note"></span>
+        <button id="detail" class="quiet" hidden>看看计算方法 ↗</button>
+      </div>
+      <div class="caption"><p id="story" aria-live="polite"></p><span id="motion-status"></span></div>
+    </section>
+    <footer>
+      <div class="playback"><button id="previous" class="secondary">← 上一步</button><button id="replay" class="quiet">↺ 再看一次</button><span id="progress"></span><button id="next" class="primary"></button></div>
+      <nav id="chapters" aria-label="八个故事场景"></nav>
+    </footer>
+  </main>
+  <dialog id="information">
+    <form method="dialog"><button class="close-dialog" aria-label="关闭阅读说明">×</button></form>
+    <p class="eyebrow">READING COMPANION</p><h2>陪着书，让想法动起来。</h2>
+    <p>这是第一课的原创动态共读课件。每次点击只演示一个动作，结束后停下来讨论。可用左右方向键前进、后退，用“再看一次”重看当前动作，也可以点击底部场景跳转。</p>
+    <p>绳子是我们补充的动手演示。公开试读只概述早期测量，没有记载某位古人绕绳子的具体过程。测量几个圆可以帮助发现规律，但不能证明所有圆都满足它。</p>
+    <p>数列、微积分与计算机部分保留原书的工具发展主线。主画面只观察计算过程；具体公式可按需展开。马青公式是补充例子，不是复原牛顿的计算。</p>
+    <div class="source-links">
+      <a href="https://xbsu.com/206802-9787521744125.htm" target="_blank" rel="noopener noreferrer">原书目录与第一课公开试读 ↗</a>
+      <a href="https://mathshistory.st-andrews.ac.uk/HistTopics/Pi_through_the_ages/" target="_blank" rel="noopener noreferrer">历史核对：圆周率的计算 ↗</a>
+      <a href="https://arxiv.org/abs/1805.01505" target="_blank" rel="noopener noreferrer">研究：古代测量方法的重建及局限 ↗</a>
+      <a href="https://mathworld.wolfram.com/WallisFormula.html" target="_blank" rel="noopener noreferrer">数学核对：沃利斯乘积 ↗</a>
+      <a href="https://mathworld.wolfram.com/PiFormulas.html" target="_blank" rel="noopener noreferrer">补充计算方法：马青公式 ↗</a>
+      <a href="https://www.jpl.nasa.gov/edu/news/how-many-decimals-of-pi-do-we-really-need/" target="_blank" rel="noopener noreferrer">课外阅读：NASA 需要多少位圆周率？ ↗</a>
+    </div>
+    <p class="fineprint">最后的距离演示假设直径 1 米的理想圆轮无打滑滚动，仅比较采用 3.14 带来的计算误差。天空与导航是应用场景示意，不是 GPS 误差模型。几何范围和计算均来自实际模型，未演示微积分的完整推导。</p>
+  </dialog>
+  <dialog id="formula-dialog">
+    <form method="dialog"><button class="close-dialog" aria-label="关闭计算方法">×</button></form>
+    <p class="eyebrow">供有兴趣的孩子与家长继续读</p><h2>画面中的数字怎样算？</h2>
+    <p>沃利斯的方法从 2 开始，依次乘上这些数。再乘一项，得到一个新的近似值。这是数学家证明过的规律，动画只演示计算。</p>
+    <p class="formula">2 × (4/3) × (16/15) × (36/35) × …</p>
+    <p>后面的补充演示采用马青公式，将两个反正切级数合起来计算。它与微积分相关；这里用它展示“一次次修正”的过程，不要求孩子掌握推导。</p>
+    <p class="formula">π = 16 arctan(1/5) − 4 arctan(1/239)<br>arctan(x) = x − x³/3 + x⁵/5 − … （|x| &lt; 1）</p>
+    <p>每轮按公式加入一个修正量；计算机完成相同的重复步骤。有限次计算得到近似值，屏幕小数经过舍入，不能由此认定已经算出全部数字。</p>
+  </dialog>
+  <script src="models.js?v=20260908-2"></script>
+  <script src="lesson.js?v=20260908-2"></script>
+</body>
+</html>

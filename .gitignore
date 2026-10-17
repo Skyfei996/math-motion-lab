@@ -1,0 +1,17 @@
+.agents/*
+!.agents/skills/
+!.agents/skills/**
+.codex/
+
+node_modules/
+.tmp/
+dist/
+build/
+games/desktop-pet/src-tauri/gen/
+games/desktop-pet/src-tauri/target/
+
+.DS_Store
+Thumbs.db
+*.log
+
+design-skill/
