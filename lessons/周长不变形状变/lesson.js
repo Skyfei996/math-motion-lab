@@ -1,9 +1,10 @@
 (function () {
   const SCALE = 32;
   const geometry = window.MathLabModels.geometry;
+  const canvasModels = window.GeometryCanvasModels;
   const $ = (id) => document.getElementById(id);
   const ids = ["language-button", "length-label", "length-input",
-    "add-button", "change-button", "shape-button", "single-mode", "group-mode", "connect-mode", "split-mode", "labels-button",
+    "add-button", "change-button", "shape-button", "single-mode", "group-mode", "rotate-mode", "connect-mode", "split-mode", "labels-button",
     "undo-button", "copy-button", "paste-button", "style-button", "style-panel", "more-button", "more-menu", "color-palette",
     "color-label", "color-input", "fill-label", "fill-input", "fill-palette", "fill-hint", "clear-fill",
     "width-label", "width-input", "dash-label", "dash-input", "handle-size-label", "handle-size-input",
@@ -17,13 +18,32 @@
     "name-dialog", "name-form", "name-dialog-title", "name-label", "name-input", "name-error", "cancel-name", "confirm-name",
     "split-dialog", "split-form", "split-dialog-title", "split-source", "split-kind", "split-kind-label",
     "split-count-field", "split-count-label", "split-count", "split-lengths-field", "split-lengths-label",
-    "split-lengths", "split-error", "cancel-split", "confirm-split"];
+    "split-lengths", "split-error", "cancel-split", "confirm-split",
+    "insert-button", "insert-menu", "text-mode", "image-button", "image-input", "cut-mode",
+    "font-size-input", "font-size-label", "text-dialog", "text-form", "text-dialog-title", "text-content-label",
+    "text-input", "symbol-palette", "text-error", "cancel-text", "confirm-text"];
+  ids.push("rotation-controls", "rotate-target-label", "rotate-target", "rotate-pick-pivot", "rotate-angle-label", "rotate-angle", "rotate-clockwise", "rotate-counterclockwise", "rotate-status");
+  ids.push("layer-button", "layer-menu", "layer-forward", "layer-backward", "layer-front", "layer-back");
   const ui = Object.fromEntries(ids.map((id) => [id, $(id)]));
+  const gridOpacityInput = $("grid-opacity-input");
+  const gridOpacityLabel = $("grid-opacity-label");
   const words = {
     "zh-CN": {
       title: "几何画布",
+      layers: "图层 ▾", layerActions: { forward: "上移一层", backward: "下移一层", front: "置于顶层", back: "置于底层" },
+      insertMenu: "插入 ▾", textTool: "文字 / 符号", imageButton: "插入图片…", cutTool: "切割图片",
+      textHint: "点击画布任意位置输入文字或符号；双击已有文字可编辑。",
+      cutHint: "拖出一条直线切割所选图片块，可连续切多刀；Shift 点击可多选。",
+      cutMiss: "切割线须穿过所选图片块内部。", imageInvalid: "请选择可读取的 PNG、JPG、WebP 或 GIF 图片。",
+      storageError: "素材保存失败，本机存储空间不足或不可用。请减少图片大小后重试。",
+      fontSize: "字号", invalidFontSize: "字号须为大于 0 的数字。", textContent: "内容",
+      textRequired: "请输入文字或符号。", confirmText: "确定", symbols: "常用数学符号",
+      textObject: "文字", imageObject: "图片图形", objectCount: (n) => n + " 个文字 / 图片对象",
       lengthLabel: "线段长度", add: "＋ 添加线段", change: "修改长度",
-      addShape: "＋ 添加图形", single: "移动线段", group: "移动图形", connect: "连线", splitMode: "点击拆分",
+      addShape: "＋ 添加图形", single: "移动线段", group: "移动图形", rotate: "旋转", gridOpacity: "背景网格",
+      rotateHint: "点击对象选中，设置旋转中心，再拖橙色手柄或输入角度旋转。",
+      rotation: { target: "旋转对象", group: "整个图形", single: "一条线段", pivot: "设置旋转中心", picking: "请在画布点击旋转中心…", angle: "角度", clockwise: "顺时针旋转", counterclockwise: "逆时针旋转", select: "① 点击要旋转的对象", setPivot: "② 设置旋转中心", ready: "③ 拖橙色手柄，或点击旋转按钮", handle: "拖动旋转", invalid: "请输入有效的旋转角度。" },
+      connect: "连线", splitMode: "点击拆分",
       splitButton: "按长度拆分…", mergeButton: "合并线段", splitTitle: "拆分线段", splitKind: "拆分方式",
       splitEqual: "平均拆分", splitCustom: "指定每段长度", splitCount: "份数", splitLengths: "每段长度（用逗号分隔）",
       splitSource: (length) => "当前线段：" + length + " 厘米", splitConfirm: "拆分",
@@ -46,6 +66,7 @@
       emptyHint: "1 格 = 1 厘米；滚动画布可平移视野，按住 Ctrl 滚动可缩放。",
       invalidLength: "请输入大于 0 的线段长度。",
       invalidShape: "请输入大于 0 的图形尺寸。",
+      invalidSector: "半径须大于 0，圆心角须大于 0° 且不超过 360°。",
       invalidQuantity: "创建数量须为大于 0 的整数。",
       invalidWidth: "线宽须为大于 0 的数字。",
       invalidHandleSize: "圆点大小须为大于或等于 0 的数字。",
@@ -59,15 +80,27 @@
       items: (n) => "已选 " + n + " 个对象",
       shape: { square: "正方形", rectangle: "长方形", rhombus: "菱形", parallelogram: "平行四边形",
         trapezoid: "梯形", quadrilateral: "四边形", triangle: "三角形", "equilateral-triangle": "等边三角形",
-        circle: "圆形", ellipse: "椭圆", polygon: "多边形" },
+        circle: "圆形", semicircle: "半圆", sector: "扇形", ellipse: "椭圆", polygon: "多边形" },
       fields: { side: "边长", width: "长", height: "宽／高", first: "第一边", second: "第二边",
         third: "第三边", bottom: "下底", top: "上底", left: "左腰", right: "右腰",
-        radius: "半径", radiusX: "横半径", radiusY: "纵半径" }
+        radius: "半径", radiusX: "横半径", radiusY: "纵半径", sweepAngle: "圆心角" }
     },
     "en-US": {
       title: "Geometry Canvas",
+      layers: "Layers ▾", layerActions: { forward: "Bring forward", backward: "Send backward", front: "Bring to front", back: "Send to back" },
+      insertMenu: "Insert ▾", textTool: "Text / symbols", imageButton: "Insert image…", cutTool: "Cut image",
+      textHint: "Click anywhere to enter text or symbols. Double-click existing text to edit it.",
+      cutHint: "Drag a straight line through selected image pieces. Repeat to cut again; Shift-click to multi-select.",
+      cutMiss: "The cutting line must cross the inside of a selected image piece.", imageInvalid: "Choose a readable PNG, JPG, WebP, or GIF image.",
+      storageError: "Could not save: local storage is full or unavailable. Try a smaller image.",
+      fontSize: "Font size", invalidFontSize: "Enter a font size above zero.", textContent: "Content",
+      textRequired: "Enter text or symbols.", confirmText: "Apply", symbols: "Common math symbols",
+      textObject: "Text", imageObject: "Image shape", objectCount: (n) => n + " text / image objects",
       lengthLabel: "Length", add: "+ Segment", change: "Change",
-      addShape: "+ Shape", single: "Segment", group: "Shape", connect: "Connect", splitMode: "Click to split",
+      addShape: "+ Shape", single: "Segment", group: "Shape", rotate: "Rotate", gridOpacity: "Grid contrast",
+      rotateHint: "Select an object, set a pivot, then drag the orange handle or enter an angle to rotate.",
+      rotation: { target: "Target", group: "Whole shape", single: "One segment", pivot: "Set pivot", picking: "Click the pivot on the canvas…", angle: "Angle", clockwise: "Clockwise", counterclockwise: "Counterclockwise", select: "1. Click an object", setPivot: "2. Set the pivot", ready: "3. Drag the orange handle or apply an angle", handle: "Drag to rotate", invalid: "Enter a valid rotation angle." },
+      connect: "Connect", splitMode: "Click to split",
       splitButton: "Split by length…", mergeButton: "Merge segments", splitTitle: "Split segment", splitKind: "Method",
       splitEqual: "Equal parts", splitCustom: "Set each length", splitCount: "Parts", splitLengths: "Lengths (comma separated)",
       splitSource: (length) => "Selected segment: " + length + " cm", splitConfirm: "Split",
@@ -90,6 +123,7 @@
       emptyHint: "One cell = 1 cm. Scroll to pan the canvas; hold Ctrl and scroll to zoom.",
       invalidLength: "Enter a segment length above zero.",
       invalidShape: "Enter shape dimensions above zero.",
+      invalidSector: "Enter a radius above zero and a central angle above 0° and at most 360°.",
       invalidQuantity: "Enter a whole number of shapes above zero.",
       invalidWidth: "Enter a line width above zero.",
       invalidHandleSize: "Enter an endpoint size of zero or above.",
@@ -103,17 +137,17 @@
       items: (n) => n + " objects selected",
       shape: { square: "Square", rectangle: "Rectangle", rhombus: "Rhombus", parallelogram: "Parallelogram",
         trapezoid: "Trapezoid", quadrilateral: "Quadrilateral", triangle: "Triangle", "equilateral-triangle": "Equilateral triangle",
-        circle: "Circle", ellipse: "Ellipse", polygon: "Polygon" },
+        circle: "Circle", semicircle: "Semicircle", sector: "Sector", ellipse: "Ellipse", polygon: "Polygon" },
       fields: { side: "Side", width: "Length", height: "Width / height", first: "First side", second: "Second side",
         third: "Third side", bottom: "Bottom base", top: "Top base", left: "Left leg", right: "Right leg",
-        radius: "Radius", radiusX: "Horizontal radius", radiusY: "Vertical radius" }
+        radius: "Radius", radiusX: "Horizontal radius", radiusY: "Vertical radius", sweepAngle: "Central angle" }
     }
   };
   const shapeFields = {
     square: [["side", 4]], rectangle: [["width", 6], ["height", 3]],
     triangle: [["first", 4], ["second", 4], ["third", 4]],
     trapezoid: [["bottom", 6], ["top", 4], ["left", 3], ["right", 3]],
-    ellipse: [["radiusX", 4], ["radiusY", 2]], circle: [["radius", 3]]
+    ellipse: [["radiusX", 4], ["radiusY", 2]], circle: [["radius", 3]], sector: [["radius", 3], ["sweepAngle", 180]]
   };
   let initialLanguage = "zh-CN";
   try { if (localStorage.getItem("math-lab-language") === "en-US") initialLanguage = "en-US"; } catch (_) {}
@@ -124,10 +158,19 @@
       Array.isArray(item.segments) && Array.isArray(item.curves));
   } catch (_) {}
   const ZOOM_MIN = 0.25, ZOOM_MAX = 4;
+  let gridOpacity = 18;
+  try {
+    const storedOpacityValue = localStorage.getItem("geometry-canvas-grid-opacity");
+    const storedOpacity = Number(storedOpacityValue);
+    if (storedOpacityValue !== null && Number.isFinite(storedOpacity) && storedOpacity >= 0 && storedOpacity <= 60) gridOpacity = storedOpacity;
+  } catch (_) {}
   const state = {
-    language: initialLanguage, segments: [], curves: [], selected: new Set(), mode: "single",
+    language: initialLanguage, segments: [], curves: [], objects: [], selected: new Set(), mode: "single",
+    textMode: false, cutMode: false, textAction: null, fontSize: 28,
     labelsVisible: true, drag: null, error: null, nextId: 1,
-    pan: { x: 0, y: 0 }, zoom: 1, connectMode: false, splitMode: false, spaceDown: false, handleSize: 3,
+    pan: { x: 0, y: 0 }, zoom: 1, connectMode: false, splitMode: false, rotateMode: false,
+    rotatePivot: null, rotateScope: "group", pickingRotatePivot: false, rotateHandleAngle: 0,
+    spaceDown: false, handleSize: 3,
     history: [], clipboard: null, pasteCount: 0, library: savedLibrary, nameAction: null,
     faceFills: new Map(), selectedFaceKey: null,
     drawStyle: { color: "#087f75", width: 5, dash: "solid" },
@@ -138,6 +181,14 @@
   const key = (id) => String(id);
   const cloneSegments = (segments) => segments.map((s) => ({ ...s, a: { ...s.a }, b: { ...s.b } }));
   const cloneCurves = (curves) => curves.map((c) => ({ ...c }));
+  const cloneObjects = (objects) => objects.map((object) => ({ ...object,
+    ...(object.points ? { points: object.points.map((point) => ({ ...point })) } : {}) }));
+  const selectedObjects = () => state.objects.filter((object) => state.selected.has(key(object.id)));
+  const allItems = () => state.segments.concat(state.curves, state.objects);
+  function scenePoints(segments, curves, objects = []) {
+    return segments.flatMap((segment) => [segment.a, segment.b])
+      .concat(curves.flatMap(canvasModels.curvePoints), objects.flatMap(canvasModels.objectPoints));
+  }
   const palette = [
     ["#172033", "黑色", "Black"], ["#64748b", "灰色", "Gray"], ["#d52a1e", "红色", "Red"],
     ["#e67e22", "橙色", "Orange"], ["#f2c94c", "黄色", "Yellow"], ["#229954", "绿色", "Green"],
@@ -145,8 +196,9 @@
     ["#c02675", "粉色", "Pink"]
   ];
   const shortcutRows = [
+    ["T / I / K", "文字／插入图片／切割图片", "Text / insert image / cut image"],
     ["N", "添加线段", "Add segment"], ["Shift + N", "添加图形", "Add shape"],
-    ["1 / 2 / 3 / 4", "移动线段／移动图形／连线／点击拆分", "Segment / shape / connect / click to split"],
+    ["1 / 2 / 3 / 4 / 5", "移动线段／移动图形／连线／点击拆分／旋转", "Segment / shape / connect / click to split / rotate"],
     ["X / J", "按长度拆分／合并所选", "Split by length / merge selection"],
     ["Ctrl + A", "全选画布对象", "Select all objects"],
     ["Ctrl + C / V", "复制／粘贴", "Copy / paste"],
@@ -168,7 +220,8 @@
       '</span><kbd>' + keys + '</kbd></div>').join("");
   }
   function snapshot() {
-    return { segments: cloneSegments(state.segments), curves: cloneCurves(state.curves),
+    return { segments: cloneSegments(state.segments), curves: cloneCurves(state.curves), objects: cloneObjects(state.objects),
+      fontSize: state.fontSize,
       selected: [...state.selected], labelsVisible: state.labelsVisible, nextId: state.nextId,
       drawStyle: { ...state.drawStyle }, layout: { ...state.layout },
       handleSize: state.handleSize, pan: { ...state.pan }, zoom: state.zoom,
@@ -179,6 +232,7 @@
     if (!state.history.length) return;
     const before = state.history.pop();
     state.segments = before.segments; state.curves = before.curves;
+    state.objects = before.objects || []; state.fontSize = before.fontSize || 28;
     state.selected = new Set(before.selected); state.labelsVisible = before.labelsVisible;
     state.nextId = before.nextId;
     state.drawStyle = before.drawStyle; state.layout = before.layout;
@@ -207,6 +261,7 @@
     const zoom = state.zoom;
     ui.canvas.setAttribute("viewBox", [state.pan.x, state.pan.y, width / zoom, height / zoom].join(" "));
     const background = ui.canvas.parentElement.style;
+    background.setProperty?.("--grid-opacity", String(gridOpacity / 100));
     background.backgroundSize = 32 * zoom + "px " + 32 * zoom + "px";
     background.backgroundPosition = -state.pan.x * zoom + "px " + -state.pan.y * zoom + "px";
     ui["zoom-reset"].textContent = Math.round(zoom * 100) + "%";
@@ -224,10 +279,7 @@
     syncViewport();
   }
   function zoomFit() {
-    const points = [];
-    state.segments.forEach((segment) => points.push(segment.a, segment.b));
-    state.curves.forEach((curve) => points.push(
-      { x: curve.cx - curve.rx, y: curve.cy - curve.ry }, { x: curve.cx + curve.rx, y: curve.cy + curve.ry }));
+    const points = scenePoints(state.segments, state.curves, state.objects);
     if (!points.length) { state.zoom = 1; state.pan = { x: 0, y: 0 }; syncViewport(); return; }
     const rect = ui.canvas.getBoundingClientRect();
     const minX = Math.min(...points.map((p) => p.x)), maxX = Math.max(...points.map((p) => p.x));
@@ -263,6 +315,41 @@
   }
   function dashPattern(style) { return style.dash === "dashed" ? style.width * 3 + " " + style.width * 2 : "none"; }
   const components = () => geometry.connectedSegmentComponents(state.segments);
+  function sceneLayers() {
+    const layers = state.curves.map((curve) => ({ id: curve.id, items: [curve], curve }))
+      .concat(state.objects.map((object) => ({ id: object.id, items: [object], object })),
+        components().map((segments) => ({ id: segments[0].id, items: segments, segments })));
+    let highest = Math.max(-1, ...allItems().map((item) => Number.isFinite(item.layer) ? item.layer : -1));
+    layers.forEach((layer) => {
+      const saved = layer.items.filter((item) => Number.isFinite(item.layer)).map((item) => item.layer);
+      layer.order = saved.length ? Math.max(...saved) : ++highest;
+      layer.items.forEach((item) => { item.layer = layer.order; });
+    });
+    return layers.sort((a, b) => a.order - b.order);
+  }
+  function selectedLayerIds(layers) {
+    return new Set(layers.filter((layer) => layer.items.some((item) => state.selected.has(key(item.id))))
+      .map((layer) => key(layer.id)));
+  }
+  function changeLayers(direction) {
+    const layers = sceneLayers();
+    const reordered = canvasModels.moveLayers(layers, selectedLayerIds(layers), direction);
+    if (reordered.every((layer, index) => layer === layers[index])) return;
+    record();
+    reordered.forEach((layer, index) => layer.items.forEach((item) => { item.layer = index; }));
+    state.error = null;
+    render();
+  }
+  function placeLayersOnTop(ids) {
+    const inserted = new Set(ids);
+    const items = state.curves.concat(state.objects, state.segments).filter((item) => inserted.has(key(item.id)));
+    const orders = [...new Set(items.filter((item) => Number.isFinite(item.layer)).map((item) => item.layer))].sort((a, b) => a - b);
+    const highest = Math.max(-1, ...allItems().filter((item) => !items.includes(item))
+      .map((item) => Number.isFinite(item.layer) ? item.layer : -1));
+    items.forEach((item, index) => {
+      item.layer = highest + 1 + (Number.isFinite(item.layer) ? orders.indexOf(item.layer) : orders.length + index);
+    });
+  }
   const groupFor = (id) => components().find((group) => group.some((segment) => segment.id === id)) || [];
   const faceKey = (ids) => ids.map(Number).sort((a, b) => a - b).join(",");
   function faceFillRecords(segments) {
@@ -304,11 +391,12 @@
   }
   function activeObject() {
     const all = components().map((segments) => ({ type: "segments", segments }))
-      .concat(state.curves.map((curve) => ({ type: "curve", curve })));
+      .concat(state.curves.map((curve) => ({ type: "curve", curve })),
+        state.objects.map((object) => ({ type: object.kind, object })));
     if (state.selected.size === 0) return all.length === 1 ? all[0] : null;
-    const selectedGroups = all.filter((object) => object.type === "curve"
-      ? state.selected.has(key(object.curve.id))
-      : object.segments.some((segment) => state.selected.has(key(segment.id))));
+    const selectedGroups = all.filter((object) => object.type === "segments"
+      ? object.segments.some((segment) => state.selected.has(key(segment.id)))
+      : state.selected.has(key((object.curve || object.object).id)));
     return selectedGroups.length === 1 ? selectedGroups[0] : null;
   }
   function groupState(group) {
@@ -320,72 +408,126 @@
   function renderCanvas() {
     let markup = "";
     const unitsPerPixel = 1 / (Math.abs(ui.canvas.getScreenCTM()?.a) || 1);
-    components().forEach((group) => {
-      const model = groupState(group);
-      if (model.closed) markup += '<polygon class="fill-shape" data-group="' + group[0].id + '" style="' +
-        fillStyle({ ...group[0], fill: state.faceFills.get(faceKey(group.map((item) => item.id))) ?? group[0].fill }) + '" points="' +
-        model.vertices.map((p) => p.x + "," + p.y).join(" ") + '" />';
-      else geometry.boundedSegmentFaces(group).forEach((face) => {
-        const ids = face.segmentIndexes.map((index) => group[index].id);
-        const id = faceKey(ids);
-        markup += '<polygon class="fill-shape" data-face="' + id + '"' +
-          (state.selectedFaceKey === id && state.selected.size === group.length &&
-            group.every((item) => state.selected.has(key(item.id))) ? ' data-selected="true"' : "") + ' style="' +
-          fillStyle({ color: group[face.segmentIndexes[0]].color, fill: faceFill({ ...face, group, key: id }) }) + '" points="' +
-          face.vertices.map((point) => point.x + "," + point.y).join(" ") + '" />';
+    sceneLayers().forEach((layer) => {
+      markup += '<g class="scene-layer" data-layer-id="' + layer.id + '">';
+      (layer.segments ? [layer.segments] : []).forEach((group) => {
+        const model = groupState(group);
+        if (model.closed) markup += '<polygon class="fill-shape" data-group="' + group[0].id + '" style="' +
+          fillStyle({ ...group[0], fill: state.faceFills.get(faceKey(group.map((item) => item.id))) ?? group[0].fill }) + '" points="' +
+          model.vertices.map((p) => p.x + "," + p.y).join(" ") + '" />';
+        else geometry.boundedSegmentFaces(group).forEach((face) => {
+          const ids = face.segmentIndexes.map((index) => group[index].id);
+          const id = faceKey(ids);
+          markup += '<polygon class="fill-shape" data-face="' + id + '"' +
+            (state.selectedFaceKey === id && state.selected.size === group.length &&
+              group.every((item) => state.selected.has(key(item.id))) ? ' data-selected="true"' : "") + ' style="' +
+            fillStyle({ color: group[face.segmentIndexes[0]].color, fill: faceFill({ ...face, group, key: id }) }) + '" points="' +
+            face.vertices.map((point) => point.x + "," + point.y).join(" ") + '" />';
+        });
       });
+      (layer.curve ? [layer.curve] : []).forEach((curve) => {
+        const style = styleFor(curve);
+        const sweep = curve.kind === "semicircle" ? 180 : curve.kind === "sector" ? curve.sweepAngle : 360;
+        const end = (180 + sweep) * Math.PI / 180;
+        const outline = sweep < 360
+          ? '<path d="M' + curve.cx + ' ' + curve.cy + 'L' + (curve.cx - curve.rx) + ' ' + curve.cy +
+            'A' + curve.rx + ' ' + curve.ry + ' 0 ' + (sweep > 180 ? 1 : 0) + ' 1 ' +
+            (curve.cx + curve.rx * Math.cos(end)) + ' ' + (curve.cy + curve.ry * Math.sin(end)) + 'Z"'
+          : '<ellipse cx="' + curve.cx + '" cy="' + curve.cy + '" rx="' + curve.rx + '" ry="' + curve.ry + '"';
+        markup += outline + ' class="curve' + (state.selected.has(key(curve.id)) ? ' selected' : '') +
+          '" data-id="' + curve.id + '" vector-effect="non-scaling-stroke" style="stroke:' + style.color +
+          ';stroke-width:' + style.width + ';stroke-dasharray:' + dashPattern(style) +
+          ';' + fillStyle(curve) + '"' + (curve.angle ? ' transform="rotate(' + curve.angle + ' ' + curve.cx + ' ' + curve.cy + ')"' : '') + ' />';
+      });
+      (layer.object ? [layer.object] : []).forEach((object) => {
+        const selected = state.selected.has(key(object.id));
+        markup += '<g class="canvas-object ' + object.kind + '-object' + (selected ? ' selected' : '') +
+          '" data-id="' + object.id + '" transform="translate(' + object.x + ' ' + object.y + ') rotate(' + (object.angle || 0) + ')">';
+        if (object.kind === "image") {
+          const points = object.points.map((p) => p.x + ',' + p.y).join(' ');
+          markup += '<defs><clipPath id="image-clip-' + object.id + '" clipPathUnits="userSpaceOnUse"><polygon points="' + points + '" /></clipPath></defs>' +
+            '<image href="' + escapeHtml(object.src) + '" width="' + object.width + '" height="' + object.height +
+            '" preserveAspectRatio="none" clip-path="url(#image-clip-' + object.id + ')" pointer-events="none" />' +
+            '<polygon class="image-boundary" points="' + points + '" vector-effect="non-scaling-stroke" style="stroke:' +
+            (selected ? '#a76400' : object.color || '#087f75') + ';stroke-width:' + (selected ? 3 : object.widthStyle || 1) + '" />';
+        } else {
+          markup += '<rect class="text-hit" width="' + object.width + '" height="' + object.height + '" />' +
+            '<text fill="' + object.color + '" font-size="' + object.fontSize + '" dominant-baseline="text-before-edge">' +
+            object.text.split('\n').map((line, i) => '<tspan x="0" y="' + i * object.fontSize * 1.3 + '">' + escapeHtml(line) + '</tspan>').join('') + '</text>';
+        }
+        markup += '</g>';
+      });
+      (layer.segments || []).forEach((segment) => {
+        const { a, b, id, length } = segment;
+        const style = styleFor(segment);
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const distance = Math.hypot(dx, dy) || 1;
+        const labelX = (a.x + b.x) / 2 - dy / distance * 24 * unitsPerPixel;
+        const labelY = (a.y + b.y) / 2 + dx / distance * 24 * unitsPerPixel;
+        if (state.selected.has(key(id))) markup += '<line class="selection-halo" x1="' + a.x +
+          '" y1="' + a.y + '" x2="' + b.x + '" y2="' + b.y + '" vector-effect="non-scaling-stroke" style="stroke-width:' +
+          (style.width + 6) + ';stroke-dasharray:' + dashPattern(style) + '" />';
+        markup += '<line class="stick' + (state.selected.has(key(id)) ? ' selected' : '') +
+          '" x1="' + a.x + '" y1="' + a.y + '" x2="' + b.x + '" y2="' + b.y + '" vector-effect="non-scaling-stroke"' +
+          ' style="stroke:' + style.color + ';stroke-width:' + style.width +
+          ';stroke-dasharray:' + dashPattern(style) + '" />';
+        markup += '<line class="hit-stick" data-id="' + id + '" x1="' + a.x +
+          '" y1="' + a.y + '" x2="' + b.x + '" y2="' + b.y + '" vector-effect="non-scaling-stroke" style="stroke-width:' +
+          Math.max(28, style.width + 16) + '" aria-label="' + fmt(length) + ' cm" />';
+        const drawing = state.drag && state.drag.kind === "draw" && state.drag.id === id;
+        if (state.labelsVisible && !drawing) markup += '<text class="edge-label" x="' + labelX +
+          '" y="' + (labelY + 5 * unitsPerPixel) + '" style="font-size:' +
+          18 * unitsPerPixel + 'px">' + fmt(length) + '</text>';
+      });
+      (layer.segments || []).forEach(({ id, a, b }) => {
+        markup += '<circle class="joint" cx="' + a.x + '" cy="' + a.y + '" r="' + state.handleSize * unitsPerPixel + '" vector-effect="non-scaling-stroke" />';
+        markup += '<circle class="joint" cx="' + b.x + '" cy="' + b.y + '" r="' + state.handleSize * unitsPerPixel + '" vector-effect="non-scaling-stroke" />';
+        markup += '<circle class="hit-joint" data-id="' + id + '" data-endpoint="a" cx="' + a.x + '" cy="' + a.y + '" r="' + Math.max(10, state.handleSize + 6) * unitsPerPixel + '" />';
+        markup += '<circle class="hit-joint" data-id="' + id + '" data-endpoint="b" cx="' + b.x + '" cy="' + b.y + '" r="' + Math.max(10, state.handleSize + 6) * unitsPerPixel + '" />';
+      });
+      markup += '</g>';
     });
-    state.curves.forEach((curve) => {
-      const style = styleFor(curve);
-      markup += '<ellipse class="curve' + (state.selected.has(key(curve.id)) ? ' selected' : '') +
-        '" data-id="' + curve.id + '" cx="' + curve.cx + '" cy="' + curve.cy +
-        '" rx="' + curve.rx + '" ry="' + curve.ry + '" vector-effect="non-scaling-stroke" style="stroke:' + style.color +
-        ';stroke-width:' + style.width + ';stroke-dasharray:' + dashPattern(style) +
-        ';' + fillStyle(curve) + '" />';
-    });
-    state.segments.forEach((segment) => {
-      const { a, b, id, length } = segment;
-      const style = styleFor(segment);
-      const dx = b.x - a.x, dy = b.y - a.y;
-      const distance = Math.hypot(dx, dy) || 1;
-      const labelX = (a.x + b.x) / 2 - dy / distance * 24 * unitsPerPixel;
-      const labelY = (a.y + b.y) / 2 + dx / distance * 24 * unitsPerPixel;
-      if (state.selected.has(key(id))) markup += '<line class="selection-halo" x1="' + a.x +
-        '" y1="' + a.y + '" x2="' + b.x + '" y2="' + b.y + '" vector-effect="non-scaling-stroke" style="stroke-width:' +
-        (style.width + 6) + ';stroke-dasharray:' + dashPattern(style) + '" />';
-      markup += '<line class="stick' + (state.selected.has(key(id)) ? ' selected' : '') +
-        '" x1="' + a.x + '" y1="' + a.y + '" x2="' + b.x + '" y2="' + b.y + '" vector-effect="non-scaling-stroke"' +
-        ' style="stroke:' + style.color + ';stroke-width:' + style.width +
-        ';stroke-dasharray:' + dashPattern(style) + '" />';
-      markup += '<line class="hit-stick" data-id="' + id + '" x1="' + a.x +
-        '" y1="' + a.y + '" x2="' + b.x + '" y2="' + b.y + '" vector-effect="non-scaling-stroke" style="stroke-width:' +
-        Math.max(28, style.width + 16) + '" aria-label="' + fmt(length) + ' cm" />';
-      const drawing = state.drag && state.drag.kind === "draw" && state.drag.id === id;
-      if (state.labelsVisible && !drawing) markup += '<text class="edge-label" x="' + labelX +
-        '" y="' + (labelY + 5 * unitsPerPixel) + '" style="font-size:' +
-        18 * unitsPerPixel + 'px">' + fmt(length) + '</text>';
-    });
-    state.segments.forEach(({ id, a, b }) => {
-      markup += '<circle class="joint" cx="' + a.x + '" cy="' + a.y + '" r="' + state.handleSize * unitsPerPixel + '" vector-effect="non-scaling-stroke" />';
-      markup += '<circle class="joint" cx="' + b.x + '" cy="' + b.y + '" r="' + state.handleSize * unitsPerPixel + '" vector-effect="non-scaling-stroke" />';
-      markup += '<circle class="hit-joint" data-id="' + id + '" data-endpoint="a" cx="' + a.x + '" cy="' + a.y + '" r="' + Math.max(10, state.handleSize + 6) * unitsPerPixel + '" />';
-      markup += '<circle class="hit-joint" data-id="' + id + '" data-endpoint="b" cx="' + b.x + '" cy="' + b.y + '" r="' + Math.max(10, state.handleSize + 6) * unitsPerPixel + '" />';
-    });
+    if (state.drag?.kind === "cut") {
+      const { start, pointer } = state.drag;
+      const dx = pointer.x - start.x, dy = pointer.y - start.y, distance = Math.hypot(dx, dy) || 1;
+      const rect = ui.canvas.getBoundingClientRect(), reach = Math.hypot(rect.width, rect.height) / state.zoom * 2;
+      markup += '<line class="cut-preview" x1="' + (start.x - dx / distance * reach) + '" y1="' +
+        (start.y - dy / distance * reach) + '" x2="' + (start.x + dx / distance * reach) + '" y2="' +
+        (start.y + dy / distance * reach) + '" vector-effect="non-scaling-stroke" />';
+    }
+    if (state.rotatePivot) {
+      const { x, y } = state.rotatePivot;
+      markup += '<g class="rotate-pivot" transform="translate(' + x + ' ' + y + ') scale(' + unitsPerPixel + ')" aria-hidden="true"><circle r="10" /><path d="M-15 0H15M0-15V15" /></g>';
+      if (state.rotateMode && state.selected.size && !state.pickingRotatePivot) {
+        const handle = rotationHandlePoint();
+        markup += '<line class="rotate-arm" x1="' + x + '" y1="' + y + '" x2="' + handle.x + '" y2="' + handle.y + '" />' +
+          '<circle class="rotate-handle" data-rotate-handle="true" cx="' + handle.x + '" cy="' + handle.y + '" r="' + 13 * unitsPerPixel + '" vector-effect="non-scaling-stroke" />' +
+          '<text class="rotate-handle-label" x="' + handle.x + '" y="' + (handle.y - 22 * unitsPerPixel) + '" style="font-size:' + 14 * unitsPerPixel + 'px">' + t().rotation.handle + '</text>';
+      }
+    }
     ui["shape-layer"].innerHTML = markup;
   }
   function render() {
-    const w = t(), count = state.segments.length + state.curves.length;
+    const w = t(), count = allItems().length;
+    const layers = sceneLayers(), chosenLayers = selectedLayerIds(layers);
+    ui["layer-button"].textContent = w.layers;
+    for (const direction of ["forward", "backward", "front", "back"]) {
+      const button = ui["layer-" + direction];
+      button.textContent = w.layerActions[direction];
+      button.disabled = canvasModels.moveLayers(layers, chosenLayers, direction).every((layer, index) => layer === layers[index]);
+    }
     const active = activeObject();
     const face = state.selectedFaceKey ? selectedFace() : null;
     const fillTarget = face ? { type: "face", face } : state.selected.size && active &&
-      (active.type === "curve" || groupState(active.segments).closed) ? active : null;
+      (active.type === "curve" || (active.type === "segments" && groupState(active.segments).closed)) ? active : null;
     const fillItem = fillTarget && (fillTarget.type === "face" ? { fill: faceFill(face) } :
       fillTarget.type === "curve" ? fillTarget.curve :
         { fill: state.faceFills.get(faceKey(fillTarget.segments.map((item) => item.id))) ?? fillTarget.segments[0].fill });
     syncViewport();
     const selectedItem = state.segments.find((item) => state.selected.has(key(item.id))) ||
-      state.curves.find((item) => state.selected.has(key(item.id)));
-    if (selectedItem) state.drawStyle = styleFor(selectedItem);
+      state.curves.find((item) => state.selected.has(key(item.id))) || selectedObjects().find((item) => item.kind === "text");
+    if (selectedItem?.kind === "text") state.drawStyle.color = selectedItem.color;
+    else if (selectedItem) state.drawStyle = styleFor(selectedItem);
     document.documentElement.lang = state.language;
     document.title = w.title + " - Math Motion Lab";
     ui["language-button"].textContent = state.language === "zh-CN" ? "EN" : "中文";
@@ -393,6 +535,19 @@
     ui["add-button"].textContent = w.add;
     ui["change-button"].textContent = w.change;
     ui["shape-button"].textContent = w.addShape;
+    ui["insert-button"].textContent = w.insertMenu;
+    ui["text-mode"].textContent = w.textTool;
+    ui["image-button"].textContent = w.imageButton;
+    ui["cut-mode"].textContent = w.cutTool;
+    ui["cut-mode"].disabled = !selectedObjects().some((object) => object.kind === "image");
+    ui["font-size-label"].textContent = w.fontSize;
+    ui["font-size-input"].value = String(selectedObjects().find((object) => object.kind === "text")?.fontSize || state.fontSize);
+    ["text", "cut"].forEach((mode) => {
+      ui[mode + "-mode"].classList.toggle("active", state[mode + "Mode"]);
+      ui[mode + "-mode"].setAttribute("aria-pressed", String(state[mode + "Mode"]));
+      ui.canvas.parentElement.classList.toggle(mode + "-active", state[mode + "Mode"]);
+    });
+    ui["insert-button"].classList.toggle("active", state.textMode || state.cutMode);
     ui["color-label"].textContent = w.color;
     ui["style-button"].textContent = w.style;
     ui["more-button"].textContent = w.more;
@@ -446,6 +601,13 @@
     [...ui["dash-input"].options].forEach((option) => { option.textContent = w[option.value]; });
     ui["single-mode"].textContent = w.single;
     ui["group-mode"].textContent = w.group;
+    ui["rotate-mode"].textContent = w.rotate;
+    ui["rotate-mode"].classList.toggle("active", state.rotateMode);
+    ui["rotate-mode"].setAttribute("aria-pressed", String(state.rotateMode));
+    renderRotationControls();
+    gridOpacityLabel.textContent = w.gridOpacity;
+    gridOpacityInput.value = String(gridOpacity);
+    ui.canvas.parentElement.classList.toggle("rotate-active", state.rotateMode);
     ui["labels-button"].textContent = state.labelsVisible ? w.hideLabels : w.showLabels;
     ui["labels-button"].setAttribute("aria-pressed", String(state.labelsVisible));
     ui["delete-button"].textContent = w.remove + (state.selected.size > 1
@@ -461,6 +623,7 @@
     ui["empty-title"].textContent = w.emptyTitle;
     ui["empty-copy"].textContent = w.emptyCopy + " " + w.emptyHint;
     ui["segment-count"].textContent = w.count(state.segments.length, state.curves.length);
+    if (state.objects.length) ui["segment-count"].textContent += " · " + w.objectCount(state.objects.length);
     ui["empty-state"].hidden = count > 0;
     ui["change-button"].disabled = selectedSegments().length !== 1 || state.selected.size !== 1;
     ui["split-button"].disabled = selectedSegments().length !== 1 || state.selected.size !== 1;
@@ -468,8 +631,9 @@
     ui["delete-button"].disabled = state.selected.size === 0;
     ui["clear-button"].disabled = count === 0;
     for (const mode of ["single", "group"]) {
-      ui[mode + "-mode"].classList.toggle("active", !state.connectMode && !state.splitMode && state.mode === mode);
-      ui[mode + "-mode"].setAttribute("aria-pressed", String(!state.connectMode && !state.splitMode && state.mode === mode));
+      const activeMode = !state.connectMode && !state.splitMode && !state.rotateMode && !state.textMode && !state.cutMode && state.mode === mode;
+      ui[mode + "-mode"].classList.toggle("active", activeMode);
+      ui[mode + "-mode"].setAttribute("aria-pressed", String(activeMode));
     }
     let name = w.chooseShape;
     let perimeter = "";
@@ -484,12 +648,22 @@
         : w.manyTotal(active.segments.length, fmt(model.totalLength));
     } else if (active && active.type === "curve") {
       const curve = active.curve;
-      const length = geometry.curvedPerimeter(curve.kind, curve.rx / SCALE, curve.ry / SCALE);
+      const isSector = curve.kind === "sector" || curve.kind === "semicircle";
+      const sweep = curve.kind === "semicircle" ? 180 : curve.sweepAngle;
+      const length = isSector ? canvasModels.sectorPerimeter(curve.rx / SCALE, sweep)
+        : geometry.curvedPerimeter(curve.kind, curve.rx / SCALE, curve.ry / SCALE);
       name = shapeName(curve.kind, 0);
+      if (curve.kind === "sector") name += " " + fmt(sweep) + "°";
       perimeter = w.approximate + " " + fmt(length) + " " + w.unit;
-      formula = curve.kind === "circle"
+      formula = curve.kind === "circle" || (isSector && sweep === 360)
         ? "2 × π × " + fmt(curve.rx / SCALE) + " ≈ " + fmt(length) + " " + w.unit
-        : w.approximate + " " + fmt(length) + " " + w.unit;
+        : isSector ? fmt(sweep) + " ÷ 360 × 2 × π × " + fmt(curve.rx / SCALE) + " + 2 × " + fmt(curve.rx / SCALE) + " ≈ " + fmt(length) + " " + w.unit
+          : w.approximate + " " + fmt(length) + " " + w.unit;
+    } else if (active && active.type === "text") {
+      name = w.textObject;
+    } else if (active && active.type === "image") {
+      name = w.imageObject;
+      perimeter = fmt(canvasModels.polygonPerimeter(active.object.points) / SCALE) + " " + w.unit;
     } else if (state.selected.size > 1) {
       name = w.items(state.selected.size);
     }
@@ -506,13 +680,14 @@
     ui["shape-name"].textContent = name;
     ui["perimeter-value"].textContent = perimeter;
     ui.formula.textContent = formula;
-    ui.hint.textContent = state.error || "";
+    ui.hint.textContent = state.error || (state.textMode ? w.textHint : state.cutMode ? w.cutHint : state.rotateMode ? w.rotateHint : "");
     ui.hint.classList.toggle("error", Boolean(state.error));
-    ui["canvas-status"].hidden = !(state.error || active);
+    ui["canvas-status"].hidden = !(state.error || active || state.textMode || state.cutMode || state.rotateMode);
     renderCanvas();
   }
   function persistLibrary() {
-    try { localStorage.setItem("geometry-canvas-library", JSON.stringify(state.library)); } catch (_) {}
+    try { localStorage.setItem("geometry-canvas-library", JSON.stringify(state.library)); return true; }
+    catch (_) { state.error = t().storageError; return false; }
   }
   function escapeHtml(value) {
     return value.replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
@@ -534,23 +709,22 @@
     while (used.has(base + " " + suffix)) suffix += 1;
     return base + " " + suffix;
   }
-  function libraryEntry(segments, curves, base) {
-    const points = segments.flatMap((s) => [s.a, s.b])
-      .concat(curves.flatMap((c) => [{ x: c.cx - c.rx, y: c.cy - c.ry }, { x: c.cx + c.rx, y: c.cy + c.ry }]));
+  function libraryEntry(segments, curves, base, objects = []) {
+    const points = scenePoints(segments, curves, objects);
     const minX = Math.min(...points.map((p) => p.x)), minY = Math.min(...points.map((p) => p.y));
     return { name: libraryName(base),
       faceFills: faceFillRecords(segments).map(({ ids, fill }) =>
         ({ indexes: ids.map((id) => segments.findIndex((segment) => segment.id === id)), fill })),
-      segments: segments.map((s) => ({ length: s.length, color: s.color, fill: s.fill, width: s.width, dash: s.dash,
+      segments: segments.map((s) => ({ length: s.length, layer: s.layer, color: s.color, fill: s.fill, width: s.width, dash: s.dash,
         a: { x: s.a.x - minX, y: s.a.y - minY }, b: { x: s.b.x - minX, y: s.b.y - minY } })),
-      curves: curves.map((c) => ({ kind: c.kind, rx: c.rx, ry: c.ry, color: c.color, fill: c.fill, width: c.width, dash: c.dash,
+      objects: cloneObjects(objects).map((object) => ({ ...object, x: object.x - minX, y: object.y - minY })),
+      curves: curves.map((c) => ({ kind: c.kind, layer: c.layer, rx: c.rx, ry: c.ry, sweepAngle: c.sweepAngle, angle: c.angle || 0, color: c.color, fill: c.fill, width: c.width, dash: c.dash,
         cx: c.cx - minX, cy: c.cy - minY })) };
   }
   function insertSaved(index) {
     const item = state.library[index];
     if (!item) return;
-    const points = item.segments.flatMap((s) => [s.a, s.b])
-      .concat(item.curves.flatMap((c) => [{ x: c.cx - c.rx, y: c.cy - c.ry }, { x: c.cx + c.rx, y: c.cy + c.ry }]));
+    const points = scenePoints(item.segments, item.curves, item.objects || []);
     if (!points.length) return;
     record();
     const minX = Math.min(...points.map((p) => p.x)), maxX = Math.max(...points.map((p) => p.x));
@@ -562,13 +736,17 @@
     item.segments.forEach((s) => {
       const id = nextId(); ids.push(key(id));
       newSegmentIds.push(id);
-      state.segments.push({ id, length: s.length, color: s.color, fill: s.fill, width: s.width, dash: s.dash,
+      state.segments.push({ id, length: s.length, layer: s.layer, color: s.color, fill: s.fill, width: s.width, dash: s.dash,
         a: { x: s.a.x + shiftX, y: s.a.y + shiftY }, b: { x: s.b.x + shiftX, y: s.b.y + shiftY } });
     });
     item.curves.forEach((c) => {
       const id = nextId(); ids.push(key(id));
-      state.curves.push({ id, kind: c.kind, rx: c.rx, ry: c.ry, color: c.color, fill: c.fill, width: c.width, dash: c.dash,
+      state.curves.push({ id, kind: c.kind, layer: c.layer, rx: c.rx, ry: c.ry, sweepAngle: c.sweepAngle, angle: c.angle || 0, color: c.color, fill: c.fill, width: c.width, dash: c.dash,
         cx: c.cx + shiftX, cy: c.cy + shiftY });
+    });
+    cloneObjects(item.objects || []).forEach((object) => {
+      const id = nextId(); ids.push(key(id));
+      state.objects.push({ ...object, id, x: object.x + shiftX, y: object.y + shiftY });
     });
     (Array.isArray(item.faceFills) ? item.faceFills : []).forEach(({ indexes, fill }) => {
       if (Array.isArray(indexes) && (fill === "none" || /^#[0-9a-f]{6}$/i.test(fill || "")) &&
@@ -576,6 +754,7 @@
         state.faceFills.set(faceKey(indexes.map((index) => newSegmentIds[index])), fill);
       }
     });
+    placeLayersOnTop(ids);
     state.selected = new Set(ids);
     state.error = null;
     render();
@@ -603,8 +782,8 @@
   }
   function shapeFieldMarkup(kind) {
     return shapeFields[kind].map(([name, value]) =>
-      '<label class="dialog-field"><span>' + t().fields[name] + '（' + t().unit + '）</span>' +
-      '<input name="' + name + '" type="number" min="0.01" step="any" value="' + value + '" required /></label>'
+      '<label class="dialog-field"><span>' + t().fields[name] + '（' + (name === "sweepAngle" ? "°" : t().unit) + '）</span>' +
+      '<input name="' + name + '" type="number" min="' + (name === "sweepAngle" ? '0' : '0.01') + '"' + (name === "sweepAngle" ? ' max="360"' : '') + ' step="any" value="' + value + '" required /></label>'
     ).join("");
   }
   function renderDialog() {
@@ -614,7 +793,7 @@
     ui["quantity-label"].textContent = t().quantity;
     ui["cancel-shape"].textContent = t().cancel;
     ui["create-shape"].textContent = t().create;
-    ui["shape-type"].innerHTML = ["square", "rectangle", "triangle", "trapezoid", "ellipse", "circle"]
+    ui["shape-type"].innerHTML = ["square", "rectangle", "triangle", "trapezoid", "ellipse", "circle", "sector"]
       .map((type) => '<option value="' + type + '"' + (type === kind ? ' selected' : '') + '>' + t().shape[type] + '</option>').join("");
     ui["shape-fields"].innerHTML = shapeFieldMarkup(kind);
     ui["shape-error"].textContent = "";
@@ -651,19 +830,22 @@
     }
     const value = Object.fromEntries(shapeFields[kind].map(([name]) =>
       [name, Number(ui["shape-fields"].querySelector('[name="' + name + '"]').value)]));
-    if (Object.values(value).some((number) => !Number.isFinite(number) || number <= 0)) {
-      ui["shape-error"].textContent = t().invalidShape; return;
+    if (Object.values(value).some((number) => !Number.isFinite(number) || number <= 0) || (kind === "sector" && value.sweepAngle > 360)) {
+      ui["shape-error"].textContent = kind === "sector" ? t().invalidSector : t().invalidShape; return;
     }
-    if (kind === "circle" || kind === "ellipse") {
-      const rx = (kind === "circle" ? value.radius : value.radiusX) * SCALE;
-      const ry = (kind === "circle" ? value.radius : value.radiusY) * SCALE;
+    if (kind === "circle" || kind === "ellipse" || kind === "sector") {
+      const rx = (kind === "ellipse" ? value.radiusX : value.radius) * SCALE;
+      const ry = (kind === "ellipse" ? value.radiusY : value.radius) * SCALE;
       if (!Number.isFinite(rx) || !Number.isFinite(ry)) { ui["shape-error"].textContent = t().invalidShape; return; }
+      const curve = { kind, cx: 0, cy: 0, rx, ry, ...(kind === "sector" ? { sweepAngle: value.sweepAngle } : {}) };
+      const points = canvasModels.curvePoints(curve);
+      const minX = Math.min(...points.map((point) => point.x)), maxX = Math.max(...points.map((point) => point.x));
+      const minY = Math.min(...points.map((point) => point.y)), maxY = Math.max(...points.map((point) => point.y));
       record();
       const newCurves = [];
       for (let index = 0; index < quantity; index += 1) {
-        const position = nextPosition(rx * 2, ry * 2);
-        newCurves.push({ id: nextId(), kind, cx: position.x + rx, cy: position.y + ry,
-          rx, ry, ...state.drawStyle });
+        const position = nextPosition(maxX - minX, maxY - minY);
+        newCurves.push({ ...curve, id: nextId(), cx: position.x - minX, cy: position.y - minY, ...state.drawStyle });
       }
       newCurves.forEach((curve) => state.curves.push(curve));
       state.selected = quantity === 1 ? new Set([key(newCurves[0].id)]) : new Set();
@@ -719,7 +901,7 @@
     if (!pieces) return false;
     record();
     const index = state.segments.findIndex((item) => item.id === segment.id);
-    pieces.forEach((piece, part) => { piece.id = part === 0 ? segment.id : nextId(); });
+    pieces.forEach((piece, part) => { piece.id = part === 0 ? segment.id : nextId(); piece.layer = segment.layer; });
     remapFaceFills([segment.id], pieces.map((piece) => piece.id));
     state.segments.splice(index, 1, ...pieces);
     state.selected = new Set(pieces.map((piece) => key(piece.id)));
@@ -732,6 +914,7 @@
     if (selected.length < 2 || selected.length !== state.selected.size) return;
     const merged = geometry.mergeCollinearSegments(selected, state.segments, SCALE);
     if (!merged) { state.error = t().mergeInvalid; render(); return; }
+    merged.layer = Math.max(...selected.map((segment) => segment.layer));
     record();
     const selectedIds = new Set(selected.map((item) => item.id));
     const index = state.segments.findIndex((item) => selectedIds.has(item.id));
@@ -802,9 +985,10 @@
   function toCanvas(event) {
     const point = ui.canvas.createSVGPoint();
     point.x = event.clientX; point.y = event.clientY;
-    return point.matrixTransform(ui.canvas.getScreenCTM().inverse());
+    const position = point.matrixTransform(ui.canvas.getScreenCTM().inverse());
+    return { x: position.x, y: position.y };
   }
-  function translateSelection(originalSegments, originalCurves, selected, dx, dy) {
+  function translateSelection(originalSegments, originalCurves, selected, dx, dy, originalObjects = state.objects) {
     const segments = cloneSegments(originalSegments);
     const curves = cloneCurves(originalCurves);
     segments.forEach((segment) => {
@@ -814,7 +998,39 @@
     curves.forEach((curve) => {
       if (selected.has(key(curve.id))) { curve.cx += dx; curve.cy += dy; }
     });
-    return { segments, curves };
+    const objects = cloneObjects(originalObjects);
+    objects.forEach((object) => {
+      if (selected.has(key(object.id))) { object.x += dx; object.y += dy; }
+    });
+    return { segments, curves, objects };
+  }
+  function rotateSelection(originalSegments, originalCurves, selected, pivot, angle, originalObjects = state.objects) {
+    const segments = cloneSegments(originalSegments);
+    const curves = cloneCurves(originalCurves);
+    const rotatePoint = (point) => {
+      const dx = point.x - pivot.x, dy = point.y - pivot.y;
+      const cos = Math.cos(angle), sin = Math.sin(angle);
+      return { x: pivot.x + dx * cos - dy * sin, y: pivot.y + dx * sin + dy * cos };
+    };
+    segments.forEach((segment) => {
+      if (!selected.has(key(segment.id))) return;
+      segment.a = rotatePoint(segment.a);
+      segment.b = rotatePoint(segment.b);
+    });
+    curves.forEach((curve) => {
+      if (!selected.has(key(curve.id))) return;
+      const center = rotatePoint({ x: curve.cx, y: curve.cy });
+      curve.cx = center.x; curve.cy = center.y;
+      curve.angle = (curve.angle || 0) + angle * 180 / Math.PI;
+    });
+    const objects = cloneObjects(originalObjects);
+    objects.forEach((object) => {
+      if (!selected.has(key(object.id))) return;
+      const point = rotatePoint(object);
+      object.x = point.x; object.y = point.y;
+      object.angle = (object.angle || 0) + angle * 180 / Math.PI;
+    });
+    return { segments, curves, objects };
   }
   function snapSingleSegment(id) {
     const segment = state.segments.find((item) => item.id === id);
@@ -837,8 +1053,9 @@
     state.segments.forEach(({ id, a, b }) => {
       if ([a, b].every((p) => p.x >= box.left && p.x <= box.right && p.y >= box.top && p.y <= box.bottom)) selected.add(key(id));
     });
-    state.curves.forEach(({ id, cx, cy, rx, ry }) => {
-      if (cx - rx >= box.left && cx + rx <= box.right && cy - ry >= box.top && cy + ry <= box.bottom) selected.add(key(id));
+    state.curves.concat(state.objects).forEach((object) => {
+      const points = object.cx === undefined ? canvasModels.objectPoints(object) : canvasModels.curvePoints(object);
+      if (points.every((p) => p.x >= box.left && p.x <= box.right && p.y >= box.top && p.y <= box.bottom)) selected.add(key(object.id));
     });
     return selected;
   }
@@ -861,7 +1078,68 @@
       event.preventDefault();
       return;
     }
-    const target = event.target;
+    const target = event.target.closest?.("[data-id], [data-group], [data-face]") || event.target;
+    const textObject = state.objects.find((item) => key(item.id) === target.dataset.id && item.kind === "text");
+    const previousClick = state.lastTextClick;
+    state.lastTextClick = null;
+    if (textObject && previousClick?.id === textObject.id && performance.now() - previousClick.time < 500 &&
+      Math.hypot(event.clientX - previousClick.x, event.clientY - previousClick.y) < 5 &&
+      !state.cutMode && !state.rotateMode && !state.connectMode && !state.splitMode) {
+      openTextDialog(textObject, textObject.id);
+      event.preventDefault(); return;
+    }
+    if (state.textMode) {
+      const object = state.objects.find((item) => key(item.id) === target.dataset.id && item.kind === "text");
+      openTextDialog(toCanvas(event), object?.id ?? null);
+      event.preventDefault(); return;
+    }
+    if (state.cutMode) {
+      const object = state.objects.find((item) => key(item.id) === target.dataset.id && item.kind === "image");
+      if (event.shiftKey && object) {
+        if (state.selected.has(key(object.id))) state.selected.delete(key(object.id));
+        else state.selected.add(key(object.id));
+        render(); event.preventDefault(); return;
+      }
+      if (object && !state.selected.has(key(object.id))) state.selected = new Set([key(object.id)]);
+      const start = toCanvas(event);
+      state.drag = { kind: "cut", start, pointer: start, selected: new Set(state.selected), moved: false };
+      state.error = null;
+      ui.canvas.setPointerCapture(event.pointerId);
+      render(); event.preventDefault(); return;
+    }
+    if (state.rotateMode) {
+      const pointer = toCanvas(event);
+      if (state.pickingRotatePivot) {
+        const source = state.segments.find((item) => key(item.id) === target.dataset.id);
+        state.rotatePivot = source && target.dataset.endpoint
+          ? { ...source[target.dataset.endpoint] } : { x: pointer.x, y: pointer.y };
+        const width = ui.canvas.getBoundingClientRect().width || 1000;
+        state.rotateHandleAngle = pointer.x > state.pan.x + width / state.zoom / 2 ? Math.PI : 0;
+        state.pickingRotatePivot = false;
+        state.error = null;
+        render(); event.preventDefault(); return;
+      }
+      if (target.dataset.rotateHandle !== undefined && state.rotatePivot && state.selected.size) {
+        state.drag = { kind: "rotate", startAngle: Math.atan2(pointer.y - state.rotatePivot.y,
+          pointer.x - state.rotatePivot.x), handleAngle: state.rotateHandleAngle,
+          pivot: { ...state.rotatePivot }, start: pointer,
+          segments: cloneSegments(state.segments), curves: cloneCurves(state.curves), objects: cloneObjects(state.objects),
+          selected: new Set(state.selected), moved: false, before: snapshot() };
+        ui.canvas.setPointerCapture(event.pointerId);
+        event.preventDefault(); return;
+      }
+      const face = target.dataset.face && faces().find((item) => item.key === target.dataset.face);
+      const id = target.dataset.id ?? target.dataset.group ?? (face && key(face.group[0].id));
+      if (id !== undefined && id !== false) {
+        const segment = state.segments.find((item) => key(item.id) === String(id));
+        state.selected = new Set(segment && state.rotateScope === "group"
+          ? groupFor(segment.id).map((item) => key(item.id)) : [String(id)]);
+        state.selectedFaceKey = null;
+        state.error = null;
+        render();
+      }
+      event.preventDefault(); return;
+    }
     if (state.splitMode) {
       const segment = state.segments.find((item) => key(item.id) === target.dataset.id);
       if (!segment || target.dataset.endpoint !== undefined) return;
@@ -905,7 +1183,7 @@
       const segment = state.segments.find((item) => key(item.id) === id);
       const endpoint = target.dataset.endpoint;
       if (segment) ui["length-input"].value = fmt(segment.length);
-      if (event.shiftKey && segment && !endpoint) {
+      if (event.shiftKey && !endpoint) {
         if (state.selected.has(id)) state.selected.delete(id);
         else state.selected.add(id);
         state.error = null; render(); event.preventDefault(); return;
@@ -914,7 +1192,7 @@
         const group = groupFor(segment.id);
         state.selected = new Set([id]);
         state.drag = { kind: "joint", id: segment.id, endpoint, start,
-          segments: cloneSegments(state.segments), curves: cloneCurves(state.curves),
+          segments: cloneSegments(state.segments), curves: cloneCurves(state.curves), objects: cloneObjects(state.objects),
           groupIds: group.map((item) => item.id), moved: false, before: snapshot(), resized: false };
       } else {
         if (segment && state.mode === "group") expandSelectionToGroups();
@@ -927,7 +1205,8 @@
             ? groupFor(segment.id).map((item) => key(item.id)) : [id]);
         }
         state.drag = { kind: "move", start, segments: cloneSegments(state.segments),
-          curves: cloneCurves(state.curves), selected: new Set(state.selected), moved: false, before: snapshot() };
+          curves: cloneCurves(state.curves), objects: cloneObjects(state.objects), selected: new Set(state.selected), moved: false, before: snapshot(),
+          textClick: textObject ? { id: textObject.id, x: event.clientX, y: event.clientY } : null };
       }
       state.error = null;
       render();
@@ -976,6 +1255,25 @@
     }
     const pointer = toCanvas(event);
     let dx = pointer.x - drag.start.x, dy = pointer.y - drag.start.y;
+    if (drag.kind === "cut") {
+      drag.pointer = pointer;
+      drag.moved = Math.hypot(dx, dy) * state.zoom >= 3;
+      renderCanvas(); return;
+    }
+    if (drag.kind === "rotate") {
+      if (Math.hypot(pointer.x - drag.pivot.x, pointer.y - drag.pivot.y) < 1) return;
+      const rawAngle = Math.atan2(pointer.y - drag.pivot.y, pointer.x - drag.pivot.x) - drag.startAngle;
+      const angle = Math.atan2(Math.sin(rawAngle), Math.cos(rawAngle));
+      const candidate = rotateSelection(drag.segments, drag.curves, drag.selected, drag.pivot, angle, drag.objects);
+      if (!validCoordinates(candidate.segments, candidate.curves)) return;
+      drag.moved = Math.abs(angle) > 1e-6;
+      state.rotateHandleAngle = drag.handleAngle + angle;
+      state.segments = candidate.segments;
+      state.curves = candidate.curves;
+      state.objects = candidate.objects;
+      render();
+      return;
+    }
     if (drag.kind === "box") {
       drag.pointer = pointer;
       if (Math.hypot(dx, dy) >= 3) drag.moved = true;
@@ -991,7 +1289,7 @@
         if (drag.axisLock === "x") dy = 0;
         else dx = 0;
       } else drag.axisLock = null;
-      candidate = translateSelection(drag.segments, drag.curves, drag.selected, dx, dy);
+      candidate = translateSelection(drag.segments, drag.curves, drag.selected, dx, dy, drag.objects);
     } else {
       const group = drag.groupIds.map((id) => drag.segments.find((segment) => segment.id === id));
       const index = group.findIndex((segment) => segment.id === drag.id);
@@ -1013,7 +1311,7 @@
       const moved = geometry.moveLooseJoint(group, index, drag.endpoint, target, SCALE);
       const replacements = new Map(moved.map((segment) => [segment.id, segment]));
       candidate = { segments: drag.segments.map((segment) => replacements.get(segment.id) || segment),
-        curves: drag.curves };
+        curves: drag.curves, objects: drag.objects };
       drag.resized = resize;
     }
     if (!validCoordinates(candidate.segments, candidate.curves)) return;
@@ -1022,12 +1320,18 @@
     drag.moved = true;
     state.segments = candidate.segments;
     state.curves = candidate.curves;
+    state.objects = candidate.objects;
     if (drag.kind === "joint" && drag.resized) ui["length-input"].value = fmt(state.segments.find((item) => item.id === drag.id).length);
     render();
   });
   function finishDrag() {
     const drag = state.drag;
     if (!drag) return;
+    if (drag.kind === "cut") {
+      state.drag = null;
+      if (drag.moved) cutImages(drag);
+      render(); return;
+    }
     if (drag.kind === "pan") {
       ui.canvas.parentElement.classList.toggle("pan-dragging", false);
       state.drag = null; render(); return;
@@ -1056,11 +1360,15 @@
     if (drag.moved && drag.before) {
       record(drag.before);
     }
+    if (!drag.moved && drag.textClick) state.lastTextClick = { ...drag.textClick, time: performance.now() };
     state.drag = null;
     render();
   }
   ui.canvas.addEventListener("pointerup", finishDrag);
-  ui.canvas.addEventListener("pointercancel", finishDrag);
+  ui.canvas.addEventListener("pointercancel", () => {
+    if (state.drag?.kind === "cut") { state.drag = null; render(); }
+    else finishDrag();
+  });
   ui["add-button"].addEventListener("click", addSegment);
   ui["change-button"].addEventListener("click", changeLength);
   function openShapeDialog() { renderDialog(); ui["shape-dialog"].showModal(); }
@@ -1074,9 +1382,139 @@
   });
   ui["shape-form"].addEventListener("submit", (event) => { event.preventDefault(); placeShape(); });
   ui["cancel-shape"].addEventListener("click", () => ui["shape-dialog"].close());
+  function resetExtraModes() { state.textMode = false; state.cutMode = false; }
+  function toggleExtraMode(mode) {
+    const active = !state[mode + "Mode"];
+    resetExtraModes();
+    state[mode + "Mode"] = active;
+    state.connectMode = false; state.splitMode = false; state.rotateMode = false;
+    state.error = null; closePanels(); render();
+  }
+  ui["text-mode"].addEventListener("click", () => toggleExtraMode("text"));
+  ui["cut-mode"].addEventListener("click", () => toggleExtraMode("cut"));
+  function measureText(object) {
+    const context = document.createElement?.("canvas").getContext("2d");
+    if (context) context.font = object.fontSize + 'px "Microsoft YaHei", "PingFang SC", system-ui, sans-serif';
+    const lines = object.text.split("\n");
+    object.width = Math.max(1, ...lines.map((line) => context ? context.measureText(line).width : line.length * object.fontSize));
+    object.height = lines.length * object.fontSize * 1.3;
+  }
+  function openTextDialog(point, id = null) {
+    const object = state.objects.find((item) => item.id === id && item.kind === "text");
+    state.textAction = object ? { id } : { x: point.x, y: point.y };
+    ui["text-dialog-title"].textContent = t().textTool;
+    ui["text-content-label"].textContent = t().textContent;
+    ui["cancel-text"].textContent = t().cancel;
+    ui["confirm-text"].textContent = t().confirmText;
+    ui["symbol-palette"].setAttribute("aria-label", t().symbols);
+    ui["symbol-palette"].innerHTML = ["＋", "−", "×", "÷", "＝", "≠", "≈", "≤", "≥", "π", "°", "∠", "⊥", "∥", "²", "√"]
+      .map((symbol) => '<button type="button" class="button" data-symbol="' + symbol + '">' + symbol + '</button>').join("");
+    ui["text-input"].value = object?.text || "";
+    ui["text-error"].textContent = "";
+    closePanels(); ui["text-dialog"].showModal(); ui["text-input"].focus?.();
+  }
+  ui["symbol-palette"].addEventListener("click", (event) => {
+    const symbol = event.target.dataset.symbol;
+    if (!symbol) return;
+    const input = ui["text-input"];
+    const start = input.selectionStart, end = input.selectionEnd;
+    input.value = input.value.slice(0, start) + symbol + input.value.slice(end);
+    input.focus?.(); input.setSelectionRange?.(start + symbol.length, start + symbol.length);
+  });
+  ui["text-form"].addEventListener("submit", (event) => {
+    event.preventDefault();
+    const text = ui["text-input"].value;
+    if (!text.trim()) { ui["text-error"].textContent = t().textRequired; return; }
+    const action = state.textAction;
+    if (!action) return;
+    let object = state.objects.find((item) => item.id === action.id);
+    if (!object || object.text !== text) {
+      record();
+      if (!object) {
+        object = { id: nextId(), kind: "text", x: action.x, y: action.y, angle: 0,
+          color: state.drawStyle.color, fontSize: state.fontSize };
+        state.objects.push(object);
+      }
+      object.text = text; measureText(object);
+    }
+    state.selected = new Set([key(object.id)]);
+    state.textMode = false; state.error = null;
+    ui["text-dialog"].close(); state.textAction = null; render();
+  });
+  ui["cancel-text"].addEventListener("click", () => ui["text-dialog"].close());
+  ui["text-dialog"].addEventListener("close", () => { state.textAction = null; });
+  ui.canvas.addEventListener("dblclick", (event) => {
+    const target = event.target.closest?.("[data-id]") || event.target;
+    const object = state.objects.find((item) => key(item.id) === target.dataset.id && item.kind === "text");
+    if (object && !ui["text-dialog"].open) openTextDialog(object, object.id);
+  });
+  ui["font-size-input"].addEventListener("change", () => {
+    const size = Number(ui["font-size-input"].value);
+    if (!Number.isFinite(size) || size <= 0 || !Number.isFinite(size * 1000)) {
+      state.error = t().invalidFontSize; render(); return;
+    }
+    const objects = selectedObjects().filter((object) => object.kind === "text");
+    if (size === state.fontSize && objects.every((object) => object.fontSize === size)) return;
+    record(); state.fontSize = size;
+    objects.forEach((object) => { object.fontSize = size; measureText(object); });
+    state.error = null; render();
+  });
+  ui["image-button"].addEventListener("click", () => { closePanels(); ui["image-input"].click(); });
+  ui["image-input"].addEventListener("change", async () => {
+    const file = ui["image-input"].files?.[0];
+    ui["image-input"].value = "";
+    if (!file) return;
+    try {
+      if (!/^image\/(png|jpeg|webp|gif)$/.test(file.type)) throw new Error("Unsupported image");
+      const data = await new Promise((resolve, reject) => {
+        const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(file);
+      });
+      const image = await new Promise((resolve, reject) => {
+        const item = new Image(); item.onload = () => resolve(item); item.onerror = reject; item.src = data;
+      });
+      const raster = document.createElement("canvas"), rasterScale = Math.min(1, 1600 / Math.max(image.naturalWidth, image.naturalHeight));
+      raster.width = Math.max(1, Math.round(image.naturalWidth * rasterScale));
+      raster.height = Math.max(1, Math.round(image.naturalHeight * rasterScale));
+      raster.getContext("2d").drawImage(image, 0, 0, raster.width, raster.height);
+      const src = raster.toDataURL("image/webp", .9);
+      const rect = ui.canvas.getBoundingClientRect();
+      const scale = Math.min(1, Math.min(480, rect.width / state.zoom * .7) / raster.width,
+        rect.height / state.zoom * .7 / raster.height);
+      const width = raster.width * scale, height = raster.height * scale;
+      record();
+      const object = { id: nextId(), kind: "image", src, width, height, angle: 0,
+        x: state.pan.x + rect.width / state.zoom / 2 - width / 2,
+        y: state.pan.y + rect.height / state.zoom / 2 - height / 2,
+        points: [{ x: 0, y: 0 }, { x: width, y: 0 }, { x: width, y: height }, { x: 0, y: height }] };
+      state.objects.push(object); state.selected = new Set([key(object.id)]);
+      resetExtraModes(); state.connectMode = false; state.splitMode = false; state.rotateMode = false;
+      state.error = null; render();
+    } catch (_) { state.error = t().imageInvalid; render(); }
+  });
+  function cutImages(drag) {
+    const cuts = new Map();
+    state.objects.forEach((object) => {
+      if (object.kind !== "image" || !drag.selected.has(key(object.id))) return;
+      const pieces = canvasModels.splitImage(object, drag.start, drag.pointer);
+      if (pieces) cuts.set(object.id, pieces);
+    });
+    if (!cuts.size) { state.error = t().cutMiss; return; }
+    record();
+    const selected = new Set(drag.selected);
+    state.objects = state.objects.flatMap((object) => {
+      if (!cuts.has(object.id)) return [object];
+      selected.delete(key(object.id));
+      return cuts.get(object.id).map((piece) => {
+        const id = nextId(); selected.add(key(id)); return { ...piece, id };
+      });
+    });
+    state.selected = selected; state.error = null;
+  }
   function setMoveMode(mode) {
+    resetExtraModes();
     state.connectMode = false;
     state.splitMode = false;
+    state.rotateMode = false;
     state.mode = mode;
     if (mode === "single") { state.selected.clear(); state.selectedFaceKey = null; }
     if (mode === "group" && state.selected.size) expandSelectionToGroups();
@@ -1090,6 +1528,7 @@
     if (!state.selected.size) return;
     state.clipboard = { segments: cloneSegments(selectedSegments()),
       curves: cloneCurves(state.curves.filter((curve) => state.selected.has(key(curve.id)))),
+      objects: cloneObjects(selectedObjects()),
       faceFills: faceFillRecords(selectedSegments()) };
     state.pasteCount = 0;
     render();
@@ -1098,10 +1537,7 @@
     if (!state.clipboard) return;
     record();
     state.pasteCount += 1;
-    const points = state.clipboard.segments.flatMap(({ a, b }) => [a, b]);
-    state.clipboard.curves.forEach(({ cx, cy, rx, ry }) => {
-      points.push({ x: cx - rx, y: cy - ry }, { x: cx + rx, y: cy + ry });
-    });
+    const points = scenePoints(state.clipboard.segments, state.clipboard.curves, state.clipboard.objects);
     const minX = Math.min(...points.map((point) => point.x));
     const maxX = Math.max(...points.map((point) => point.x));
     const shiftX = (maxX - minX + 48) * state.pasteCount;
@@ -1118,15 +1554,24 @@
       const id = nextId(); ids.push(key(id));
       state.curves.push({ ...curve, id, cx: curve.cx + shiftX, cy: curve.cy + shiftY });
     });
+    cloneObjects(state.clipboard.objects).forEach((object) => {
+      const id = nextId(); ids.push(key(id));
+      state.objects.push({ ...object, id, x: object.x + shiftX, y: object.y + shiftY });
+    });
     (state.clipboard.faceFills || []).forEach(({ ids: oldIds, fill }) => {
       if (oldIds.every((id) => idMap.has(id))) state.faceFills.set(faceKey(oldIds.map((id) => idMap.get(id))), fill);
     });
+    placeLayersOnTop(ids);
     state.selected = new Set(ids);
     const width = ui.canvas.getBoundingClientRect().width || 1000;
     if (minX + shiftX >= state.pan.x + width / state.zoom - 60) state.pan.x = minX + shiftX - 80;
     render();
   }
   function closePanels() {
+    ui["layer-menu"].hidden = true;
+    ui["layer-button"].setAttribute("aria-expanded", "false");
+    ui["insert-menu"].hidden = true;
+    ui["insert-button"].setAttribute("aria-expanded", "false");
     ui["style-panel"].hidden = true;
     ui["more-menu"].hidden = true;
     ui["library-panel"].hidden = true;
@@ -1140,38 +1585,119 @@
     if (opening) {
       panel.hidden = false;
       button.setAttribute("aria-expanded", "true");
+      positionPanel(panel);
     }
+  }
+  function positionPanel(panel) {
+    panel.style.left = "0px"; panel.style.right = "auto";
+    const rect = panel.getBoundingClientRect();
+    panel.style.left = (rect.left < 16 ? 16 - rect.left : Math.min(0, window.innerWidth - 16 - rect.right)) + "px";
   }
   ui["style-button"].addEventListener("click", () => togglePanel(ui["style-button"], ui["style-panel"]));
   ui["more-button"].addEventListener("click", () => togglePanel(ui["more-button"], ui["more-menu"]));
   ui["library-button"].addEventListener("click", () => togglePanel(ui["library-button"], ui["library-panel"]));
+  ui["insert-button"].addEventListener("click", () => togglePanel(ui["insert-button"], ui["insert-menu"]));
+  ui["layer-button"].addEventListener("click", () => togglePanel(ui["layer-button"], ui["layer-menu"]));
+  for (const direction of ["forward", "backward", "front", "back"]) {
+    ui["layer-" + direction].addEventListener("click", () => changeLayers(direction));
+  }
   document.addEventListener("pointerdown", (event) => {
     if (event.target.closest && event.target.closest(".menu-wrap")) return;
     closePanels();
   });
   ui["connect-mode"].addEventListener("click", () => {
+    resetExtraModes();
     state.connectMode = !state.connectMode;
-    if (state.connectMode) state.splitMode = false;
+    if (state.connectMode) { state.splitMode = false; state.rotateMode = false; state.rotatePivot = null; }
     render();
   });
   ui["split-mode"].addEventListener("click", () => {
+    resetExtraModes();
     state.splitMode = !state.splitMode;
-    if (state.splitMode) state.connectMode = false;
+    if (state.splitMode) { state.connectMode = false; state.rotateMode = false; state.rotatePivot = null; }
     render();
+  });
+  function toggleRotateMode() {
+    resetExtraModes();
+    state.rotateMode = !state.rotateMode;
+    state.pickingRotatePivot = false;
+    if (state.rotateMode) {
+      state.connectMode = false; state.splitMode = false;
+      if (state.rotateScope === "group") expandSelectionToGroups();
+    }
+    render();
+  }
+  function rotationHandlePoint() {
+    return { x: state.rotatePivot.x + Math.cos(state.rotateHandleAngle) * 90 / state.zoom,
+      y: state.rotatePivot.y + Math.sin(state.rotateHandleAngle) * 90 / state.zoom };
+  }
+  function renderRotationControls() {
+    const w = t().rotation;
+    ui["rotation-controls"].hidden = !state.rotateMode;
+    ui["rotation-controls"].setAttribute("aria-label", t().rotate);
+    ui["rotate-target-label"].textContent = w.target;
+    ui["rotate-target"].value = state.rotateScope;
+    [...ui["rotate-target"].options].forEach((option) => { option.textContent = w[option.value]; });
+    ui["rotate-pick-pivot"].textContent = state.pickingRotatePivot ? w.picking : w.pivot;
+    ui["rotate-pick-pivot"].setAttribute("aria-pressed", String(state.pickingRotatePivot));
+    ui["rotate-angle-label"].textContent = w.angle;
+    ui["rotate-clockwise"].textContent = w.clockwise;
+    ui["rotate-counterclockwise"].textContent = w.counterclockwise;
+    const ready = state.rotatePivot && state.selected.size && !state.pickingRotatePivot;
+    ui["rotate-clockwise"].disabled = !ready;
+    ui["rotate-counterclockwise"].disabled = !ready;
+    ui["rotate-status"].textContent = state.pickingRotatePivot ? w.picking : !state.selected.size ? w.select : !state.rotatePivot ? w.setPivot : w.ready;
+  }
+  ui["rotate-target"].addEventListener("change", () => {
+    state.rotateScope = ui["rotate-target"].value;
+    state.selected.clear(); state.selectedFaceKey = null;
+    state.pickingRotatePivot = false;
+    render();
+  });
+  ui["rotate-pick-pivot"].addEventListener("click", () => {
+    state.pickingRotatePivot = !state.pickingRotatePivot;
+    render();
+  });
+  function applyRotation(direction) {
+    if (!state.rotatePivot || !state.selected.size || state.pickingRotatePivot) return;
+    const degrees = Number(ui["rotate-angle"].value);
+    if (!ui["rotate-angle"].value.trim() || !Number.isFinite(degrees)) {
+      state.error = t().rotation.invalid; render(); return;
+    }
+    const angle = direction * (degrees % 360) * Math.PI / 180;
+    if (!angle) return;
+    const candidate = rotateSelection(state.segments, state.curves, state.selected, state.rotatePivot, angle);
+    if (!validCoordinates(candidate.segments, candidate.curves, candidate.objects)) return;
+    record();
+    state.segments = candidate.segments; state.curves = candidate.curves; state.objects = candidate.objects;
+    state.rotateHandleAngle += angle;
+    state.error = null; render();
+  }
+  ui["rotate-clockwise"].addEventListener("click", () => applyRotation(1));
+  ui["rotate-counterclockwise"].addEventListener("click", () => applyRotation(-1));
+  ui["rotate-mode"].addEventListener("click", toggleRotateMode);
+  gridOpacityInput.addEventListener("input", () => {
+    gridOpacity = Math.max(0, Math.min(60, Number(gridOpacityInput.value) || 0));
+    try { localStorage.setItem("geometry-canvas-grid-opacity", String(gridOpacity)); } catch (_) {}
+    syncViewport();
   });
   ui["save-shape-button"].addEventListener("click", () => {
     if (!state.selected.size) return;
     const segments = selectedSegments();
     const curves = state.curves.filter((curve) => state.selected.has(key(curve.id)));
-    if (!segments.length && !curves.length) return;
+    const objects = selectedObjects();
+    if (!segments.length && !curves.length && !objects.length) return;
     const active = activeObject();
     let base = t().combo;
     if (active && active.type === "segments") {
       const model = groupState(active.segments);
       if (model.closed) base = shapeName(model.shape, active.segments.length);
     } else if (active && active.type === "curve") base = shapeName(active.curve.kind, 0);
-    state.library.push(libraryEntry(segments, curves, base));
-    persistLibrary();
+    else if (active?.type === "text") base = t().textObject;
+    else if (active?.type === "image") base = t().imageObject;
+    state.error = null;
+    state.library.push(libraryEntry(segments, curves, base, objects));
+    if (!persistLibrary()) state.library.pop();
     render();
   });
   function openNameDialog(action, index = -1) {
@@ -1187,7 +1713,7 @@
     ui["name-input"].select?.();
   }
   ui["save-canvas"].addEventListener("click", () => {
-    if (state.segments.length || state.curves.length) openNameDialog("save");
+    if (allItems().length) openNameDialog("save");
   });
   ui["name-form"].addEventListener("submit", (event) => {
     event.preventDefault();
@@ -1195,12 +1721,16 @@
     if (!name) { ui["name-error"].textContent = t().nameRequired; return; }
     const action = state.nameAction;
     if (!action) return;
+    const beforeLibrary = state.library.slice();
     if (action.action === "save") {
-      state.library.push(libraryEntry(state.segments, state.curves, name));
+      state.library.push(libraryEntry(state.segments, state.curves, name, state.objects));
     } else if (state.library[action.index]) {
-      state.library[action.index].name = libraryName(name, action.index);
+      state.library[action.index] = { ...state.library[action.index], name: libraryName(name, action.index) };
     }
-    persistLibrary();
+    if (!persistLibrary()) {
+      state.library = beforeLibrary; ui["name-error"].textContent = t().storageError; render(); return;
+    }
+    state.error = null;
     state.nameAction = null;
     ui["name-dialog"].close();
     ui["library-panel"].hidden = false;
@@ -1218,8 +1748,9 @@
       return;
     }
     if (data.remove !== undefined) {
+      const beforeLibrary = state.library.slice();
       state.library.splice(Number(data.remove), 1);
-      persistLibrary();
+      if (!persistLibrary()) state.library = beforeLibrary;
       render();
     }
   });
@@ -1246,7 +1777,7 @@
       return;
     }
     const active = activeObject();
-    if (!state.selected.size || !active ||
+    if (!state.selected.size || !active || !["curve", "segments"].includes(active.type) ||
       (active.type === "segments" && !groupState(active.segments).closed)) return;
     const items = active.type === "curve" ? [active.curve] : active.segments;
     const name = active.type === "segments" ? faceKey(items.map((item) => item.id)) : null;
@@ -1271,13 +1802,15 @@
     }
     if (property === "dash" && !["solid", "dashed"].includes(value)) return;
     if (state.drawStyle[property] === value && ![...state.selected].some((id) => {
-      const item = state.segments.find((segment) => key(segment.id) === id) || state.curves.find((curve) => key(curve.id) === id);
+      const item = allItems().find((item) => key(item.id) === id);
       return item && item[property] !== value;
     })) return;
     record();
     state.drawStyle[property] = value;
     state.segments.forEach((segment) => { if (state.selected.has(key(segment.id))) segment[property] = value; });
     state.curves.forEach((curve) => { if (state.selected.has(key(curve.id))) curve[property] = value; });
+    if (property === "color") selectedObjects().forEach((object) => { object.color = value; });
+    if (property === "width") selectedObjects().filter((object) => object.kind === "image").forEach((object) => { object.widthStyle = value; });
     state.error = null;
     render();
   }
@@ -1301,6 +1834,7 @@
     });
     state.segments = state.segments.filter((segment) => !state.selected.has(key(segment.id)));
     state.curves = state.curves.filter((curve) => !state.selected.has(key(curve.id)));
+    state.objects = state.objects.filter((object) => !state.selected.has(key(object.id)));
     state.selected.clear();
     state.selectedFaceKey = null;
     render();
@@ -1312,21 +1846,25 @@
   document.addEventListener("keydown", (event) => {
     if (event.isComposing || event.keyCode === 229) return;
     if (event.key === "Escape") {
-      if (ui["shortcuts-dialog"].open) ui["shortcuts-dialog"].close();
+      if (ui["text-dialog"].open) ui["text-dialog"].close();
+      else if (state.drag?.kind === "cut") { state.drag = null; render(); }
+      else if (ui["shortcuts-dialog"].open) ui["shortcuts-dialog"].close();
       else if (ui["shape-dialog"].open) ui["shape-dialog"].close();
       else if (ui["split-dialog"].open) ui["split-dialog"].close();
       else if (ui["name-dialog"].open) { state.nameAction = null; ui["name-dialog"].close(); }
-      else if (!ui["style-panel"].hidden || !ui["more-menu"].hidden || !ui["library-panel"].hidden) closePanels();
+      else if (!ui["style-panel"].hidden || !ui["more-menu"].hidden || !ui["library-panel"].hidden || !ui["insert-menu"].hidden || !ui["layer-menu"].hidden) closePanels();
       else if (!isEditable(document.activeElement)) {
-        if (state.connectMode) state.connectMode = false;
+        if (state.textMode || state.cutMode) resetExtraModes();
+        else if (state.connectMode) state.connectMode = false;
         else if (state.splitMode) state.splitMode = false;
+        else if (state.rotateMode) state.rotateMode = false;
         else { state.selected.clear(); state.selectedFaceKey = null; }
         render();
       } else return;
       event.preventDefault();
       return;
     }
-    if (ui["shape-dialog"].open || ui["shortcuts-dialog"].open || ui["name-dialog"].open || ui["split-dialog"].open ||
+    if (ui["text-dialog"].open || ui["shape-dialog"].open || ui["shortcuts-dialog"].open || ui["name-dialog"].open || ui["split-dialog"].open ||
       isEditable(document.activeElement) || isEditable(event.target) || state.drag) return;
     if (event.repeat || event.altKey) return;
     if (event.code === "Space" || event.key === " ") {
@@ -1340,7 +1878,7 @@
         if (key === "z") undo();
         else if (key === "c") copySelected();
         else if (key === "v") paste();
-        else { state.selected = new Set(state.segments.concat(state.curves).map((item) => String(item.id))); render(); }
+        else { state.selected = new Set(allItems().map((item) => String(item.id))); render(); }
       } else if (key === "=" || key === "+") { event.preventDefault(); setZoom(state.zoom * 1.25); }
       else if (key === "-") { event.preventDefault(); setZoom(state.zoom / 1.25); }
       else if (key === "0") { event.preventDefault(); setZoom(1); }
@@ -1353,8 +1891,12 @@
     const actions = {
       n: () => event.shiftKey ? openShapeDialog() : addSegment(),
       1: () => setMoveMode("single"), 2: () => setMoveMode("group"),
-      3: () => { state.connectMode = true; state.splitMode = false; render(); },
-      4: () => { state.splitMode = true; state.connectMode = false; render(); },
+      3: () => { resetExtraModes(); state.connectMode = true; state.splitMode = false; state.rotateMode = false; state.rotatePivot = null; render(); },
+      4: () => { resetExtraModes(); state.splitMode = true; state.connectMode = false; state.rotateMode = false; state.rotatePivot = null; render(); },
+      5: toggleRotateMode,
+      t: () => toggleExtraMode("text"),
+      i: () => { closePanels(); ui["image-input"].click(); },
+      k: () => { if (selectedObjects().some((object) => object.kind === "image")) toggleExtraMode("cut"); },
       x: openSplitDialog,
       j: mergeSelection,
       l: toggleLabels,
@@ -1369,9 +1911,9 @@
     if (event.code === "Space") { state.spaceDown = false; render(); }
   });
   ui["clear-button"].addEventListener("click", () => {
-    if (!(state.segments.length + state.curves.length) || !window.confirm(t().clearConfirm)) return;
+    if (!allItems().length || !window.confirm(t().clearConfirm)) return;
     record();
-    state.segments = []; state.curves = []; state.selected.clear();
+    state.segments = []; state.curves = []; state.objects = []; state.selected.clear();
     state.faceFills.clear(); state.selectedFaceKey = null;
     state.layout = { x: 80, y: 80, rowHeight: 0 }; state.pan = { x: 0, y: 0 }; state.zoom = 1;
     state.error = null; closePanels(); render();

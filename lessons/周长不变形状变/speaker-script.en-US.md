@@ -1,12 +1,14 @@
 # Geometry Canvas | Teacher Script
 
-Grade: 3–4. Lesson path: `lessons/周长不变形状变/index.html`. Suggested time: 8–12 minutes. The canvas starts empty, with 4 cm in the segment field. Any positive length can be entered, and there is no fixed limit on the number of segments. **Action** lines are teacher cues. There are no page steps; use these three stops at the child's pace.
+Grade: 3–4. Lesson path: `lessons/周长不变形状变/index.html`. Suggested time: 12–18 minutes. The canvas starts empty, with 4 cm in the segment field. Any positive length can be entered, and there is no fixed limit on the number of segments. **Action** lines are teacher cues. There are no page steps; use these four stops at the child's pace.
 
 ## Stop 1: Set lengths and arrange segments
 
 **Action**
 
 Enter 4 in “Length” and click “+ Segment” four times, or leave the input and press N. The “Shortcuts ?” button lists all keys. Each grid cell represents 1 cm. Open the “Style” panel and click “Hide lengths” and “Show lengths”; each segment displays its number without a unit. With “Segment” mode selected, grab the body to move one piece. Drag a round endpoint diagonally to turn it; connected pieces follow. Drag along the segment to change its length in a separate experiment. Angles gently snap near horizontal and vertical, while other angles remain available.
+
+To turn around a chosen point, click “Rotate”, choose “Whole shape” or “One segment”, and click the target. Click “Set pivot”, then click the canvas or an endpoint. Enter an angle and click “Clockwise” or “Counterclockwise”, or drag the orange “Drag to rotate” handle. Selecting a target keeps the pivot fixed. All edges turn together in whole-shape mode; “Undo” restores the previous position.
 
 **Ask**
 
@@ -73,3 +75,31 @@ Dragging a segment body or turning an endpoint diagonally changes positions and 
 **Screen check**
 
 The square and rhombus both show 16 cm. The rectangle and parallelogram both show 18 cm. Color, width, and dashes change the drawing without changing any length or perimeter. Moving or deleting one side opens that shape, so its perimeter disappears until the outline closes again.
+
+## Stop 4: Text, sectors, and picture pieces
+
+**Action**
+
+Select an object and open “Layers ▾”. Use “Bring forward”, “Send backward”, “Bring to front”, or “Send to back” to change overlapping order. Connected segments move as one shape, including their fill, outlines, length labels, and endpoints. Text and each image piece also have their own layers. Multiple selected layers keep their relative order. Unavailable directions are disabled. New objects appear in front; undo restores the previous order. Pasting or inserting library items preserves their internal order above the existing scene.
+
+Choose “Insert → Text / symbols” or press T, then click anywhere on the canvas. Enter words, numbers, or symbols, or use a common-symbol button. Apply the text, drag it, and double-click to edit. Use “Style → Font size” and “Color” to change its appearance. Canvas shortcuts pause during text entry, including Chinese input composition.
+
+Click “+ Shape,” choose “Sector,” and enter a radius of 3 cm and a “Central angle (°).” The default 180° makes a semicircle. Try 90°, 270°, and 360° to compare a quarter circle, three quarters of a circle, and a full circle. Decimal angles above 0° and at most 360° are accepted. Use “Style → Fill color” to fill it. Click “Rotate” or press 5, select the sector, click “Set pivot” and choose a point, then drag the orange rotation handle or apply a rotation angle. Turning changes the position and direction while keeping the central angle unchanged.
+
+Choose “Insert → Insert image…” or press I and select a local picture. With the picture selected, choose “Insert → Cut image” or press K. Drag a straight line through its interior and release to make two pieces. Both pieces remain selected, so another horizontal or diagonal cut can split them again. Switch to “Shape” mode or press 2, click empty canvas space to clear the multi-selection, then drag inside one piece to move it away. Hold Shift and click to select several pieces. Use “Rotate” to turn selected pieces around a chosen pivot; they can still be cut after rotation. Text, sectors, and image pieces support box selection, copy, paste, undo, and library saving. “Fit” frames all objects. Pictures are processed in the browser; if local library storage is full, the page reports the failed save so you can retry with a smaller image.
+
+**Ask**
+
+When you trace a 90° sector's whole boundary, which two straight edges must you include as well as the curve? Are those edges still part of the boundary at 360°? Does moving or turning a picture piece change its size?
+
+**Pause**
+
+Ask the child to trace the sector's arc and two radii and compare them with a full circle, then separate, turn, and reassemble the picture pieces.
+
+**Say**
+
+A full turn is 360°. Angles of 90°, 180°, and 270° cover one quarter, one half, and three quarters of a circle. Below 360°, a sector's perimeter is its share of the circumference plus two radii; at 180°, the radii form a diameter. At 360°, the boundary is just the circumference, with no radii added. The input uses degrees; radians are another unit, with 180° equal to π radians as an optional teacher note. Each picture piece keeps its original picture content. Moving and turning do not stretch or shrink it. Put all the pieces back together and they still form the original picture. Cutting creates new edges, so the sum of the pieces' perimeters is not the original picture's perimeter.
+
+**Screen check**
+
+With a 3 cm radius, sectors of 90°, 180°, 270°, and 360° have perimeters of about 10.7124, 15.4248, 20.1372, and 18.8496 cm. The 360° circle has no internal radial edge. Blank, zero, negative, and over-360° angles are rejected; decimals such as 22.5° work. Moving and turning preserve the central angle and perimeter. The picture lines up when pieces stay in their original positions. Each piece keeps its area during movement and rotation, and all piece areas add up to the original area. A line that does not cross a selected piece's interior leaves it unchanged. Undo restores earlier cuts. Copying and reinserting saved material preserve text, sector central angles, rotation, and image-piece boundaries. Older semicircle library entries still work.

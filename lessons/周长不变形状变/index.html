@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#f6f7f3" />
   <title>几何画布</title>
-  <link rel="stylesheet" href="styles.css?v=20261017-2" />
+  <link rel="stylesheet" href="styles.css?v=20261020-rotation3" />
 </head>
 <body>
   <a class="skip-link" href="#canvas">跳到画布</a>
@@ -15,15 +15,34 @@
       <button type="button" class="button primary" id="add-button">＋ 添加线段</button>
       <button type="button" class="button" id="change-button" disabled>修改长度</button>
       <button type="button" class="button primary" id="shape-button">＋ 添加图形</button>
+      <div class="menu-wrap">
+        <button type="button" class="button" id="insert-button" aria-expanded="false" aria-controls="insert-menu">插入 ▾</button>
+        <div id="insert-menu" class="drop-panel menu-list" hidden>
+          <button type="button" class="button mode" id="text-mode" aria-pressed="false">文字 / 符号</button>
+          <button type="button" class="button" id="image-button">插入图片…</button>
+          <button type="button" class="button mode" id="cut-mode" aria-pressed="false" disabled>切割图片</button>
+        </div>
+      </div>
+      <input id="image-input" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden />
       <span class="tool-divider" aria-hidden="true"></span>
       <button type="button" class="button mode active" id="single-mode" aria-pressed="true">移动线段</button>
       <button type="button" class="button mode" id="group-mode" aria-pressed="false">移动图形</button>
+      <button type="button" class="button mode" id="rotate-mode" aria-pressed="false">旋转</button>
       <button type="button" class="button mode" id="connect-mode" aria-pressed="false">连线</button>
       <button type="button" class="button mode" id="split-mode" aria-pressed="false">点击拆分</button>
       <span class="tool-divider" aria-hidden="true"></span>
       <button type="button" class="button" id="undo-button" disabled>撤回</button>
       <button type="button" class="button" id="delete-button" disabled>删除选中</button>
       <button type="button" class="button" id="save-shape-button" disabled>保存图形</button>
+      <div class="menu-wrap">
+        <button type="button" class="button" id="layer-button" aria-expanded="false" aria-controls="layer-menu">图层 ▾</button>
+        <div id="layer-menu" class="drop-panel menu-list" hidden>
+          <button type="button" class="button" id="layer-forward" disabled>上移一层</button>
+          <button type="button" class="button" id="layer-backward" disabled>下移一层</button>
+          <button type="button" class="button" id="layer-front" disabled>置于顶层</button>
+          <button type="button" class="button" id="layer-back" disabled>置于底层</button>
+        </div>
+      </div>
       <div class="menu-wrap">
         <button type="button" class="button" id="library-button" aria-expanded="false" aria-controls="library-panel">素材库 ▾</button>
         <div id="library-panel" class="drop-panel library-panel" hidden>
@@ -34,6 +53,7 @@
         <button type="button" class="button" id="style-button" aria-expanded="false" aria-controls="style-panel">样式 ▾</button>
         <div id="style-panel" class="drop-panel" hidden>
           <label class="panel-row" for="color-input"><span id="color-label">颜色</span><input id="color-input" type="color" value="#087f75" /></label>
+          <label class="panel-row" for="font-size-input"><span id="font-size-label">字号</span><span class="panel-input"><input id="font-size-input" type="number" min="1" step="any" value="28" /><span>px</span></span></label>
           <div id="color-palette" class="color-palette" role="group" aria-label="常用颜色"></div>
           <div class="fill-controls">
             <label class="panel-row" for="fill-input"><span id="fill-label">填充颜色</span><input id="fill-input" type="color" value="#f2c94c" /></label>
@@ -44,6 +64,7 @@
           <label class="panel-row" for="width-input"><span id="width-label">线宽</span><span class="panel-input"><input id="width-input" type="number" min="0" step="any" value="5" /><span>px</span></span></label>
           <label class="panel-row" for="handle-size-input"><span id="handle-size-label">圆点大小</span><span class="panel-input"><input id="handle-size-input" type="number" min="0" step="any" value="3" /><span>px</span></span></label>
           <label class="panel-row" for="dash-input"><span id="dash-label">线型</span><select id="dash-input"><option value="solid">实线</option><option value="dashed">虚线</option></select></label>
+          <label class="panel-row grid-opacity-row" for="grid-opacity-input"><span id="grid-opacity-label">背景网格</span><input id="grid-opacity-input" type="range" min="0" max="60" step="1" value="18" /></label>
           <button type="button" class="button" id="labels-button" aria-pressed="true">隐藏长度</button>
         </div>
       </div>
@@ -61,6 +82,14 @@
         </div>
       </div>
       <button type="button" class="button" id="shortcuts-button" aria-keyshortcuts="?" aria-haspopup="dialog">快捷键 ?</button>
+      <div id="rotation-controls" class="rotation-controls" role="group" aria-label="旋转操作" hidden>
+        <label class="panel-row"><span id="rotate-target-label">旋转对象</span><select id="rotate-target"><option value="group">整个图形</option><option value="single">一条线段</option></select></label>
+        <button type="button" class="button" id="rotate-pick-pivot">设置旋转中心</button>
+        <label class="panel-row"><span id="rotate-angle-label">角度</span><input id="rotate-angle" type="number" value="90" step="any" /><span>°</span></label>
+        <button type="button" class="button" id="rotate-clockwise" disabled>顺时针旋转</button>
+        <button type="button" class="button" id="rotate-counterclockwise" disabled>逆时针旋转</button>
+        <span id="rotate-status" role="status" aria-live="polite"></span>
+      </div>
     </section>
     <section class="workspace" aria-label="自由拼线段画布">
       <div class="canvas-area">
@@ -116,6 +145,16 @@
     </form>
   </dialog>
   <script src="../../assets/lab-models.js?v=20261017-1"></script>
-  <script src="lesson.js?v=20261017-2"></script>
+  <dialog id="text-dialog" class="shape-dialog" aria-labelledby="text-dialog-title">
+    <form id="text-form">
+      <h2 id="text-dialog-title">文字 / 符号</h2>
+      <label class="dialog-field" for="text-input"><span id="text-content-label">内容</span><textarea id="text-input" rows="3" required></textarea></label>
+      <div id="symbol-palette" class="symbol-palette" role="group" aria-label="常用数学符号"></div>
+      <p id="text-error" class="dialog-error" role="alert"></p>
+      <div class="dialog-actions"><button type="button" class="button" id="cancel-text">取消</button><button type="submit" class="button primary" id="confirm-text">确定</button></div>
+    </form>
+  </dialog>
+  <script src="canvas-models.js?v=20261020-sectors1"></script>
+  <script src="lesson.js?v=20261020-sectors1"></script>
 </body>
 </html>

@@ -8,6 +8,7 @@ const storage = new Map();
 global.localStorage = { getItem: (key) => storage.get(key) || null, setItem: (key, value) => storage.set(key, value) };
 global.confirm = () => true;
 require("../assets/lab-models.js");
+global.GeometryCanvasModels = require("../lessons/周长不变形状变/canvas-models.js");
 
 class Element {
   constructor(id) {
@@ -17,6 +18,7 @@ class Element {
     this.options = id === "dash-input" ? [{ value: "solid" }, { value: "dashed" }] :
       id === "split-kind" ? [{ value: "equal" }, { value: "custom" }] : [];
     this.dataset = {};
+    this.style = {};
     this.listeners = {};
     this.attributes = {};
     this.classList = { toggle: () => {} };
@@ -28,7 +30,11 @@ class Element {
   addEventListener(name, callback) { this.listeners[name] = callback; }
   fire(name, event = {}) { this.listeners[name]?.({ preventDefault() {}, button: 0, target: this, ...event }); }
   setAttribute(name, value) { this.attributes[name] = value; }
-  createSVGPoint() { return { x: 0, y: 0, matrixTransform() { return { x: this.x, y: this.y }; } }; }
+  createSVGPoint() { return { x: 0, y: 0, matrixTransform() {
+    const { x, y } = this;
+    // Native DOMPoint coordinates are prototype properties, not spreadable own fields.
+    return Object.create({ get x() { return x; }, get y() { return y; } });
+  } }; }
   getScreenCTM() { return { a: this.screenScale || 1, inverse: () => ({}) }; }
   getBoundingClientRect() { return { width: 1000, height: 520 }; }
   setPointerCapture() {}
@@ -678,4 +684,75 @@ el("clear-fill").fire("click");
 assert.equal((el("shape-layer").innerHTML.match(/class="fill-shape"[^>]*fill:transparent;fill-opacity:0/g) || []).length, 1);
 el("undo-button").fire("click");
 assert.equal((el("shape-layer").innerHTML.match(/class="fill-shape"[^>]*fill:transparent;fill-opacity:0/g) || []).length, 0);
+
+// Rotation: selecting an object never changes the chosen pivot.
+el("clear-button").fire("click");
+el("length-input").value = "4";
+el("add-button").fire("click");
+el("add-button").fire("click");
+const [rotateId, untouchedId] = stickIds();
+const readRotationLine = (id) => {
+  const line = el("shape-layer").innerHTML.match(new RegExp('class="hit-stick" data-id="' + id + '" x1="([^"]+)" y1="([^"]+)" x2="([^"]+)" y2="([^"]+)"'));
+  return line.slice(1).map(Number);
+};
+const originalLine = readRotationLine(rotateId), untouchedLine = readRotationLine(untouchedId);
+el("rotate-mode").fire("click");
+assert.equal(el("rotation-controls").hidden, false);
+el("rotate-target").value = "single";
+el("rotate-target").fire("change");
+assert.equal(el("rotate-clockwise").disabled, true);
+el("rotate-pick-pivot").fire("click");
+canvas.fire("pointerdown", { target: { dataset: {} }, clientX: 20, clientY: 30, pointerId: 78 });
+const pivotMarkup = () => el("shape-layer").innerHTML.match(/class="rotate-pivot" transform="([^"]+)"/)[1];
+const fixedPivot = pivotMarkup();
+for (const id of [untouchedId, rotateId]) {
+  canvas.fire("pointerdown", { target: { dataset: { id } }, clientX: 150, clientY: 102, pointerId: 79 });
+  assert.equal(pivotMarkup(), fixedPivot);
+}
+assert.equal(el("rotate-clockwise").disabled, false);
+el("rotate-angle").value = "90";
+el("rotate-clockwise").fire("click");
+const expected = [50-originalLine[1], originalLine[0]+10, 50-originalLine[3], originalLine[2]+10];
+const assertLineNear = (actual, wanted) => actual.forEach((value, index) => assert.ok(Math.abs(value-wanted[index])<1e-6));
+assertLineNear(readRotationLine(rotateId), expected);
+assert.deepEqual(readRotationLine(untouchedId), untouchedLine);
+el("rotate-counterclockwise").fire("click");
+assertLineNear(readRotationLine(rotateId), originalLine);
+el("undo-button").fire("click");
+assertLineNear(readRotationLine(rotateId), expected);
+el("undo-button").fire("click");
+assertLineNear(readRotationLine(rotateId), originalLine);
+// The visible handle rotates the same target about the same pivot.
+canvas.fire("pointerdown", { target: { dataset: { rotateHandle: "true" } }, clientX: 110, clientY: 30, pointerId: 80 });
+canvas.fire("pointermove", { clientX: 20, clientY: 120, pointerId: 80 });
+canvas.fire("pointerup", { pointerId: 80 });
+assertLineNear(readRotationLine(rotateId), expected);
+el("undo-button").fire("click");
+assertLineNear(readRotationLine(rotateId), originalLine);
+el("single-mode").fire("click");
+assert.equal(pivotMarkup(), fixedPivot);
+// Whole shape: every edge rotates together, and an endpoint can be the exact pivot.
+el("clear-button").fire("click");
+el("shape-button").fire("click");
+el("shape-type").value = "square";
+el("shape-type").fire("change");
+el("shape-form").fire("submit");
+const wholeIds = stickIds(), wholeBefore = wholeIds.map(readRotationLine);
+el("rotate-mode").fire("click");
+el("rotate-target").value = "group";
+el("rotate-target").fire("change");
+canvas.fire("pointerdown", { target: { dataset: { id: wholeIds[0] } }, clientX: 100, clientY: 100, pointerId: 81 });
+assert.equal((el("shape-layer").innerHTML.match(/class="stick selected"/g)||[]).length,4);
+el("rotate-pick-pivot").fire("click");
+canvas.fire("pointerdown", { target: { dataset: { id: wholeIds[0], endpoint: "a" } }, clientX: wholeBefore[0][0]+2, clientY: wholeBefore[0][1]+2, pointerId: 82 });
+el("rotate-clockwise").fire("click");
+const px=wholeBefore[0][0], py=wholeBefore[0][1];
+wholeIds.forEach((id,i)=>{
+  const b=wholeBefore[i];
+  assertLineNear(readRotationLine(id),[px-(b[1]-py),py+(b[0]-px),px-(b[3]-py),py+(b[2]-px)]);
+});
+assert.equal(el("perimeter-value").textContent, "16 厘米");
+el("grid-opacity-input").value = "42";
+el("grid-opacity-input").fire("input");
+assert.equal(storage.get("geometry-canvas-grid-opacity"), "42");
 console.log("perimeter UI tests passed");
